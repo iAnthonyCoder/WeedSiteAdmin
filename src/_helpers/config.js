@@ -1,0 +1,3 @@
+apiUrl = '';
+
+module.exports = apiUrl;
