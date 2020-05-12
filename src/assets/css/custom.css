@@ -18,3 +18,11 @@
     left: 0;
     bottom: 0;
     }
+
+    .badge-success{
+        background-color: rgb(38, 114, 185) !important;
+    }
+
+    .badge-danger{
+        background-color: rgb(235, 83, 69) !important;
+    }

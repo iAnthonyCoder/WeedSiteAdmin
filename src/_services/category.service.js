@@ -1,23 +1,23 @@
 import { fetchWrapper, history } from '../_helpers';
-import { BehaviorSubject } from 'rxjs';
-const baseUrl = `http://localhost:3000/api/dispensaries`;
-const dispensarySubject = new BehaviorSubject(JSON.parse(localStorage.getItem('dispensary')));
+import { getApi } from '../_helpers/config';
 
-export const dispensaryService = {
+const baseUrl = getApi+"categories";
+
+
+export const categoryService = {
     getAll,
     getById,
     create,
     update,
     getByUserId,
     delete: _delete,
-    dispensary: dispensarySubject.asObservable(),
-    get dispensaryValue () { return dispensarySubject.value }
 };
 
 
 
 
 function getAll() {
+
     return fetchWrapper.get(baseUrl);
 }
 
@@ -27,23 +27,24 @@ function getById(id) {
 
 function getByUserId(id) {
    
-    return fetchWrapper.get(`${baseUrl}/user/${id}`)  .then(dispensary => {
+    return fetchWrapper.get(`${baseUrl}/user/${id}`)  .then(category => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        // localStorage.setItem('dispensary', JSON.stringify(dispensary));
+        // localStorage.setItem('category', JSON.stringify(category));
         
         // // publish user to subscribers
-        // dispensarySubject.next(dispensary);
+        // categorySubject.next(category);
         
 
-        return dispensary;
+        return category;
 })}
 
 function create(params) {
-
+ 
     return fetchWrapper.post(baseUrl, params);
 }
 
 function update(id, params) {
+
     return fetchWrapper.put(`${baseUrl}/${id}`, params)
         .then(user => {
             // // update stored user if the logged in user updated their own record

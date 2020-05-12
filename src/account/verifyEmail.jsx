@@ -15,7 +15,7 @@ function VerifyEmail({ history }) {
     useEffect(() => {
        
         const { token } = queryString.parse(window.location.search);
-        console.log(window.location.search);
+       
         // remove token from url to prevent http referer leakage
         // history.replace(location.pathname);
         

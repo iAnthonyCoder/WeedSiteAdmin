@@ -1,17 +1,12 @@
 import { fetchWrapper, history } from '../_helpers';
-import { BehaviorSubject } from 'rxjs';
-const baseUrl = `http://localhost:3000/api/dispensaries`;
-const dispensarySubject = new BehaviorSubject(JSON.parse(localStorage.getItem('dispensary')));
+const baseUrl = `http://localhost:3000/api/products`;
 
-export const dispensaryService = {
+export const productService = {
     getAll,
     getById,
     create,
     update,
-    getByUserId,
     delete: _delete,
-    dispensary: dispensarySubject.asObservable(),
-    get dispensaryValue () { return dispensarySubject.value }
 };
 
 
@@ -39,24 +34,14 @@ function getByUserId(id) {
 })}
 
 function create(params) {
-
-    return fetchWrapper.post(baseUrl, params);
+    return fetchWrapper.postMulti(baseUrl, params);
 }
 
 function update(id, params) {
-    return fetchWrapper.put(`${baseUrl}/${id}`, params)
-        .then(user => {
-            // // update stored user if the logged in user updated their own record
-            // if (user.id === userSubject.value.id) {
-            //     // update local storage
-            //     user = { ...userSubject.value, ...user };
-            //     localStorage.setItem('user', JSON.stringify(user));
+    console.log(id);
+    console.log(params);
+    return fetchWrapper.putMulti(`${baseUrl}/${id}`, params)
 
-            //     // publish updated user to subscribers
-            //     userSubject.next(user);
-            // }
-            // return user;
-        });
 }
 
 // prefixed with underscored because delete is a reserved word in javascript

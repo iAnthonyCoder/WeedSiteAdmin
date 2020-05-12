@@ -1,41 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { accountService, alertService } from '../../_services';
-import { PageHeader, ConfirmModal, NoResults } from '../../_components'
-import { fromEventPattern } from 'rxjs';
-import $ from 'jquery';
+import { dispensaryService } from '../../_services';
+import { PageHeader, NoResults } from '../../_components'
 
 function List({ match }) {
     const { path } = match;
-    const [users, setUsers] = useState(null);
-    const manipuledUsersInitialValue = "";
+    const [dispensaries, setDispensaries] = useState(null);
+    const manipuledDispensariesInitialValue = "";
     const searchModeInitialValue = false;
-    const [manupiledUsers, setManipuledUsers] = useState(manipuledUsersInitialValue)
+    const [manipuledDispensaries, setManipuledDispensaries] = useState(manipuledDispensariesInitialValue)
     const [searchMode, setSearchMode] = useState(searchModeInitialValue)
 
     useEffect(() => {
-        accountService.getAll().then(x => setUsers(x));
+        dispensaryService.getAll().then(x => setDispensaries(x));
     }, []);
 
-
-    function confirmThis(){
-      
-    }
-
-    function deleteUser(id,name) {
-        // setUsers(users.map(x => {
-        //     if (x.id === id) { x.isDeleting = true; }
-        //     return x;
-        // }));
-        
-        if(window.confirm("Are you sure do you want to delete "+name+" ?")){
-          accountService.delete(id).then(() => {
-              alertService.success('Deleted Sucessfully', { keepAfterRouteChange: true });
-              setUsers(users => users.filter(x => x._id !== id));
-          });
-        }
-    }
+    // function deleteUser(id,name) {
+    //     // setUsers(users.map(x => {
+    //     //     if (x.id === id) { x.isDeleting = true; }
+    //     //     return x;
+    //     // }));
+    //     if(window.confirm("Are you sure do you want to delete "+name+" ?")){
+    //       accountService.delete(id).then(() => {
+    //           setUsers(users => users.filter(x => x._id !== id));
+    //       });
+    //     }
+    // }
 
 
     const handleSearch = async (e) => {
@@ -43,36 +34,36 @@ function List({ match }) {
       const lowervalue=value.toLowerCase();
       if (value.length < 1){
         setSearchMode(false)
-        setManipuledUsers([]); 
+        setManipuledDispensaries([]); 
       }
       else{
           setSearchMode(true)
-          var searchResult = await users.filter((user)=>{
-            return  user.name.toLowerCase().includes(lowervalue) ||
-                    user.email.toLowerCase().includes(lowervalue) 
+          var searchResult = await dispensaries.filter((dispensary)=>{
+            return  dispensary.name.toLowerCase().includes(lowervalue) ||
+                    dispensary.address.toLowerCase().includes(lowervalue) ||
+                    dispensary.phone.toLowerCase().includes(lowervalue) 
           });
-          setManipuledUsers(searchResult); 
+          setManipuledDispensaries(searchResult); 
       }
       
     }
 
-    function setIsActive(id,user,isActive) {
-        var userUpdated = user;
-        userUpdated.isActive=isActive
-        if(window.confirm("Are you sure do you want to change the status of "+user.name+" ?")){
-            accountService.updateIsActive(id,userUpdated).then((res) => {
-                alertService.success('Updated Sucessfully', { keepAfterRouteChange: true });
-                setUsers(users.map(user => (user._id === id ? res.payload : user)))
-            });
-        }
-    }
+    // function setIsActive(id,user,isActive) {
+    //     var userUpdated = user;
+    //     userUpdated.isActive=isActive
+    //     if(window.confirm("Are you sure do you want to change the status of "+user.name+" ?")){
+    //         accountService.updateIsActive(id,userUpdated).then((res) => {
+    //             setUsers(users.map(user => (user._id === id ? res.payload : user)))
+    //         });
+    //     }
+    // }
 
     return (
 
-      
+
         <div class="box">
-          <PageHeader title="Admin/Users" subtitle="Users list" />
-          {/* <ConfirmModal confirmThis /> */}
+          <PageHeader title="Admin/Users" subtitle="Dispensaries list" />
+          
             <div class="card">
             <div class="card-header">
               <h3 class="card-title">Users</h3>
@@ -88,27 +79,32 @@ function List({ match }) {
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Type</th>
-                      <th>Status</th>
-                      <th>Subscription</th>
+                      <th>City</th>
+                       <th>Address</th>
+                      <th>Phone number</th>
+                      <th>Owner</th>
                       <th class="w-1"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {
                       !searchMode?(
-                    (users)?users.map(user =>
+                          (dispensaries)?(dispensaries.map(dispensary =>
                         <tr>
                             <td data-label="Name">
                               <div class="d-flex lh-sm py-1 align-items-center">
-                                <span class="avatar mr-2" style={{backgroundImage: "url(./static/avatars/005f.jpg)"}}></span>
+                        
                                 <div class="flex-fill">
-                                  <div class="strong">{user.name}</div>
-                                  <div class="text-muted text-h5"><a href="#" class="text-reset">{user.email}</a></div>
+                                  <div class="strong">{dispensary.name}</div>
+                                  {/* <div class="text-muted text-h5"><a href="#" class="text-reset">{user.email}</a></div> */}
                                 </div>
                               </div>
                             </td>
-                            <td data-label="Type">
+                            <td data-label="City" class="text-muted">{dispensary.city.name}</td>
+                            <td data-label="Address" class="text-muted">{dispensary.address}</td>
+                            <td data-label="Phone number" class="text-muted">{dispensary.phone}</td>
+                            <td data-label="Owner" class="">{dispensary.user.name}</td>
+                            {/* <td data-label="Type">
                               <div>{(user.type==="DISPENSARY")?"Dispensary owner":"Customer"}</div>
                               <div class="text-muted text-h5">{user.dispensary && user.dispensary.name}</div>
                             </td>
@@ -123,43 +119,49 @@ function List({ match }) {
                     </div>
                   </div>
                       
-                            </td>
+                            </td>*/}
                             <td>
                               <div class="btn-list flex-nowrap">
                                 <div class="dropdown position-static">
                                   <button class="btn btn-white dropdown-toggle align-text-top" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">Actions</button>
                                   <div class="dropdown-menu dropdown-menu-right">
-                                    <Link class="dropdown-item" to={`/admin/users/${user._id}`}>
-                                      Details
+                                    <Link class="dropdown-item" to={`/admin/users/${dispensary.user._id}`}>
+                                      See full details
                                     </Link>
                                     
-                                    <a onClick={()=>{setIsActive(user._id, user, !user.isActive)}} class="dropdown-item">
+                                    {/* <a onClick={()=>{setIsActive(user._id, user, !user.isActive)}} class="dropdown-item">
                                       {(user.isActive)?"Disable":"Enable"}
                                     </a>
 
                                     <a onClick={()=>{deleteUser(user._id, user.name)}} class="dropdown-item" >
                                       Delete
-                                    </a>
+                                    </a> */}
                                   </div>
                                 </div>
                               </div>
-                            </td>
+                            </td> 
                         </tr>
-                    ):(<tr><td colspan="5" key={"1"}><NoResults /></td></tr>)
+                    )):(<tr><td colspan="5" key={"1"}><NoResults /></td></tr>)
+                    
+                    
                     ):(
 
-                      manupiledUsers>0?manupiledUsers.map(user =>
+                      (manipuledDispensaries>0)?(manipuledDispensaries.map(dispensary =>
                         <tr>
                             <td data-label="Name">
                               <div class="d-flex lh-sm py-1 align-items-center">
-                                <span class="avatar mr-2" style={{backgroundImage: "url(./static/avatars/005f.jpg)"}}></span>
+                        
                                 <div class="flex-fill">
-                                  <div class="strong">{user.name}</div>
-                                  <div class="text-muted text-h5"><a href="#" class="text-reset">{user.email}</a></div>
+                                  <div class="strong">{dispensary.name}</div>
+                                  {/* <div class="text-muted text-h5"><a href="#" class="text-reset">{user.email}</a></div> */}
                                 </div>
                               </div>
                             </td>
-                            <td data-label="Type">
+                            <td data-label="City" class="text-muted">{dispensary.city.name}</td>
+                            <td data-label="Address" class="text-muted">{dispensary.address}</td>
+                            <td data-label="Phone number" class="text-muted">{dispensary.phone}</td>
+                            <td data-label="Owner" class="">{dispensary.user.name}</td>
+                            {/* <td data-label="Type">
                               <div>{(user.type==="DISPENSARY")?"Dispensary owner":"Customer"}</div>
                               <div class="text-muted text-h5">{user.dispensary && user.dispensary.name}</div>
                             </td>
@@ -174,32 +176,32 @@ function List({ match }) {
                     </div>
                   </div>
                       
-                            </td>
+                            </td>*/}
                             <td>
                               <div class="btn-list flex-nowrap">
                                 <div class="dropdown position-static">
                                   <button class="btn btn-white dropdown-toggle align-text-top" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">Actions</button>
                                   <div class="dropdown-menu dropdown-menu-right">
-                                    <Link class="dropdown-item" to={`/admin/users/${user._id}`}>
-                                      Details
+                                    <Link class="dropdown-item" to={`/admin/users/${dispensary.user._id}`}>
+                                      See full details
                                     </Link>
                                     
-                                    <a onClick={()=>{setIsActive(user._id, user, !user.isActive)}} class="dropdown-item">
+                                    {/* <a onClick={()=>{setIsActive(user._id, user, !user.isActive)}} class="dropdown-item">
                                       {(user.isActive)?"Disable":"Enable"}
                                     </a>
 
                                     <a onClick={()=>{deleteUser(user._id, user.name)}} class="dropdown-item" >
                                       Delete
-                                    </a>
+                                    </a> */}
                                   </div>
                                 </div>
                               </div>
-                            </td>
+                            </td> 
                         </tr>
 
+                    )
                     ):(<tr><td colspan="5" key={"1"}><NoResults /></td></tr>)
                     )
-                  
                   }
                   </tbody>
                 </table>

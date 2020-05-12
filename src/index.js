@@ -23,6 +23,7 @@ import './styles.less';
 
 render(
     <Router history={history}>
+       
         <App />
     </Router>,
     document.getElementById('root')

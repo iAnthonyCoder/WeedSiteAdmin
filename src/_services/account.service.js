@@ -1,10 +1,12 @@
 import { BehaviorSubject } from 'rxjs';
-
+import { getApi } from './../_helpers/config'
 
 import { fetchWrapper, history } from '../_helpers';
 
 const userSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('user')));
-const baseUrl = `http://localhost:3000/api`;
+
+const baseUrl = getApi;
+const accountUrl = getApi+"users";
 
 export const accountService = {
     login,
@@ -19,13 +21,14 @@ export const accountService = {
     create,
     update,
     delete: _delete,
+    updateIsActive,
     user: userSubject.asObservable(),
     get userValue () { return userSubject.value }
 };
 
 function login(email, password) {
-   
-    return fetchWrapper.post(`${baseUrl}/auth/login`, { email, password })
+    
+    return fetchWrapper.post(`${baseUrl}auth/login`, { email, password })
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('user', JSON.stringify(user));
@@ -45,45 +48,50 @@ function logout() {
 }
 
 function register(params) {
-    return fetchWrapper.post(`${baseUrl}/auth/signup`, params);
+    return fetchWrapper.post(`${baseUrl}auth/signup`, params);
 }
 
 function verifyEmail(token) {
-    return fetchWrapper.post(`${baseUrl}/auth/verify/${token}`);
+    return fetchWrapper.post(`${baseUrl}auth/verify/${token}`);
 }
 
 function forgotPassword(email) {
-    return fetchWrapper.post(`${baseUrl}/password/forgot-password`, { email });
+    return fetchWrapper.post(`${baseUrl}password/forgot-password`, { email });
 }
 
 function validateResetToken(token) {
-    return fetchWrapper.post(`${baseUrl}/password/validate-token`, { token });
+    return fetchWrapper.post(`${baseUrl}password/validate-token`, { token });
 }
 
 function resetPassword(token, password) {
-    console.log(token+"asdasd")
-    return fetchWrapper.post(`${baseUrl}/password/reset`, { token, password });
+    return fetchWrapper.post(`${baseUrl}password/reset`, { token, password });
 }
 
+
+
+
 function getAll() {
-    return fetchWrapper.get(baseUrl);
+    return fetchWrapper.get(accountUrl);
 }
 
 function getById(id) {
-    return fetchWrapper.get(`${baseUrl}/${id}`);
+    return fetchWrapper.get(`${accountUrl}/${id}`);
 }
 
 function create(params) {
-    return fetchWrapper.post(baseUrl, params);
+    return fetchWrapper.post(accountUrl, params);
 }
 
 function update(id, params) {
-    return fetchWrapper.put(`${baseUrl}/${id}`, params)
-        .then(user => {
+   
+    return fetchWrapper.putUserImg(`${accountUrl}/${id}`, params)
+        .then(user => { 
             // update stored user if the logged in user updated their own record
-            if (user.id === userSubject.value.id) {
+            if (user._id === userSubject.value._id) {
+                
                 // update local storage
                 user = { ...userSubject.value, ...user };
+                console.log(user)
                 localStorage.setItem('user', JSON.stringify(user));
 
                 // publish updated user to subscribers
@@ -93,14 +101,11 @@ function update(id, params) {
         });
 }
 
+function updateIsActive(id, params) {
+    return fetchWrapper.put(`${accountUrl}/${id}`, params)
+}
+
 // prefixed with underscored because delete is a reserved word in javascript
 function _delete(id) {
-    return fetchWrapper.delete(`${baseUrl}/${id}`)
-        .then(x => {
-            // auto logout if the logged in user deleted their own record
-            if (id === userSubject.value.id) {
-                logout();
-            }
-            return x;
-        });
+    return fetchWrapper.delete(`${accountUrl}/${id}`)
 }

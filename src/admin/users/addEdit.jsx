@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-import { accountService, alertService } from '../_services';
+import { accountService, alertService } from '../../_services';
 
 function AddEdit({ history, match }) {
     const { id } = match.params;
@@ -77,15 +77,7 @@ function AddEdit({ history, match }) {
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
             {({ errors, touched, isSubmitting, setFieldValue }) => {
-                useEffect(() => {
-                    if (!isAddMode) {
-                        // get user and set form fields
-                        accountService.getById(id).then(user => {
-                            const fields = ['title', 'firstName', 'lastName', 'email', 'role'];
-                            fields.forEach(field => setFieldValue(field, user[field], false));
-                        });
-                    }
-                }, []);
+               
 
                 return (
                     <Form>

@@ -43,9 +43,9 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { accountService, alertService, dispensaryService } from '../_services';
-import Marker from './marker';
-import Popup from './popup';
+import { accountService, alertService, dispensaryService, cityService } from '../_services';
+import Marker from '../_components/marker';
+import Popup from '../_components/popup';
 import { ReactDOM } from 'react-dom';
 import fetchFakeData from "./fetchFakeData";
 
@@ -57,6 +57,7 @@ function Create({ history }) {
     const hoursInitialValue="";
     const [latitude, setLatitude] = useState(latitudeInitialValue)
     const [longitude, setLongitude] = useState(latitudeInitialValue)
+    const [cities, setCities] = useState("")
     const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY','SUNDAY'];
  
 
@@ -68,7 +69,7 @@ function Create({ history }) {
     const initialValues = {
         name: '',
         address: '', 
-        phone: '+1'
+        phone: ''
     };
     const mp = {
         lng: 5,
@@ -77,7 +78,7 @@ function Create({ history }) {
     }
     const validationSchema = Yup.object().shape({
         name: Yup.string()
-            .required('Title is required'),
+            .required('Name is required'),
         city: Yup.string()
             .required('City is required'),
         address: Yup.string()
@@ -93,15 +94,19 @@ function Create({ history }) {
 
 
     
+    const fetchElements = async () => {
+        await cityService.getAll().then( cities =>
+            setCities(cities)
+        )
 
+    }
 
 
 
 
     useEffect(() => {
 
-     
-
+        fetchElements();
       mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
       const initializeMap = ({ setMap, mapContainer }) => {
         var coordinates = document.getElementById('coordinates');
@@ -112,35 +117,37 @@ function Create({ history }) {
           zoom: 4.5
         });
         
+        // var marker = new mapboxgl.Marker({
+        //   draggable: true
+        //   })
+        //   .setLngLat([-119.77548846586623, 36.796441467509496])
+        //   .addTo(map);
+           
+        //   function onDragEnd() {
+        //   var lngLat = marker.getLngLat();
+        //   setLatitude(lngLat.lng)
+        //   setLongitude(lngLat.lat)
+        //   }
         var marker = new mapboxgl.Marker({
-          draggable: true
-          })
-          .setLngLat([-119.77548846586623, 36.796441467509496])
-          .addTo(map);
-           
-          function onDragEnd() {
-          var lngLat = marker.getLngLat();
-          setLatitude(lngLat.lng)
-          setLongitude(lngLat.lat)
-          }
-           
-          marker.on('dragend', onDragEnd);
-
-
-
-//           map.on('click', addMarker);
-
-// function addMarker(e){
-//   if (typeof circleMarker !== "undefined" ){ 
-//     map.removeLayer(circleMarker);         
-//   }
-//   //add marker
-//   circleMarker = new  L.circle(e.latlng, 200, {
-//                 color: 'red',
-//                 fillColor: '#f03',
-//                 fillOpacity: 0.5
-//             }).addTo(map);
-// }
+            draggable: true
+            })
+        map.on('click', addMarker);
+        //   marker.on('dragend', onDragEnd);
+        function addMarker(e){
+            if (typeof marker !== "undefined" ){ 
+                map.removeLayer(marker);         
+              }
+            marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
+            var lngLat = marker.getLngLat();
+            setLatitude(lngLat.lng);
+            setLongitude(lngLat.lat);
+        }
+        function onDragEnd() {
+            var lngLat = marker.getLngLat();
+            setLatitude(lngLat.lng)
+            setLongitude(lngLat.lat)
+        }
+        marker.on('dragend', onDragEnd);
 
         map.on("load", () => {
           setMap(map);
@@ -156,7 +163,7 @@ function Create({ history }) {
 
 
 
-    function onSubmit(fields, { setStatus, setSubmitting }) {
+    function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         
         fields.latitude=latitude;
         fields.longitude=longitude;
@@ -169,8 +176,9 @@ function Create({ history }) {
           dispensaryService.create(fields)
           
             .then(() => {
-                alertService.success('Update successful', { keepAfterRouteChange: true });
-                // history.push('.');
+                resetForm({});
+                alertService.success('Dispensary created', { keepAfterRouteChange: true });
+                history.push('../../home');
             })
             .catch(error => {
                 setSubmitting(false);
@@ -218,28 +226,30 @@ function Create({ history }) {
                                             <div className="col-md-6 col-xl-12">
                                                 <div className="mb-3">
                                                     <label>Name</label>
-                                                    <Field name="name" type="text" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
+                                                    <Field name="name" type="text" placeholder="Input name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>City</label>
                                                     <Field name="city" as="select" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} >
-                                                        <option value="">Seleccione</option>
-                                                        <option value="1">Red</option>
-                                                        <option value="5eaf8de157d3fc408c299d63">Green</option>
-                                                        <option value="5eaf8de157d3fc408c299d64">Blue</option>
+                                                        <option value="">Select one</option>
+                                                        {cities && cities.map( city => 
+                                                            <option value={city._id}>{city.name}</option>
+                                                        )}
                                                     </Field>
                                                     <ErrorMessage name="city" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Address</label>
-                                                    <Field name="address" type="text" className={'form-control' + (errors.address && touched.address ? ' is-invalid' : '')} />
+                                                    <Field name="address" type="text" placeholder="Input address" className={'form-control' + (errors.address && touched.address ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="address" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Phone number</label>
-                                                    <Field name="phone" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
+                                                    <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(+1) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="phone" component="div" className="invalid-feedback" />
+
+                                                    
                                                 </div>
                                                 <label className="form-label">Schedule</label>
 
@@ -254,7 +264,7 @@ function Create({ history }) {
 
 
                              {
-                              days.map( name => (
+                              days.map( (name, index) => (
                                 <label class="form-selectgroup-item flex-fill">
                               <input type="checkbox" name="form-project-manager[]" value="1" class="form-selectgroup-input"/>
                               <div class="form-selectgroup-label d-flex align-items-center p-3">
@@ -266,14 +276,14 @@ function Create({ history }) {
                                   
                                   <div style={{width:"6em"}} class="lh-sm">
                                     
-                                    <Field name={"opens"+name} type="number" min="0" max="23" class="form-control " placeholder="Opens"/>
+                                    <Field name={`opens_at[${name}]`} type="number" min="0" max="23" class="form-control " placeholder="Opens"/>
                                     
                                       
 
                                   </div>
                                   <div style={{width:"6em"}} class="lh-sm">
                                     
-                                    <input type="text" class="form-control" placeholder="Closes"/>
+                                  <Field name={`closes_at[${name}]`} type="number" min="0" max="23" class="form-control " placeholder="Opens"/>
 
                                   </div>
                                 </div>
@@ -405,7 +415,7 @@ function Create({ history }) {
                          
                                          
                                           <div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
-                                          <small class="form-hint"><strong>Move the marker to the location of your dispensary, you can also move the map and zoom it.</strong></small>
+                                          <small class="form-hint"><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small>
                                         
                                           {/* <Field id="latitude" onChange={e => Form.setFieldValue('latitude', e)}  name="latitude" type="text" className={'form-control' }/>
                                           

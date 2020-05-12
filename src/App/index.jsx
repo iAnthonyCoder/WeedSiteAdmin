@@ -7,20 +7,26 @@ import { Nav, PrivateRoute, Alert, Footer } from '../_components';
 import { Home } from '../home';
 import { Profile } from '../profile';
 import { Dispensary } from '../dispensary';
-// import { Admin } from '../admin';
+import { Product } from '../product';
+import { Admin } from '../admin';
 import { Account } from '../account';
+
 
 function App() {
     const { pathname } = useLocation();  
     const [user, setUser] = useState({});
 
+
     useEffect(() => {
+
         const subscription = accountService.user.subscribe(x => setUser(x));
+   
         return subscription.unsubscribe;
     }, []);
 
     return (
         <div className={'antialiased ' + (user && ' ')}>
+             
             <div classNAme="page">
             <Nav />
             <Alert />
@@ -28,7 +34,12 @@ function App() {
                 <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
                 <PrivateRoute exact path="/" component={Home} />
                 <PrivateRoute path="/profile" component={Profile} />
-                {/* <PrivateRoute path="/admin" roles={[Role.Admin]} component={Admin} /> */}
+                <PrivateRoute path="/product" component={Product} />
+                <PrivateRoute path="/admin" roles={[Role.Admin]} component={Admin} />
+                {/* <PrivateRoute 
+                    path="/admin" 
+                    render={(props) => <Admin {...props} a={"asd"} roles={[Role.Admin]} />}
+                />  */}
                 <PrivateRoute path="/dispensary" component={Dispensary} />
                 <Route path="/account" component={Account} />
                 <Redirect from="*" to="/" /> 

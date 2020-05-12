@@ -7,3 +7,7 @@ export * from './tableProductsCard';
 export * from './scheduleTableCard';
 export * from './basicUserCard';
 export * from './pageHeader';
+export * from './cardSmallP3';
+export * from './confirmModal';
+export * from './noResults';
+export * from './noDispensary';

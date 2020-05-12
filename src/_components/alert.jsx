@@ -37,7 +37,7 @@ function Alert({ id, fade }) {
 
                     // auto close alert if required
                     if (alert.autoClose) {
-                        setTimeout(() => removeAlert(alert), 3000);
+                        setTimeout(() => removeAlert(alert), 5000);
                     }
                 }
             });
@@ -97,12 +97,13 @@ function Alert({ id, fade }) {
 
     if (!alerts.length) return null;
 
-    return (
-        <div className="container">
+    return (   
+        // <div className="container" style={{position:"fixed", width:"auto", marginRight:"auto", right:"auto",left:"auto",zIndex:"100"}}>
+        <div className="container" style={{position:"fixed", bottom:"1px", right:"1px", width:"400px",zIndex:"100"}}>
             <div className="m-3">
                 {alerts.map((alert, index) =>
                     <div key={index} className={cssClasses(alert)}>
-                        <a className="close" onClick={() => removeAlert(alert)}>&times;</a>
+                        <a className="close" onClick={() => removeAlert(alert)}>&times;&nbsp;</a>
                         <span dangerouslySetInnerHTML={{__html: alert.message}}></span>
                     </div>
                 )}

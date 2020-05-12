@@ -4,10 +4,16 @@ export const fetchWrapper = {
     get,
     post,
     put,
-    delete: _delete
+    postMulti,
+    delete: _delete,
+    postMultiBrand,
+    putBrandWithImage,
+    putMulti,
+    putUserImg
 }
 
 function get(url) {
+    
     const requestOptions = {
         method: 'GET',
         headers: authHeader(url)
@@ -16,17 +22,104 @@ function get(url) {
 }
 
 
+function postMulti(url, body) {
+    const formData = new FormData();
+    formData.append("name", body.name);
+    formData.append("category", body.category);
+    formData.append("brand", body.brand);
+    formData.append("picture", body.picture);
+    formData.append("description", body.description);
+    formData.append("_id", body._id)
+    formData.append("slug", body.slug)
+    const requestOptions = {
+        method: 'POST',
+        headers: {  ...authHeader(url) },
+        body:formData
+    };
+    return fetch(url, requestOptions).then(handleResponse);
+}
+
+function putMulti(url, body) {
+    console.log(body);
+    const formData = new FormData();
+    formData.append("name", body.name);
+    formData.append("category", body.category);
+    formData.append("brand", body.brand);
+    formData.append("picture", body.picture);
+    formData.append("description", body.description);
+    formData.append("_id", body._id)
+    formData.append("slug", body.slug)
+    const requestOptions = {
+        method: 'PUT',
+        headers: {  ...authHeader(url) },
+        body:formData
+    };
+    return fetch(url, requestOptions).then(handleResponse);
+}
+
+function postMultiBrand(url, body) {
+    const formData = new FormData();
+    formData.append("name", body.name);
+    formData.append("picture", body.picture);
+    formData.append("description", body.description);
+    formData.append("slug", body.slug)
+    const requestOptions = {
+        method: 'POST',
+        headers: {  ...authHeader(url) },
+        body:formData
+    };
+    return fetch(url, requestOptions).then(handleResponse);
+}
+
+
+function putUserImg(url, body) {
+   
+    const formData = new FormData();
+
+    formData.append("email", body.email);
+    formData.append("name", body.name);
+    formData.append("birthdate", body.birthdate);
+    formData.append("password", body.password)
+    formData.append("newPassword", body.newPassword)
+    formData.append("confirmPassword", body.confirmPassword)
+    formData.append("picture", body.picture)
+    const requestOptions = {
+        method: 'PUT',
+        headers: {  ...authHeader(url) },
+        body:formData
+    };
+    return fetch(url, requestOptions).then(handleResponse);
+}
+
+
+
+function putBrandWithImage(url, body) {
+   
+    const formData = new FormData();
+
+    formData.append("name", body.name);
+    formData.append("picture", body.picture);
+    formData.append("description", body.description);
+    formData.append("slug", body.slug)
+    const requestOptions = {
+        method: 'PUT',
+        headers: {  ...authHeader(url) },
+        body:formData
+    };
+    return fetch(url, requestOptions).then(handleResponse);
+}
+
 function post(url, body) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeader(url) },
         body: JSON.stringify(body)
     };
-    console.log(requestOptions)
     return fetch(url, requestOptions).then(handleResponse);
 }
 
 function put(url, body) {
+
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...authHeader(url) },
@@ -55,26 +148,23 @@ function authHeader(url) {
     if (isLoggedIn) {
         return { Authorization: `Bearer ${user.token}` };
     } else {
-        console.log("noooo")
         return {};
     }
 }
 
 function handleResponse(response) {
-   
+    if (!response.ok){
+        if ([401, 403].includes(response.status)) {
+            // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+            accountService.logout();
+        }
+    }
     return response.text().then(text => {
         const data = text && JSON.parse(text);
-        
         if (!response.ok) {
-            if ([401, 403].includes(response.status)) {
-                // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-                accountService.logout();
-            }
-
             const error = (data && data.message) || response.statusText;
             return Promise.reject(error);
-        }
-
+        } 
         return data;
     });
 }
