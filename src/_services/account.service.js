@@ -27,7 +27,7 @@ export const accountService = {
 };
 
 function login(email, password) {
-    
+    console.log(`${baseUrl}auth/login`)
     return fetchWrapper.post(`${baseUrl}auth/login`, { email, password })
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
