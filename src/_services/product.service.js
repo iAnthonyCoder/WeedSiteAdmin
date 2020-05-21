@@ -1,11 +1,17 @@
-import { fetchWrapper, history } from '../_helpers';
-const baseUrl = `http://localhost:3000/api/products`;
+import { fetchWrapper } from '../_helpers';
+import { getApi } from '../_helpers/config';
+
+const baseUrl = getApi+"products";
 
 export const productService = {
     getAll,
     getById,
     create,
     update,
+    getAllRequest,
+    getMyList,
+    getAddList,
+    deleteFromDispensary,
     delete: _delete,
 };
 
@@ -15,21 +21,27 @@ export const productService = {
 function getAll() {
     return fetchWrapper.get(baseUrl);
 }
+function getAllRequest() {
+    return fetchWrapper.get(baseUrl+"/requests/list");
+}
+function getMyList() {
+    return fetchWrapper.get(baseUrl+"/mylist");
+}
 
+function getAddList() {
+    return fetchWrapper.get(baseUrl+"/addlist");
+}
 function getById(id) {
     return fetchWrapper.get(`${baseUrl}/${id}`);
+}
+
+function deleteFromDispensary(id) {
+    return fetchWrapper.delete(`${baseUrl}/dispensary/${id}`);
 }
 
 function getByUserId(id) {
    
     return fetchWrapper.get(`${baseUrl}/user/${id}`)  .then(dispensary => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        // localStorage.setItem('dispensary', JSON.stringify(dispensary));
-        
-        // // publish user to subscribers
-        // dispensarySubject.next(dispensary);
-        
-
         return dispensary;
 })}
 
@@ -38,8 +50,6 @@ function create(params) {
 }
 
 function update(id, params) {
-    console.log(id);
-    console.log(params);
     return fetchWrapper.putMulti(`${baseUrl}/${id}`, params)
 
 }
@@ -47,11 +57,4 @@ function update(id, params) {
 // prefixed with underscored because delete is a reserved word in javascript
 function _delete(id) {
     return fetchWrapper.delete(`${baseUrl}/${id}`)
-        .then(x => {
-            // // auto logout if the logged in user deleted their own record
-            // if (id === userSubject.value.id) {
-            //     logout();
-            // }
-            // return x;
-        });
 }

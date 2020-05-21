@@ -16,4 +16,4 @@ function Users({ match }) {
     );
 }
 
-export { Users };
+export {Users};

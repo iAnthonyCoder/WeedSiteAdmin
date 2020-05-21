@@ -91,7 +91,7 @@ function update(id, params) {
                 
                 // update local storage
                 user = { ...userSubject.value, ...user };
-                console.log(user)
+              
                 localStorage.setItem('user', JSON.stringify(user));
 
                 // publish updated user to subscribers

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef }  from 'react';
-import { Link } from 'react-router-dom';
 import mapboxgl from "mapbox-gl";
 import { accountService } from '../../_services';
 import { PageHeader, BasicInfoCard,ScheduleTableCard, NoDispensary } from '../../_components';
@@ -12,9 +11,7 @@ function Details(props) {
         Invalid: 'Invalid'
     }
 
-    
-    const { path } = props.match;
-    const user = accountService.userValue;
+
     const [userDetails, setUserDetails] = useState("")
     const [dispensary, setDispensary] = useState("")
     const [schedule, setSchedule] = useState("")
@@ -28,9 +25,11 @@ function Details(props) {
 
             
             if(res!=null){
+       
+                res.last_session=res.last_session.substr(0,10)
                 await setUserDetails(res)
                 if(!res.dispensary)
-                {console.log("object");}
+                {}
                 else{
 
                   
@@ -44,7 +43,7 @@ function Details(props) {
                  const map = new mapboxgl.Map({
                    container: mapContainer.current,
                    style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-                   center: [res.dispensary.latitude, res.dispensary.longitude],
+                   center: [ res.dispensary.longitude,res.dispensary.latitude],
                    zoom: 15,
                    interactive:false
                  });
@@ -52,7 +51,7 @@ function Details(props) {
                  var marker = new mapboxgl.Marker({
                    draggable: false
                    })
-                   .setLngLat([res.dispensary.latitude, res.dispensary.longitude])
+                   .setLngLat([ res.dispensary.longitude,res.dispensary.latitude])
                    .addTo(map);
                  
                  map.on("load", () => {
@@ -94,90 +93,92 @@ function Details(props) {
         <>
             <PageHeader title="Admin/Users/Profile" edit={false} subtitle={`${userDetails.name}'s details`} />
               
-            <div class="row">
-            <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Profile</h3>
+            <div className="row">
+            <div className="col-lg-4">
+            <div className="card">
+                <div className="card-header">
+                  <h3 className="card-title">Profile</h3>
                 </div>
-                <div class="card-body">
+                <div className="card-body">
                 
-                    <div class="row mb-3">
-                      <div class="col-auto">
+                    <div className="row mb-3">
+                      <div className="col-auto">
                       <span className="avatar" style={{width:"5em", height:"5em", border:"1px solid #ceceff",backgroundImage: `url("${(userDetails && userDetails.picture)?userDetails.picture:defaultAvatar}")`}}></span>
                       </div>
-                      <div class="col">
-                        <div class="mb-2">
+                      <div className="col">
+                        <div className="mb-2">
                             <h3><strong>{userDetails.name}</strong></h3>
                             <p style={{fontWeight:"700"}}>{userDetails.email}</p>
                         </div>
                       </div>
                     </div>
 
-                    <div class="row">
+                    <div className="row">
                         
                         
-                    <div class="col-lg-6">
+                    <div className="col-lg-6">
                         
                         
 
 
-                        <div class="mb-2">
+                        <div className="mb-2">
                             <p style={{fontWeight:"700"}}>Age:</p>
                         </div>
-                        <div class="mb-2">
+                        <div className="mb-2">
                             <p style={{fontWeight:"700"}}>User type:</p>
                         </div>
-                        <div class="mb-2">
+                        <div className="mb-2">
                             <p style={{fontWeight:"700"}}>Email verification:</p>
                         </div>
-                        <div class="mb-2">
+                        <div className="mb-2">
                             <p style={{fontWeight:"700"}}>Status:</p>
                         </div>
-                        <div class="mb-2">
+                        <div className="mb-2">
                             <p style={{fontWeight:"700"}}>Last session</p>
                         </div>
-                        <div class="mb-2">
+                        <div className="mb-2">
                             <p style={{fontWeight:"700"}}>Last IP</p>
                         </div>
-                        <div class="mb-2">
+                        <div className="mb-2">
                             <p style={{fontWeight:"700"}}>Last payment</p>
                         </div>
                         </div>
                         
                         
-                        <div class="col-lg-6 col-sm-6 col-xl-6">
+                        <div className="col-lg-6 col-sm-6 col-xl-6">
                         
                         
 
 
-                    <div class="mb-2">
+                    <div className="mb-2">
                        <p><strong>{
                            (userDetails)?
                                 calculate_age(userDetails.birthdate):""
                        
                        }</strong></p>
                     </div>
-                    <div class="mb-2">
+                    <div className="mb-2">
                         <p><strong>{userDetails.type}</strong></p>
                     </div>
-                    <div class="mb-2">
+                    <div className="mb-2">
                         <p><strong>{
-                        (userDetails.isVerified)?<span class="badge badge-success">True</span>:<span class="badge badge-danger">False</span>}
+                        (userDetails.isVerified)?<span className="badge badge-success">True</span>:<span className="badge badge-danger">False</span>}
                         </strong></p>
                     </div>
-                    <div class="mb-2">
+                    <div className="mb-2">
                         <p><strong>{
-                        (userDetails.isActive)?<span class="badge badge-success">Active</span>:<span class="badge badge-danger">Banned</span>}
+                        (userDetails.isActive)?<span className="badge badge-success">Active</span>:<span className="badge badge-danger">Banned</span>}
                         </strong></p>
                     </div>
-                    <div class="mb-2">
-                       <p><strong>{"last session"}</strong></p>
+                    <div className="mb-2">
+                       <p><strong>{userDetails.last_session}</strong></p>
                     </div>
-                    <div class="mb-2">
-                       <p><strong>last ip</strong></p>
+                    <div className="mb-2">
+                    
+                       <p><strong>{userDetails.last_ip_session}</strong></p>
                     </div>
-                    <div class="mb-2">
+                    <div className="mb-2">
+  
                        <p><strong>last payment</strong></p>
                     </div>
                     </div>
@@ -193,16 +194,26 @@ function Details(props) {
 
                         {
                           (userDetails && userDetails.type=="DISPENSARY")?(
-                            <div class="mb-3">
+                            <div className="mb-3">
                         <br></br><br></br>
                         <h3>Subscription status</h3>
-                          <div class="progress mb-2">
-                            <div class="progress-bar" style={{width: "38%"}} role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">38% Complete</span>
-                            </div>
-                            
-                          </div>
-                          <smal>date - date</smal>
+
+                              { (userDetails.subscription)?(
+                                <>
+                              
+                                          <div className="progress mb-2">
+                                      <div className="progress-bar" style={{width:`${userDetails.subscription.percentaje}%`}} role="progressbar" aria-valuenow={`${userDetails.subscription.percentaje}%`} aria-valuemin="0" aria-valuemax="100">
+                                        <span className="sr-only">`${userDetails.subscription.percentaje}% Complete`</span>
+                                      </div>
+
+                                    </div>
+
+                                    <smal>{userDetails.subscription.subscription_start} to {userDetails.subscription.subscription_end}</smal></>
+
+                              ):(<p>NOT SUBSCRIBED</p>) }
+                          
+
+
                         </div>
                           ):("")
                         }
@@ -225,10 +236,10 @@ function Details(props) {
 
 
 
-                <div class="col-lg-8">
-                    <div class="card">
-                    <div class="card-header">
-                    <h3 class="card-title">Dispensary location</h3>
+                <div className="col-lg-8">
+                    <div className="card">
+                    <div className="card-header">
+                    <h3 className="card-title">Dispensary location</h3>
                     </div>
                     <div>
                    { (userDetails && userDetails.dispensary==null)?

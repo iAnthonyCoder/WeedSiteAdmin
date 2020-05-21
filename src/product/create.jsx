@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -32,13 +31,7 @@ function Create({ history }) {
       fetchItems();
     }, [])
 
-    // const FILE_SIZE = 1000240 * 1024;
-    const SUPPORTED_FORMATS = [
-      "image/jpg",
-      "image/jpeg",
-      "image/gif",
-      "image/png"
-    ];
+
 
     const validationSchema = Yup.object().shape({
         name: Yup.string()
@@ -89,27 +82,27 @@ function Create({ history }) {
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
         {({ errors, touched, setFieldValue, isSubmitting }) => (
-        <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Product inclussion request</h3>
+        <div className="row">
+        <div className="col-md-6">
+            <div className="card">
+              <div className="card-header">
+                <h3 className="card-title">Product inclussion request</h3>
               </div>
               <Form>
-              <div class="card-body">
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">Name</label>
-                    <div class="col">
+              <div className="card-body">
+                  <div className="form-group mb-3 row">
+                    <label className="form-label col-3 col-form-label">Name</label>
+                    <div className="col">
                        
                         <Field name="name" type="text" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
                         <ErrorMessage name="name" component="div" className="invalid-feedback" />
                     </div>
                   </div>
-                  <div class="form-group mb-3 row">
+                  <div className="form-group mb-3 row">
 
-                  <label class="form-label col-3 col-form-label">Category</label>
-                  <div class="col">
-                      <Field name="category" class="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.category && touched.category ? ' is-invalid' : '')} >
+                  <label className="form-label col-3 col-form-label">Category</label>
+                  <div className="col">
+                      <Field name="category" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.category && touched.category ? ' is-invalid' : '')} >
                           <option value="">Seleccione</option>
                           {
                             categories && categories.map(category => <option value={category._id}>{category.name}</option>)
@@ -118,10 +111,10 @@ function Create({ history }) {
                       <ErrorMessage name="category" component="div" className="invalid-feedback" />
                       </div>
                   </div>
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">Brand</label>
-                    <div class="col">
-                    <Field name="brand" class="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.brand && touched.brand ? ' is-invalid' : '')} >
+                  <div className="form-group mb-3 row">
+                    <label className="form-label col-3 col-form-label">Brand</label>
+                    <div className="col">
+                    <Field name="brand" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.brand && touched.brand ? ' is-invalid' : '')} >
                           <option value="">Seleccione</option>
 
                           {
@@ -131,11 +124,11 @@ function Create({ history }) {
                       <ErrorMessage name="brand" component="div" className="invalid-feedback" />
                     </div>
                   </div>
-                  <div class="form-group mb-3 row">
-                    <label class="form-label col-3 col-form-label">Picture</label>
+                  <div className="form-group mb-3 row">
+                    <label className="form-label col-3 col-form-label">Picture</label>
            
-                    <div class="col">
-                          <div class="form-file">
+                    <div className="col">
+                          <div className="form-file">
 
                           <input id="picture" name="picture" type="file" onChange={(event) => {
                     setFieldValue("picture", event.currentTarget.files[0]);
@@ -143,39 +136,39 @@ function Create({ history }) {
                   <ErrorMessage name="brand" component="div" className="invalid-feedback" />
                          
                              {/* <Field name="picture" accept="image/x-png,image/gif,image/jpeg" type="file" id="form-file-input" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')} />
-                              <label class="form-file-label" for="customFile">
-                               <span class="form-file-text">Choose file...</span>
-                               <span class="form-file-button">Browse</span>
+                              <label className="form-file-label" for="customFile">
+                               <span className="form-file-text">Choose file...</span>
+                               <span className="form-file-button">Browse</span>
                              </label> 
                              <ErrorMessage name="picture" component="div" className="invalid-feedback" /> */}
                           </div>
                         </div>
                   </div>
-                    <div class="form-group mb-3 row">
-                        <label class="form-label col-3 col-form-label">Description</label>
-                        <div class="col">
+                    <div className="form-group mb-3 row">
+                        <label className="form-label col-3 col-form-label">Description</label>
+                        <div className="col">
                             
                             <Field name="description" as="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "53.9792px"}}></Field>
                             <ErrorMessage name="description" component="div" className="invalid-feedback" />
                         </div>
                     </div>
-                    <small class="form-hint">A moderator will review your request as soon as possible. This may takes up to 24h. <br></br>Sending this request you are automatically acepting the terms described in the next card.</small>
+                    <small className="form-hint">A moderator will review your request as soon as possible. This may takes up to 24h. <br></br>Sending this request you are automatically acepting the terms described in the next card.</small>
               </div>
               
 
 
-              {/* <div class="card-footer text-right">
-                      <div class="d-flex">
-                        <a href="#" class="btn btn-link">Cancel</a>
-                        <button type="submit" class="btn btn-primary ml-auto">Send request</button>
+              {/* <div className="card-footer text-right">
+                      <div className="d-flex">
+                        <a href="#" className="btn btn-link">Cancel</a>
+                        <button type="submit" className="btn btn-primary ml-auto">Send request</button>
                       </div>
                     </div> */}
 
 
 
-                    <div class="card-footer text-right">
-                              <div class="d-flex">
-                                <a href="#" class="btn btn-link">Cancel</a>
+                    <div className="card-footer text-right">
+                              <div className="d-flex">
+                                <a href="#" className="btn btn-link">Cancel</a>
                                 
                                 <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
                             {
@@ -197,11 +190,11 @@ function Create({ history }) {
                 </Form>
             </div>
         </div>
-        <div class="col-md-6">
-        <div class="card d-flex flex-column">
-          <div class="card-body d-flex flex-column">
-            <h3 class="card-title">Terms and condition</h3>
-            <div class="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit enim voluptatum ratione doloremque atque quasi inventore ipsum harum? Nam, excepturi. Facere voluptate voluptates dolores quasi officia consequatur voluptatem quo repellendus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit sed doloribus dignissimos, ea hic ullam delectus, eligendi suscipit labore numquam ratione! Ea aspernatur rerum quae aperiam officia vel odio aliquid.</div>
+        <div className="col-md-6">
+        <div className="card d-flex flex-column">
+          <div className="card-body d-flex flex-column">
+            <h3 className="card-title">Terms and condition</h3>
+            <div className="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit enim voluptatum ratione doloremque atque quasi inventore ipsum harum? Nam, excepturi. Facere voluptate voluptates dolores quasi officia consequatur voluptatem quo repellendus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit sed doloribus dignissimos, ea hic ullam delectus, eligendi suscipit labore numquam ratione! Ea aspernatur rerum quae aperiam officia vel odio aliquid.</div>
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ function Dispensary({ match }) {
             <div className="container-xl">
                 <Switch>
                     <Route exact path={path} component={Details} />
-                    <Route path={`${path}/update`} component={Update} />
+                    <Route path={`${path}/update/:id`} component={Update} />
                     <Route path={`${path}/create`} component={Create} />
                 </Switch>
             </div>

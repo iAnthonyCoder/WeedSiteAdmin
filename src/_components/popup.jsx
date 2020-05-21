@@ -1,7 +1,7 @@
 import React from "react";
 
 const Popup = ({ feature }) => {
-  const { id, name, description } = feature.properties;
+const { id, name, description } = feature.properties;
 
   return (
     <div id={`popup-${id}`}>

@@ -27,7 +27,7 @@ function Login({ history, location }) {
             })
             .catch(error => {
                 setSubmitting(false);
-                alertService.error(error);
+                // alertService.error(error);
             });
     }
 

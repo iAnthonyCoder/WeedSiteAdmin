@@ -38,16 +38,13 @@
 
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { accountService, alertService, dispensaryService, cityService } from '../_services';
-import Marker from '../_components/marker';
-import Popup from '../_components/popup';
-import { ReactDOM } from 'react-dom';
-import fetchFakeData from "./fetchFakeData";
+
 
 function Create({ history }) {
     const user = accountService.userValue;
@@ -109,7 +106,6 @@ function Create({ history }) {
         fetchElements();
       mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
       const initializeMap = ({ setMap, mapContainer }) => {
-        var coordinates = document.getElementById('coordinates');
         const map = new mapboxgl.Map({
           container: mapContainer.current,
           style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
@@ -117,37 +113,16 @@ function Create({ history }) {
           zoom: 4.5
         });
         
-        // var marker = new mapboxgl.Marker({
-        //   draggable: true
-        //   })
-        //   .setLngLat([-119.77548846586623, 36.796441467509496])
-        //   .addTo(map);
-           
-        //   function onDragEnd() {
-        //   var lngLat = marker.getLngLat();
-        //   setLatitude(lngLat.lng)
-        //   setLongitude(lngLat.lat)
-        //   }
         var marker = new mapboxgl.Marker({
             draggable: true
             })
         map.on('click', addMarker);
-        //   marker.on('dragend', onDragEnd);
         function addMarker(e){
-            if (typeof marker !== "undefined" ){ 
-                map.removeLayer(marker);         
-              }
             marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
             var lngLat = marker.getLngLat();
-            setLatitude(lngLat.lng);
-            setLongitude(lngLat.lat);
+            setLatitude(lngLat.lat);
+            setLongitude(lngLat.lng);
         }
-        function onDragEnd() {
-            var lngLat = marker.getLngLat();
-            setLatitude(lngLat.lng)
-            setLongitude(lngLat.lat)
-        }
-        marker.on('dragend', onDragEnd);
 
         map.on("load", () => {
           setMap(map);
@@ -265,25 +240,23 @@ function Create({ history }) {
 
                              {
                               days.map( (name, index) => (
-                                <label class="form-selectgroup-item flex-fill">
-                              <input type="checkbox" name="form-project-manager[]" value="1" class="form-selectgroup-input"/>
-                              <div class="form-selectgroup-label d-flex align-items-center p-3">
-                                <div class="mr-3">
-                                  <span class="form-selectgroup-check"></span>
-                                </div>
+                                <label className="form-selectgroup-item flex-fill">
+                             
+                              <div className="border-hours d-flex align-items-center p-3">
+                               
                                 <span>{name}: </span>
-                                <div style={{justifyContent:"flex-end",width:"100%"}} class="form-selectgroup-label-content d-flex align-items-center">
+                                <div style={{justifyContent:"flex-end",width:"100%"}} className="form-selectgroup-label-content d-flex align-items-center">
                                   
-                                  <div style={{width:"6em"}} class="lh-sm">
+                                  <div style={{width:"6em"}} className="lh-sm">
                                     
-                                    <Field name={`opens_at[${name}]`} type="number" min="0" max="23" class="form-control " placeholder="Opens"/>
+                                    <Field name={`opens_at[${name}]`} type="number" min="0" max="23" className="form-control " placeholder="Opens"/>
                                     
                                       
 
                                   </div>
-                                  <div style={{width:"6em"}} class="lh-sm">
+                                  <div style={{width:"6em"}} className="lh-sm">
                                     
-                                  <Field name={`closes_at[${name}]`} type="number" min="0" max="23" class="form-control " placeholder="Opens"/>
+                                  <Field name={`closes_at[${name}]`} type="number" min="0" max="23" className="form-control " placeholder="Opens"/>
 
                                   </div>
                                 </div>
@@ -411,11 +384,11 @@ function Create({ history }) {
                                         </div>
                                     </div>
                                     <div className="col xl-8">
-                                    <div class="card-title">Set the location in the map</div>
+                                    <div className="card-title">Set the location in the map</div>
                          
                                          
                                           <div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
-                                          <small class="form-hint"><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small>
+                                          <small className="form-hint"><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small>
                                         
                                           {/* <Field id="latitude" onChange={e => Form.setFieldValue('latitude', e)}  name="latitude" type="text" className={'form-control' }/>
                                           
@@ -424,9 +397,9 @@ function Create({ history }) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer text-right">
-                              <div class="d-flex" style={{justifyContent:"space-between"}}>
-                                <a href="#" class="btn btn-link">Cancel</a>
+                            <div className="card-footer text-right">
+                              <div className="d-flex" style={{justifyContent:"space-between"}}>
+                                <a href="#" className="btn btn-link">Cancel</a>
                                 
                                 <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-aut">
 

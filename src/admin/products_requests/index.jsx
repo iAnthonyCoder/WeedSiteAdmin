@@ -7,10 +7,10 @@ function Products_requests({ match }) {
     const { path } = match;
         
     return (
-            
-                <Switch>
-                    <Route exact path={path} component={Table} />
-                </Switch>
+     
+     <Switch>
+         <Route exact path={path} component={Table} />
+     </Switch>
             
     );
 }

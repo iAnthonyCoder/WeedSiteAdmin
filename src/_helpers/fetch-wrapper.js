@@ -1,4 +1,4 @@
-import { accountService } from '../_services';
+import { accountService, alertService } from '../_services';
 
 export const fetchWrapper = {
     get,
@@ -9,7 +9,8 @@ export const fetchWrapper = {
     postMultiBrand,
     putBrandWithImage,
     putMulti,
-    putUserImg
+    putUserImg,
+    postMultiPurchase
 }
 
 function get(url) {
@@ -40,7 +41,7 @@ function postMulti(url, body) {
 }
 
 function putMulti(url, body) {
-    console.log(body);
+
     const formData = new FormData();
     formData.append("name", body.name);
     formData.append("category", body.category);
@@ -70,6 +71,27 @@ function postMultiBrand(url, body) {
     };
     return fetch(url, requestOptions).then(handleResponse);
 }
+
+function postMultiPurchase(url, body) {
+
+    const formData = new FormData();
+    formData.append("date", body.date);
+    formData.append("reference", body.reference);
+    formData.append("method", body.method);
+    formData.append("amount", body.amount);
+    formData.append("picture", body.picture);
+    formData.append("plan", body.plan)
+    const requestOptions = {
+        method: 'POST',
+        headers: {  ...authHeader(url) },
+        body:formData
+    };
+    return fetch(url, requestOptions).then(handleResponse);
+}
+
+
+
+
 
 
 function putUserImg(url, body) {
@@ -153,6 +175,8 @@ function authHeader(url) {
 }
 
 function handleResponse(response) {
+  
+    
     if (!response.ok){
         if ([401, 403].includes(response.status)) {
             // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
@@ -161,8 +185,11 @@ function handleResponse(response) {
     }
     return response.text().then(text => {
         const data = text && JSON.parse(text);
+        
         if (!response.ok) {
+            
             const error = (data && data.message) || response.statusText;
+            alertService.error(error);
             return Promise.reject(error);
         } 
         return data;

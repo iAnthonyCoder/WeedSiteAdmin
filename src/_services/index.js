@@ -5,3 +5,10 @@ export * from './product.service';
 export * from './category.service';
 export * from './brand.service';
 export * from './city.service';
+export * from './security.service';
+export * from './schedule.service';
+export * from './package.service';
+export * from './subscription.service';
+export * from './plan.service';
+export * from './payment.service';
+export * from './purchase.service'

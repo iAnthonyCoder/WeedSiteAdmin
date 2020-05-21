@@ -9,8 +9,6 @@ export const cityService = {
 };
 
 
-
-
 function getAll() {
 
     return fetchWrapper.get(baseUrl);

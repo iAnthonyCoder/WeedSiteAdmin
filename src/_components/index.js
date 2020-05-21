@@ -11,3 +11,9 @@ export * from './cardSmallP3';
 export * from './confirmModal';
 export * from './noResults';
 export * from './noDispensary';
+export * from './tableCardHeader';
+export * from './superTable';
+export * from './productCard';
+export * from './loadingSpinner'      
+export * from './userTable'     
+export * from './pricingCard' 

@@ -1,3 +1,3 @@
-const getApi = "http://localhost:3000/api/";
+const getApi = process.env.REACT_APP_API_URL;
 
 export { getApi };
