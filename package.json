@@ -31,10 +31,10 @@
     "yup": "^0.28.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "buildLocal": "react-scripts build",   
-    "build": "react-scripts build && echo '/* /index.html 200' | cat >build/_redirects ", 
-    "eject": "react-scripts eject"
+    "dev": "react-scripts start",
+    "start": "serve -s build",
+    "build": "react-scripts build",
+    "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
