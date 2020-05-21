@@ -17,14 +17,12 @@ import { history } from './_helpers';
 import { App } from './App/index';
 
 import './styles.less';
-let a = process.env.REACT_APP_SOME_VARIABLE
 // setup fake backend
 // import { configureFakeBackend } from './_helpers';
 // configureFakeBackend();
 
 render(
     <Router history={history}>
-       {console.log(a)}
         <App />
     </Router>,
     document.getElementById('root')
