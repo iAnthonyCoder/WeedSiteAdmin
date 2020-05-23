@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
 import { accountService, alertService } from '../../_services';
-import { PageHeader, ConfirmModal, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components'
-import { fromEventPattern } from 'rxjs';
-import $ from 'jquery';
+import { PageHeader, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components'
 import { history } from "../../_helpers";
 const _thisService = accountService
 
 
-function List({ match }) {
-    const { path } = match;
 
-    const [scopedItem, setScopedItem] = useState("")
+function List() {
+    // const [scopedItem, setScopedItem] = useState("")
     const [items, setItems] = useState("")
-    const [mutatedItems, setMutatedItems] = useState("")
+    const [mutatedItems, setMutatedItems] = useState(null)
     const [fetched, setFetched] = useState(false);
     const defaultAvatar = "/static/user.png";
     const columns = [{
@@ -38,6 +33,18 @@ function List({ match }) {
           <>
            <div>{(row.type==="DISPENSARY")?"Dispensary owner":"Customer"}</div>
            <div className="text-muted text-h5">{row.dispensary && row.dispensary.name}</div>
+          </>
+        )
+      }
+      
+    }, {
+      dataField: 'email',
+      text: 'Email',
+      sort: true, 
+      formatter: (rowContent, row) => {
+        return(
+          <>
+          {row.email}
           </>
         )
       }
@@ -127,27 +134,24 @@ function List({ match }) {
 
 
 
-
-function renderTable(){
-  return  <div className="card">
-            <TableCardHeader title="Users" handleSearch={handleSearch} />
-              <div className="table-responsive">
-                <SuperTable items={mutatedItems} details={details}  changeStatus={changeStatus}  columns={columns}/>
-              </div>
+  if (!fetched) return <LoadingSpinner />;
+  return (
+    <>
+      <PageHeader title="Admin/Users" link="create" nameButton="Add user" subtitle="Users list" toggle="modal" target="#modal-create" />
+      <div className="box">
+      <div className="card">
+        <TableCardHeader title="Users" handleSearch={handleSearch} />
+          <div className="table-responsive">
+            <SuperTable items={mutatedItems} details={details}  changeStatus={changeStatus}  columns={columns}/>
           </div>
-}
+        </div>
+      </div>
+    </>
+  )}
 
-return (
-  <>
-    <PageHeader title="Admin/Users" link="create" nameButton="Add user" subtitle="Users list" toggle="modal" target="#modal-create" />
-    <div className="box">
-    {
-      (fetched) ? renderTable() : <LoadingSpinner />       
-    }
-    </div>
-  </>
-);
-}
+  // List.propTypes = {
+  //   mutatedItems: PropTypes.arrayOf(PropTypes.object).isRequired
+  // }
 
 export { List };
 

@@ -17,7 +17,7 @@ function Nav() {
     const [active, setActive] = useState({});
     const [userActive, setUserActive] = useState({});
     const userDetails = accountService.userValue;
-    const defaultAvatar = "./static/user.png";
+    const defaultAvatar = "/static/user.png";
 
     useEffect(() => {
         const subscription = accountService.user.subscribe(x => setUser(x));
@@ -96,7 +96,7 @@ function Nav() {
               <span className="navbar-toggler-icon"></span>
             </button>
             <NavLink className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3" to={`/`}>
-              <img src="../static/logo-white.svg" alt="Tabler" className="navbar-brand-image" />
+              <img src="/static/logo-white.svg" alt="Tabler" className="navbar-brand-image" />
             </NavLink>
             <div className="navbar-nav flex-row order-md-last">
               {/* <div className="nav-item dropdown d-none d-md-flex mr-3">
@@ -296,7 +296,7 @@ function Nav() {
               <span className="navbar-toggler-icon"></span>
             </button>
             <NavLink className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3" to={`/`}>
-              <img src="../static/logo.svg" alt="Tabler" className="navbar-brand-image" />
+              <img src="/static/logo.svg" alt="Tabler" className="navbar-brand-image" />
             </NavLink>
             <div className="navbar-nav flex-row order-md-last">
               {/* <div className="nav-item dropdown d-none d-md-flex mr-3">

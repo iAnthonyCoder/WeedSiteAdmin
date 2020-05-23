@@ -71,7 +71,7 @@ function Create({ history }) {
             .then(() => {
                resetForm({});
                 alertService.success('Request sent!', { keepAfterRouteChange: true });
-                history.push('.');
+                history.push('/');
             })
             .catch(error => {
                 setSubmitting(false);

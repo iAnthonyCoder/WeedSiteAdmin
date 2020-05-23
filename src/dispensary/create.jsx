@@ -51,7 +51,6 @@ function Create({ history }) {
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
     const latitudeInitialValue=false; 
-    const hoursInitialValue="";
     const [latitude, setLatitude] = useState(latitudeInitialValue)
     const [longitude, setLongitude] = useState(latitudeInitialValue)
     const [cities, setCities] = useState("")

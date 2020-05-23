@@ -62,7 +62,7 @@ class SuperTable extends Component{
         return(
             <div>
                 <ToolkitProvider
-                    keyField="id"
+                    keyField="_id"
                     data={ this.props.items }
                     columns={ this.props.columns }
                 >
@@ -73,7 +73,7 @@ class SuperTable extends Component{
                             <BootstrapTable
                                 editIem = {this.props.editItem}
                                 deleteIem = {this.props.deleteItem}
-                                keyField='id'
+                                keyField={this.props.items._id}
                                 data={  this.props.items }
                                 columns={ this.props.columns }
                                 rowEvents={rowEvents}

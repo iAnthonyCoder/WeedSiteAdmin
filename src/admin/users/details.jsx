@@ -1,32 +1,26 @@
 import React, { useEffect, useState, useRef }  from 'react';
 import mapboxgl from "mapbox-gl";
 import { accountService } from '../../_services';
-import { PageHeader, BasicInfoCard,ScheduleTableCard, NoDispensary } from '../../_components';
+import { PageHeader, BasicInfoCard,ScheduleTableCard, NoDispensary, LoaderBounce } from '../../_components';
 
 
 function Details(props) {
-    const DispensaryStatus = {
-        Validating: 'Validating',
-        Valid: 'Valid',
-        Invalid: 'Invalid'
-    }
+
 
 
     const [userDetails, setUserDetails] = useState("")
     const [dispensary, setDispensary] = useState("")
     const [schedule, setSchedule] = useState("")
-    const [dispensaryStatus, setDispensaryStatus] = useState(DispensaryStatus.Loading)
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
     const defaultAvatar = "./static/user.png";
 
     const fetchUserDatails = async () => {
         await accountService.getById(props.match.params.id).then(async (res)=>{
-
             
             if(res!=null){
        
-                res.last_session=res.last_session.substr(0,10)
+                (res.last_session)?res.last_session=res.last_session.substr(0,10):res.last_session=""
                 await setUserDetails(res)
                 if(!res.dispensary)
                 {}
@@ -36,7 +30,7 @@ function Details(props) {
                 await setDispensary(res.dispensary);
                 
                 await setSchedule(res.dispensary.schedule);
-                await setDispensaryStatus(DispensaryStatus.Valid);
+           
         
                 mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
                const initializeMap = async ({ setMap, mapContainer }) => {
@@ -63,11 +57,6 @@ function Details(props) {
                if (!map) initializeMap({ setMap, mapContainer });
               }
             }
-              else{
-                setDispensaryStatus(DispensaryStatus.Invalid);
-              }
-            
-
         })
       }
       //const { handle } = this.props.match.params
@@ -89,6 +78,8 @@ function Details(props) {
       }
 
 
+
+      if(!userDetails) return <LoaderBounce />
     return (
         <>
             <PageHeader title="Admin/Users/Profile" edit={false} subtitle={`${userDetails.name}'s details`} />

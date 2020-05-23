@@ -33,7 +33,7 @@ class UserTable extends Component{
             return <NoResults />
         }
 
-        const MySearch = (props) => { props.onSearch(this.props.search); return (""); };
+        // const MySearch = (props) => { props.onSearch(this.props.search); return (""); };
 
         const rowEvents = {
             onContextMenu: (e, row, rowIndex) => {
@@ -53,11 +53,11 @@ class UserTable extends Component{
             
         };
 
-        const customTotal = (from, to, size) => (
-            <span className="react-bootstrap-table-pagination-total">
-                Showing { from } to { to } of { size } Results
-            </span>
-        );
+        // const customTotal = (from, to, size) => (
+        //     <span className="react-bootstrap-table-pagination-total">
+        //         Showing { from } to { to } of { size } Results
+        //     </span>
+        // );
 
         return(
             <div>

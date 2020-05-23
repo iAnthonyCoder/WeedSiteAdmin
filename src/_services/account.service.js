@@ -18,6 +18,7 @@ export const accountService = {
     resetPassword,
     getAll,
     getById,
+    updateOwn,
     create,
     update,
     delete: _delete,
@@ -82,6 +83,25 @@ function create(params) {
     return fetchWrapper.post(accountUrl, params);
 }
 
+function updateOwn(id, params) {
+   
+    return fetchWrapper.putUserImg(`${accountUrl}/own/${id}`, params)
+        .then(user => { 
+            // update stored user if the logged in user updated their own record
+            if (user._id === userSubject.value._id) {
+                
+                // update local storage
+                user = { ...userSubject.value, ...user };
+              
+                localStorage.setItem('user', JSON.stringify(user));
+
+                // publish updated user to subscribers
+                userSubject.next(user);
+            }
+            return user;
+        });
+}
+
 function update(id, params) {
    
     return fetchWrapper.putUserImg(`${accountUrl}/${id}`, params)
@@ -100,6 +120,7 @@ function update(id, params) {
             return user;
         });
 }
+
 
 function updateIsActive(id, params) {
     return fetchWrapper.put(`${accountUrl}/${id}`, params)

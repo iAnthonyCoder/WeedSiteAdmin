@@ -1,4 +1,4 @@
-import { fetchWrapper, history } from '../_helpers';
+import { fetchWrapper } from '../_helpers';
 import { getApi } from '../_helpers/config';
 
 const baseUrl = getApi+"brands";
@@ -24,7 +24,7 @@ function getById(id) {
 
 function getByUserId(id) {
    
-    return fetchWrapper.get(`${baseUrl}/user/${id}`)  .then(category => {
+    return fetchWrapper.get(`${baseUrl}/user/${id}`).then(category => {
         return category;
 })}
 

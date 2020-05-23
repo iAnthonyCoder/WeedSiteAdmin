@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -34,7 +33,7 @@ function Update({ history }) {
 
     function onSubmit(fields, { setStatus, setSubmitting }) {
         setStatus();
-        accountService.update(user._id, fields)
+        accountService.updateOwn(user._id, fields)
             .then(() => {
                 alertService.success('Update successful', { keepAfterRouteChange: true });
                 history.push('/');

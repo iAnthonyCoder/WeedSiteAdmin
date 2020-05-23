@@ -2,10 +2,9 @@ import React from 'react';
 
 function BasicUserCard(props) {
 
-  const [ user, setUser ] = React.useState(props.user);
+  const [ user ] = React.useState(props.user);
 
   function getAge () {
-    var ageDifMs = Date.now();
     var today = new Date();
     var birthDate = new Date(user.birthdate);  // create a date object directly from `dob1` argument
     var age_now = today.getFullYear() - birthDate.getFullYear();
