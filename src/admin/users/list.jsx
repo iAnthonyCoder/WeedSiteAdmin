@@ -54,7 +54,7 @@ function List({ match }) {
       formatter: (rowContent, row) => {
 
         return (
-        <p>{row.subscriptions.subscription_start} to {row.subscriptions.subscription_end}</p>
+        <p>{(row.subscriptions.subscription_start)?(row.subscriptions.subscription_start):""} to {(row.subscriptions.subscription_end)?(row.subscriptions.subscription_end):""}</p>
         )
       
       }
