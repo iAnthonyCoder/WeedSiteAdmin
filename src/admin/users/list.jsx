@@ -52,7 +52,7 @@ function List({ match }) {
       text: 'Subscription',
       sort: true,
       formatter: (rowContent, row) => {
-
+        console.log(row)
         return (
           (row.subscriptions)?(<p>{row.subscriptions.subscription_start} to {row.subscriptions.subscription_end}</p>):"Unsubscribed"
         )
