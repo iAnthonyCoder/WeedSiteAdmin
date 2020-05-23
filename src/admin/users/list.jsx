@@ -16,7 +16,7 @@ function List({ match }) {
     const [items, setItems] = useState("")
     const [mutatedItems, setMutatedItems] = useState("")
     const [fetched, setFetched] = useState(false);
-    const defaultAvatar = "./static/user.png";
+    const defaultAvatar = "/static/user.png";
     const columns = [{
       dataField: 'name',
       text: 'Name',
