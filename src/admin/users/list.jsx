@@ -52,7 +52,7 @@ function List({ match }) {
       text: 'Subscription',
       sort: true,
       formatter: (rowContent, row) => {
-        console.log(row)
+        
         return (
           (row.subscriptions)?(<p>{row.subscriptions.subscription_start} to {row.subscriptions.subscription_end}</p>):"Unsubscribed"
         )
@@ -132,14 +132,14 @@ function renderTable(){
   return  <div className="card">
             <TableCardHeader title="Users" handleSearch={handleSearch} />
               <div className="table-responsive">
-                {/* <SuperTable items={mutatedItems} details={details}  changeStatus={changeStatus}  columns={columns}/> */}
+                <SuperTable items={mutatedItems} details={details}  changeStatus={changeStatus}  columns={columns}/>
               </div>
           </div>
 }
 
 return (
   <>
-    <PageHeader title="Admin/Userswwwwww" link="create" nameButton="Add user" subtitle="Users list" toggle="modal" target="#modal-create" />
+    <PageHeader title="Admin/Users" link="create" nameButton="Add user" subtitle="Users list" toggle="modal" target="#modal-create" />
     <div className="box">
     {
       (fetched) ? renderTable() : <LoadingSpinner />       
