@@ -1,8 +1,8 @@
 import { fetchWrapper, history } from '../_helpers';
 import { BehaviorSubject } from 'rxjs';
-import { getApi } from '../_helpers/config';
+import { getPrivateApi } from '../_helpers/config';
 
-const baseUrl = getApi+"security";
+const baseUrl = getPrivateApi+"security";
 
 
 export const securityService = {

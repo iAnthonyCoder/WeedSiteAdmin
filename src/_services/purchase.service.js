@@ -1,7 +1,7 @@
 import { fetchWrapper } from '../_helpers';
-import { getApi } from '../_helpers/config';
+import { getPrivateApi } from '../_helpers/config';
 
-const baseUrl = getApi+"purchases";
+const baseUrl = getPrivateApi+"purchases";
 
 
 export const purchaseService = {

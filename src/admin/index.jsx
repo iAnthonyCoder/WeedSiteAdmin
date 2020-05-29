@@ -13,6 +13,7 @@ import { Products } from './products';
 import { Users } from './users';
 import { Categories } from './categories';
 import { Subscriptions } from './subscriptions'
+import { Parentcategories } from './parentcategories'
 import Loadable from 'react-loadable';
 
 function Admin({ match }) {
@@ -38,6 +39,7 @@ function Admin({ match }) {
                     <Route exact path={path} component={Overview} />
                     <Route path={`${path}/users`} component={Users} />
                     <Route path={`${path}/categories`} component={Categories} />
+                    <Route path={`${path}/parentcategories`} component={Parentcategories} />
                     <Route path={`${path}/brands`} component={Brands} />
                     <Route path={`${path}/dispensaries`} component={Dispensaries} />
                     <Route path={`${path}/requests/products`} component={Products_requests} />

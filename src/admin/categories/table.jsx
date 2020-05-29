@@ -3,6 +3,7 @@ import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } fr
 import { Create } from './create';
 import { Update } from './update';
 import { categoryService, alertService } from '../../_services';
+import { history } from '../../_helpers'
 import $ from 'jquery';
 
 
@@ -16,19 +17,24 @@ function Table({ match }) {
     const columns = [{
       dataField: 'name',
       text: 'Name',
-      sort: true
+      sort: true,
     }, {
-      dataField: '_id',
-      text: 'ID',
-      sort: true
+      dataField: 'parentcategory.name',
+      text: 'Parent',
+      sort: true,
+      formatter: (rowContent, row) => {
+        return (   
+             (row.parentcategory)?row.parentcategory.name:"NONE"
+        )
+      }
     }, {
       dataField: 'description',
       text: 'Description',
-      sort: true
+      sort: true,
     }, {
       dataField: 'slug',
       text: 'Slug',
-      sort: true
+      sort: true,
       }
     ];
 
@@ -65,6 +71,7 @@ function Table({ match }) {
       setMutatedItems([...items, item]); 
     }
     function updateOne(_id, newItem){
+      console.log(newItem)
       setItems(items.map(item => (item._id === _id ? newItem : item)))
       setMutatedItems(items.map(item => (item._id === _id ? newItem : item)));
     }
@@ -81,6 +88,10 @@ function Table({ match }) {
       };     
     }
 
+    const details = (id) => {
+      history.push(`categories/${id}`)
+    }
+
     function scopeItem(object){
       setScopedItem(object);
       $("#modal-update").modal("show");
@@ -90,7 +101,7 @@ function Table({ match }) {
       return  <div className="card">
                 <TableCardHeader title="Categories" handleSearch={handleSearch} />
                   <div className="table-responsive">
-                    <SuperTable items={mutatedItems} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
+                    <SuperTable items={mutatedItems} scopeItem={scopeItem}  details={details} deleteByID={deleteByID} columns={columns}/>
                   </div>
               </div>
     }

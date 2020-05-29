@@ -46,6 +46,10 @@ import { accountService, alertService, dispensaryService, cityService } from '..
 
 
 function Update({ history, match }) {
+    const visaImg = "/static/payments/visa.svg"
+    const atmImg = "/static/payments/atm.svg"
+    const AEImg = "/static/payments/americanexpress.svg"
+    const mastercardImg = "/static/payments/mastercard.svg"
     const user = accountService.userValue;
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
@@ -66,9 +70,15 @@ function Update({ history, match }) {
     const initialValues = {
         name: dispensary.name,
         address: dispensary.address, 
+        addresszip: dispensary.addresszip, 
+        medicallicense: (dispensary.medicallicense)?dispensary.medicallicense:"", 
+        recreationallicense: dispensary.recreationallicense?dispensary.recreationallicense:"", 
+        isAmericanexpressAcepted: (dispensary.isAmericanexpressAcepted)?dispensary.isAmericanexpressAcepted:false, 
+        isMastercardAcepted: dispensary.isMastercardAcepted?dispensary.isMastercardAcepted:false, 
+        isVisaAcepted: (dispensary.isVisaAcepted)?dispensary.isVisaAcepted:false, 
+        isAtmAcepted: (dispensary.isVisaAcepted)?dispensary.isVisaAcepted:false, 
         phone: dispensary.phone,
         city: (dispensary.city)?dispensary.city._id:"",
-        schedule: dispensary.schedule
     };
     const mp = {
         lng: 5,
@@ -232,15 +242,16 @@ function Update({ history, match }) {
                                     <div className="col-xl-4">
                                         <div className="row">
                                             <div className="col-md-6 col-xl-12">
+                               
                                                 <div className="mb-3">
-                                                    <label>Name</label>
+                                                    <label>Name *</label>
                                                     <Field name="name" type="text" placeholder="Input name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>City</label>
+                                                    <label>Address *</label>
                                                     <Field name="city" as="select" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} >
-                                                        <option value="">Select one</option>
+                                                        <option value="">Select city</option>
                                                         {cities && cities.map( city => 
                                                             <option value={city._id}>{city.name}</option>
                                                         )}
@@ -248,21 +259,89 @@ function Update({ history, match }) {
                                                     <ErrorMessage name="city" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>Address</label>
+                                                    
                                                     <Field name="address" type="text" placeholder="Input address" className={'form-control' + (errors.address && touched.address ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="address" component="div" className="invalid-feedback" />
+                                                    <br></br>
+                                                    <Field name="addresszip" type="text" placeholder="Input zip code" className={'form-control' + (errors.addresszip && touched.addresszip ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="addresszip" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>Phone number</label>
+                                                    <label>Phone number *</label>
                                                     <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(+1) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="phone" component="div" className="invalid-feedback" />
 
                                                     
                                                 </div>
-                                        
-         
-
-
+                                                <div className="mb-3">
+                                                    <label>Medical license</label>
+                                                    <Field name="medicallicense"  placeholder="Input medical license" type="text" className={'form-control' + (errors.medicallicense && touched.medicallicense ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="medicallicense" component="div" className="invalid-feedback" />
+                                                </div>
+                                                <div className="mb-3">
+                                                
+                                                    {/* <InputText  
+                                                        label={"Recreational license license"}
+                                                        name={"recreationallicense"}
+                                                        placeholder={"Input recreational license"}
+                                                       
+                                                        errorName={"recreationallicense"}
+                                                    /> */}
+                                                    <label>Recreational license license</label>
+                                                    <Field name="recreationallicense"  placeholder="Input recreational license" 
+                                                    type="text" className={'form-control' + (errors.recreationallicense && touched.recreationallicense ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="recreationallicense" component="div" className="invalid-feedback" /> 
+                                                </div>
+                                                <div className="form-selectgroup">
+                                                <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                                                    <Field type="checkbox" name="form-payment" name="isVisaAcepted" class="form-selectgroup-input" />
+                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                      <div class="mr-3">
+                                                        <span class="form-selectgroup-check"></span>
+                                                      </div>
+                                                      <div>
+                                                        <img src={visaImg} style={{height:"2em"}}/>
+                                                        <strong>VISA ACCEPTED</strong> 
+                                                      </div>
+                                                    </div>
+                                                  </label>
+                                                  <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                                                    <Field type="checkbox" name="form-payment" name="isMastercardAcepted" class="form-selectgroup-input" />
+                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                      <div class="mr-3">
+                                                        <span class="form-selectgroup-check"></span>
+                                                      </div>
+                                                      <div>
+                                                          <img src={mastercardImg} style={{height:"2em"}}/>
+                                                          <strong>MASTERCARD ACCEPTED</strong> 
+                                                      </div>
+                                                    </div>
+                                                  </label>
+                                                  <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                                                    <Field type="checkbox" name="form-payment" name="isAmericanexpressAcepted" class="form-selectgroup-input" />
+                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                      <div class="mr-3">
+                                                        <span class="form-selectgroup-check"></span>
+                                                      </div>
+                                                      <div>
+                                                          <img src={AEImg} style={{height:"2em"}}/>
+                                                          <strong>AMERICAN E. ACCEPTED</strong> 
+                                                      </div>
+                                                    </div>
+                                                  </label>
+                                                  <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                                                    <Field type="checkbox" name="form-payment" name="isAtmAcepted" class="form-selectgroup-input" />
+                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                      <div class="mr-3">
+                                                        <span class="form-selectgroup-check"></span>
+                                                      </div>
+                                                      <div>
+                                                          <img src={atmImg} style={{height:"2em", width:"3.5em"}}/>
+                                                          <strong>ATM AVAILABLE</strong> 
+                                                      </div>
+                                                    </div>
+                                                  </label>
+                                                </div>
                                             </div>
                                             <div className="col-md-6 col-xl-12">
                                             
@@ -293,7 +372,7 @@ function Update({ history, match }) {
                             // isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
                             
                             }
-                            Send data
+                            Save
 
                         </button>
                               </div>

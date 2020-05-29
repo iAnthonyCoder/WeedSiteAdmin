@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink, Route , Link} from 'react-router-dom';
+import { NavLink , Link} from 'react-router-dom';
 import { accountService, dispensaryService } from '../_services';
 import mapboxgl from "mapbox-gl";
-import { BasicInfoCard, TableProductsCard,BasicUserCard,ScheduleTableCard, PageHeader, SmallCardP3 } from '../_components';
+import { BasicInfoCard,ScheduleTableCard, PageHeader, LoaderBounce } from '../_components';
 import { history } from '../_helpers';
 
 function Home() {
@@ -208,7 +208,7 @@ function Home() {
               
           case DispensaryStatus.Loading:
             
-              return <div>Loading...</div>;
+              return <LoaderBounce />;
       }
   }
  

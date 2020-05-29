@@ -2,19 +2,15 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { Table } from './table';
-import { Details } from './details';
 
-function Brands({ match }) {
+function Parentcategories({ match }) {
     const { path } = match;
-        
+    
     return (
-            
         <Switch>
             <Route exact path={path} component={Table} />
-            <Route path={`${path}/:id`} component={Details} />
-        </Switch>
-            
+        </Switch>    
     );
 }
 
-export { Brands };
+export {Parentcategories};

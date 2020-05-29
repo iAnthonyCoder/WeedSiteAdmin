@@ -1,18 +1,30 @@
-import React from 'react';
+
+
+
+
+
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery';
-import { brandService, alertService } from '../../_services';
+import { parentcategoryService, alertService } from '../../_services';
 
-function Create(props) {
+function Update(props) {
    
 
     const initialValues = {
-        name: '',
-        description: '',
+        name: props.object.name,
+        description: props.object.description,
+        _id:props.object._id
     };
     
-
     const validationSchema = Yup.object().shape({
         name: Yup.string()
             .required('Name is required'),
@@ -29,13 +41,12 @@ function Create(props) {
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
         fields.slug=getSlug(fields.name);
-      
-        brandService.create(fields)
+        parentcategoryService.update(fields._id,fields)
             .then((data) => {
-              resetForm({});
-                alertService.success('Item saved', { keepAfterRouteChange: true });
-                $("#modal-create").modal("hide");
-                props.addNew(data.payload);
+            	resetForm({});
+            	alertService.success('Item updated successfully', { keepAfterRouteChange: true });
+            	$("#modal-update").modal("hide");
+            	props.updateOne(fields._id, fields);
             })
             .catch(error => {
                 setSubmitting(false);
@@ -44,17 +55,17 @@ function Create(props) {
     }
 
     return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        {({ errors, touched, setFieldValue, isSubmitting, handleReset }) => (
-            <Form>
-            	<div className="modal modal-blur fade" id="modal-create" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize >
+        {({ errors, touched, setFieldValue, isSubmitting }) => (
+        	<Form>
+         		<div className="modal modal-blur fade" id="modal-update" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
          				<div className="modal-content">
            					<div className="modal-header">
-             					<h5 className="modal-title">Add a new brand</h5>
-             					<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-               						<svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            		 			</button>
+             					<h5 className="modal-title">Manage parent category</h5>
+            					<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+            					   <svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            					</button>
            					</div>
            					<div className="modal-body">
              					<div className="row mb-3 align-items-end">
@@ -66,8 +77,8 @@ function Create(props) {
                						</div> */}
                						<div className="col">
                							<label className="form-label">Name</label>
-               							<Field name="name" type="text" placeholder="Enter name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
-                         				<ErrorMessage name="name" component="div" className="invalid-feedback" />
+               							<Field name="name" type="text" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
+            							<ErrorMessage name="name" component="div" className="invalid-feedback" />
                						</div>
              					</div>
              					<div className="mb-3">
@@ -77,30 +88,15 @@ function Create(props) {
                  						<ErrorMessage name="description" component="div" className="invalid-feedback" />
              						</div>
            						</div>
-           						<div className="mb-3 row">
-           							<div>
-           								<label className="form-label">Picture</label>
-                          				<input id="picture" name="picture" type="file" onChange={(event) => {
-                    						setFieldValue("picture", event.currentTarget.files[0]);
-                  							}} className="form-label col-3 col-form-label" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')}/>
-                  							<ErrorMessage name="brand" component="div" className="invalid-feedback" />
-                         
-                             					{/* <Field name="picture" accept="image/x-png,image/gif,image/jpeg" type="file" id="form-file-input" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')} />
-                             					 <label className="form-file-label" for="customFile">
-                             					  <span className="form-file-text">Choose file...</span>
-                             					  <span className="form-file-button">Browse</span>
-                             					</label> 
-                             					<ErrorMessage name="picture" component="div" className="invalid-feedback" /> */}
-                        			</div>
-                  				</div>
+               					<Field name="_id" type="hidden"></Field>  
          					</div>
          					<div className="card-footer text-right">
    								<div className="d-flex">
-   								  	<a href="#" className="btn btn-link" data-dismiss="modal" onClick={handleReset}>Cancel</a>
-   								  	<button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
-   								      {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
-   								      Save
-   								  	</button>
+     								<a href="#" className="btn btn-link">Cancel</a>
+     								<button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
+     								    {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
+     								    Update
+     								</button>
    								</div>
  							</div>
        					</div>
@@ -108,11 +104,11 @@ function Create(props) {
      			</div>
 			</Form>
         )}
-        </Formik>
-    )
+    </Formik>
+	)
 }
 
-export { Create };
+export { Update };
 
 
 
@@ -142,7 +138,7 @@ export { Create };
 // import { Formik, Field, Form, ErrorMessage } from 'formik';
 // import * as Yup from 'yup';
 
-// import { categoryService, alertService } from '../../_services';
+// import { parentcategoryService, alertService } from '../../_services';
 
 
 // function Create({ history }) {
@@ -168,7 +164,7 @@ export { Create };
 //     function onSubmit(fields, { setStatus, setSubmitting }) {
 //         setStatus();
 //         fields.slug=getSlug(fields.name);
-//         categoryService.create(fields)
+//         parentcategoryService.create(fields)
 //             .then(() => {
 //                 alertService.success('Registration successful, please check your email for verification instructions', { keepAfterRouteChange: true });
 //                 history.push('.');

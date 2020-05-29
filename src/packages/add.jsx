@@ -139,7 +139,7 @@ function Add(props) {
                     <a href="#" className="btn btn-link" data-dismiss="modal"  onClick={handleReset}>Cancel</a>
                     <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
                         {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
-                        Send data
+                        Save
                     </button>
                   </div>
                 </div>
@@ -192,7 +192,7 @@ export { Add };
                             isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
                             
                             }
-                            Send data
+                            Save
                         </button>
               </div>
             

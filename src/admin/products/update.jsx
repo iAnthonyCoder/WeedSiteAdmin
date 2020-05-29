@@ -178,7 +178,7 @@ function Update(props) {
                   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
                 
                 }
-                Send data
+                Save
                 </button>
               </div>
             </div>
@@ -298,7 +298,7 @@ export { Update };
 
 //     <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
 //         {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
-//         Send data
+//         Save
 //     </button>
 //   </div>
 // </div>

@@ -61,7 +61,9 @@ function List({ match }) {
       	else  {
         	var searchResult = await items.filter((item)=>{
           		return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-                  		item.description.toLowerCase().includes(value.toLowerCase()) ||
+						  item.city.name.toLowerCase().includes(value.toLowerCase()) ||
+						  item.address.toLowerCase().includes(value.toLowerCase()) ||
+						  item.phone.toLowerCase().includes(value.toLowerCase()) ||
                   		item._id.toLowerCase().includes(value.toLowerCase())
         	});
         	setMutatedItems(searchResult); 

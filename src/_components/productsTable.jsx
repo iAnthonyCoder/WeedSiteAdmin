@@ -1,21 +1,14 @@
 import React, {useState,useEffect} from 'react';
 import { Link } from 'react-router-dom';
-import { productService, categoryService, brandService, alertService } from '../../_services';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components';
-import { Create } from './create';
 import $ from "jquery"
-import { Update } from './update'
-import { history } from '../../_helpers'
+import { history } from '../_helpers'
+import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from './index';
 
 
-function Table({ match }) {
+function ProductsTable(props) {
     const [mutatedItems, setMutatedItems] = useState("")
     const [items, setItems] = useState("");
-    const [categories, setCategories] = useState("");
-    const [brands, setBrands] = useState("");
-    
     const [filtering, setFiltering] = useState("");
-    const [scopedItem, setScopedItem] = useState("")
     const [fetched, setFetched] = useState(false);
     const columns = [{
       dataField: 'name',
@@ -44,73 +37,13 @@ function Table({ match }) {
       }
     ];
 
-
-
-
     const fetchItems = () => {
-      categoryService.getAll().then((res) => {setCategories(res)})
-      brandService.getAll().then((res) => {setBrands(res)})
-      productService.getAll().then((res) => {setItems(res);setMutatedItems(res);setFetched(true)})
-      
+      console.log(props)
+      setItems(props.items);
+      setMutatedItems(props.items);
+      setFetched(true)
     }
-
     
-    
-    // const setActive = (e) => {
-    //   const el=e.target;
-    //   console.log(el);
-    //   var cusid_ele = document.getElementsByClassName('categoryFilter');
-    //   for (var i = 0; i < cusid_ele.length; ++i) {
-    //     var item = cusid_ele[i];  
-    //     if(item.classList.contains("active")){item.classList.remove("active")}
-    //   }
-    //   el.classList.add("active");
-    // }
-
-    const handleFilter = (e) => {
-      const { name, value } = e.target;
-      setFiltering({...filtering, [name]:value })
-    }
-
-    // const handleBrandFilter = (e) => {
-    //   const value = e.target.value;
-    //   setCategoryFilter(value)
-    // }
-
-    // const handleFilters = async (e) => {
-    //       setSearchMode(!searchMode)
-       
-    //       var searchResult = await products.map((product)=>{
-    //         return  product.category.id
-    //       });
-    //       setMutatedProducts(searchResult); 
-    //   }
-
-    // const filterProducts = async () => {
-    //   var filterRules = [];
-    //   var searchResult="";
-    //   for (var n in filtering) {
-    //     if (filtering.hasOwnProperty(n)) {
-    //       filterRules.push(filtering[n])
-    //     }
-    //   }
-    
-
-     
-    //   var searchResult = await products.map((product)=>{
-    //     return  product.category.id.includes(filterRules)
-    //   })
-    //   console.log(searchResult);
-    // }
-   
-    // const filterProducts = async (filterRules) => {
-
-    //      var searchResult = await products.filter((product)=>{
-         
-    //         return  product.brand._id.includes(filtering) || product.category._id.includes(filtering)
-    //       });
-    //     }
-      
     
     const handleSearch = async (e) => {
       const { value } = e.target;
@@ -128,70 +61,19 @@ function Table({ match }) {
       }
     }
 
-  
-
-    // useEffect(() => {
-    //   var filterRules = [];
-    //   var searchResult="";
-    //   for (var n in filtering) {
-    //     if (filtering.hasOwnProperty(n)) {
-    //       filterRules.push(filtering[n])
-    //     }
-    //   }
-
-    //   filterProducts(filterRules);
-    // }, [filtering])
-
-
-
-    function addNew(item){
-  
-      setItems([...items, item])
-      setMutatedItems([...items, item]); 
-    }
-
-
-
-    function deleteByID(id){
-      if(window.confirm("Are you sure do you want to delete this item?")){
-        productService.delete(id).then(()=>{
-          let filteredState = items.filter( item => item._id !== id );
-          setItems(filteredState)
-          setMutatedItems(filteredState)
-          alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
-        });
-      };     
-    }
-
-    function scopeItem(object){
-      setScopedItem(object);
-    
-      $("#modal-update-product").modal("show");
-    }
-    
-    function updateOne(_id, newItem){
-      setItems(items.map(item => (item._id === _id ? newItem : item)))
-      setMutatedItems(items.map(item => (item._id === _id ? newItem : item)));
-      $("#modal-update-product").modal("hide");
-    }
-
     const details = (id) => {
-
-      history.push(`products/${id}`)
+      history.push(`/admin/products/${id}`)
     }
-
-    
 
     useEffect(() => {
       fetchItems();
     }, [])
 
-
     function renderTable(){
       return  <div className="card">
                 <TableCardHeader title="Products" handleSearch={handleSearch} />
                   <div className="table-responsive">
-                    <SuperTable items={mutatedItems} details={details} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
+                    <SuperTable items={mutatedItems} details={details}  columns={columns}/>
                   </div>
               </div>
     }
@@ -199,19 +81,16 @@ function Table({ match }) {
     if(!fetched) return <LoadingSpinner /> 
     return (
       <>
-        <Create addNew={addNew}/>
-        <Update updateOne={updateOne} object={scopedItem}/>
-        <PageHeader title="Admin/Products" link="create" nameButton="Add product" subtitle="Products list" toggle="modal" target="#modal-new-product" />
-        <div className="box">
+     
         {
           renderTable()     
         }
-        </div>
+       
       </>
     );
 }
 
-export { Table };
+export { ProductsTable };
 
 
 

@@ -69,7 +69,7 @@ function Create(props) {
             		<div className="modal-dialog modal-lg modal-dialog-centered" role="document">
             	    	<div className="modal-content">
             	      		<div className="modal-header">
-            	   	 			<h5 className="modal-title">New report</h5>
+            	   	 			<h5 className="modal-title">New product</h5>
             	    			<button type="button" className="close" data-dismiss="modal" aria-label="Close">
             	    			  <svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             	    			</button>
@@ -182,7 +182,7 @@ function Create(props) {
             	                {
             	                	isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
             	                }
-            	                Send data
+            	                Save
             	            	</button>
             	  			</div>
             			</div>

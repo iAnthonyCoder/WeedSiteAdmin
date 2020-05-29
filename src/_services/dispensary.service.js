@@ -1,7 +1,7 @@
 import { fetchWrapper, history } from '../_helpers';
 import { BehaviorSubject } from 'rxjs';
-import { getApi } from '../_helpers/config';
-const baseUrl = getApi+"dispensaries";
+import { getPrivateApi } from '../_helpers/config';
+const baseUrl = getPrivateApi+"dispensaries";
 const dispensarySubject = new BehaviorSubject(JSON.parse(localStorage.getItem('dispensary')));
 
 export const dispensaryService = {
@@ -33,7 +33,7 @@ function getByUserId(id) {
 })}
 
 function create(params) {
-
+    console.log(params)
     return fetchWrapper.post(baseUrl, params);
 }
 

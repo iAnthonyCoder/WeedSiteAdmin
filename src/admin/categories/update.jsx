@@ -14,17 +14,29 @@ import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery';
-import { categoryService, alertService } from '../../_services';
+import { categoryService, parentcategoryService, alertService } from '../../_services';
 
 function Update(props) {
    
+	const [parentcategories, setParentcategories] = useState("")
 
     const initialValues = {
         name: props.object.name,
-        description: props.object.description,
+		description: props.object.description,
+		parentcategory: (props.object.parentcategory)?(props.object.parentcategory._id):"",
         _id:props.object._id
     };
-    
+	
+	const fetchParentCategories = async () => {
+		parentcategoryService.getAll().then(result => {
+			setParentcategories(result)
+		})
+	}
+
+	useEffect(() => {
+		fetchParentCategories();
+	}, [])
+
     const validationSchema = Yup.object().shape({
         name: Yup.string()
             .required('Name is required'),
@@ -42,11 +54,11 @@ function Update(props) {
         setStatus();
         fields.slug=getSlug(fields.name);
         categoryService.update(fields._id,fields)
-            .then((data) => {
+            .then((res) => {
             	resetForm({});
             	alertService.success('Item updated successfully', { keepAfterRouteChange: true });
-            	$("#modal-update").modal("hide");
-            	props.updateOne(fields._id, fields);
+				$("#modal-update").modal("hide");
+            	props.updateOne(res.payload._id, res.payload);
             })
             .catch(error => {
                 setSubmitting(false);
@@ -61,6 +73,7 @@ function Update(props) {
          		<div className="modal modal-blur fade" id="modal-update" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
          				<div className="modal-content">
+							 {console.log(initialValues)}
            					<div className="modal-header">
              					<h5 className="modal-title">Manage category</h5>
             					<button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -68,6 +81,18 @@ function Update(props) {
             					</button>
            					</div>
            					<div className="modal-body">
+							   <label className="form-label">Parent category</label>
+							   	<Field name="parentcategory" as="select" className={'form-control' + (errors.parentcategories && touched.parentcategories ? ' is-invalid' : '')} >      
+								   <option value="">Select</option>
+									{
+										parentcategories && parentcategories.map( parentcategory => 
+											<option value={parentcategory._id}>{parentcategory.name}</option>
+										)
+									}  
+						  		</Field>
+								  <ErrorMessage name="parentcategories" component="div" className="invalid-feedback" />
+								  <small className="form-hint"><strong>Leave this empty if this category doesn't have a parent category.</strong></small>
+
              					<div className="row mb-3 align-items-end">
                						{/* <div className="col-auto">
                						  <a href="#" className="avatar avatar-upload rounded">
@@ -216,7 +241,7 @@ export { Update };
 
 //     <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
 //         {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
-//         Send data
+//         Save
 //     </button>
 //   </div>
 // </div>

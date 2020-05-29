@@ -1,17 +1,16 @@
-import { fetchWrapper } from '../_helpers';
+import { fetchWrapper, history } from '../_helpers';
 import { getPrivateApi } from '../_helpers/config';
 
-const baseUrl = getPrivateApi+"packages";
+const baseUrl = getPrivateApi+"parentcategories";
 
 
-export const packageService = {
+export const parentcategoryService = {
     getAll,
     getById,
     create,
     update,
     getByUserId,
     delete: _delete,
-    getAllByProductId
 };
 
 
@@ -26,14 +25,11 @@ function getById(id) {
     return fetchWrapper.get(`${baseUrl}/${id}`);
 }
 
-function getAllByProductId(id) {
-    return fetchWrapper.get(`${baseUrl}/product/${id}`);
-}
-
 function getByUserId(id) {
    
-    return fetchWrapper.get(`${baseUrl}/user/${id}`)
-}
+    return fetchWrapper.get(`${baseUrl}/user/${id}`)  .then(category => {
+        return category;
+})}
 
 function create(params) {
  
@@ -43,9 +39,9 @@ function create(params) {
 function update(id, params) {
 
     return fetchWrapper.put(`${baseUrl}/${id}`, params)
-
 }
 
 function _delete(id) {
-    return fetchWrapper.delete(`${baseUrl}/${id}`);
+    return fetchWrapper.delete(`${baseUrl}/${id}`)
+        
 }

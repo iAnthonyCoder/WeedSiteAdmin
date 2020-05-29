@@ -4,7 +4,7 @@ function BasicInfoCard(props) {
   return(
     <div className="card">
       <div className="card-header">
-        <h3 className="card-title">Warehouse details</h3>
+        <h3 className="card-title">Location details</h3>
         <div className="card-actions"></div>
       </div>
       {

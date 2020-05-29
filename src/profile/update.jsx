@@ -9,6 +9,7 @@ function Update({ history }) {
     const initialValues = {
         name: user.name,
         email: user.email,
+        isVerified: user.isVerified,
         birthdate: user.birthdate.split('T')[0],
         password:"",
         newPassword:"",
@@ -32,6 +33,7 @@ function Update({ history }) {
     });
 
     function onSubmit(fields, { setStatus, setSubmitting }) {
+     
         setStatus();
         accountService.updateOwn(user._id, fields)
             .then(() => {
@@ -43,6 +45,19 @@ function Update({ history }) {
                 alertService.error(error);
             });
     }
+
+     function resendToken(email){
+      
+         var json = {'email':email}
+         accountService.resendToken(json)
+             .then(() => {
+                 alertService.success('Check your email inbox', { keepAfterRouteChange: true });
+                 history.push('/');
+             })
+             .catch(error => {
+                 alertService.error(error);
+             });
+     }
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
@@ -93,7 +108,7 @@ function Update({ history }) {
                                         <div className="col-md-4 col-sm-12">
                                             <div className="mb-3">
                                                   <label className="form-label">Email</label>
-                                                  <Field name="email" autocomplete="off" type="text" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
+                                                  <Field name="email" autocomplete="off" autocomplete="chrome-off" type="text" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
                                                   <ErrorMessage name="email" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
@@ -104,7 +119,7 @@ function Update({ history }) {
                                                   <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
-                                        
+                          
                                         <div className="col-md-4 col-sm-12">
                                             <div className="mb-3">
                                                   <label className="form-label">Birthdate</label>
@@ -112,18 +127,17 @@ function Update({ history }) {
                                                   <ErrorMessage name="birthdate" component="div" className="invalid-feedback" />
                                             </div>
                                         </div>
-                                        <div className="col-md-4 col-sm-12">
-                                        <div className="row">
-                                                <div className="col-md-8 col-sm-12">
-                                                    <span className="badge badge-danger">Needs validation</span>
-                                                </div>
-                                                <div className="col-md-4 col-sm-12">
-                                                    <a href="#" className="btn btn-primary btn-block">
-                                                        Resend
+                                         {console.log(user)}
+                                        {
+                                           (initialValues.isVerified)?(""):<div className="col-md-4 col-sm-12"> <div className="row">
+                                                <div className="">
+                                                    <a href="#" onClick={()=>{resendToken(initialValues.email)}} className="btn btn-primary btn-block">
+                                                        Resend verification mail
                                                     </a>
                                                 </div>
                                             </div>
-                                        </div>
+                                            </div>
+                                        } 
                                     </div>
                                     <br></br><br></br>
                                     <div className="row">
@@ -176,7 +190,7 @@ function Update({ history }) {
                                 <div className="card-footer text-right">
                                   <div className="d-flex">
                                     <a href="#" className="btn btn-link">Cancel</a>
-                                    <button type="submit" className="btn btn-primary ml-auto">Send data</button>
+                                    <button type="submit" className="btn btn-primary ml-auto">Save</button>
                                   </div>
                                 </div>
                             </form>

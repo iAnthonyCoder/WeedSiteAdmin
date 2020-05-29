@@ -13,9 +13,10 @@ function Nav() {
       Admin: 'Admin',
     }
 
-    const [user, setUser] = useState({});
-    const [active, setActive] = useState({});
-    const [userActive, setUserActive] = useState({});
+    const userInitialValue = "";
+    const [user, setUser] = useState(userInitialValue);
+    const [active, setActive] = useState(userInitialValue);
+    const [userActive, setUserActive] = useState(userInitialValue);
     const userDetails = accountService.userValue;
     const defaultAvatar = "/static/user.png";
 
@@ -163,6 +164,12 @@ function Nav() {
                         <NavLink activeClassName="active" className="dropdown-item" to={'/admin/products/listbeta'}>
                           <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-md" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline><line x1="12" y1="12" x2="20" y2="7.5"></line><line x1="12" y1="12" x2="12" y2="21"></line><line x1="12" y1="12" x2="4" y2="7.5"></line><line x1="16" y1="5.25" x2="8" y2="9.75"></line></svg>
                           &nbsp;Products(Beta)
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink activeClassName="active" className="dropdown-item" to={'/admin/parentcategories'}>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-md" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M11 3L20 12a1.5 1.5 0 0 1 0 2L14 20a1.5 1.5 0 0 1 -2 0L3 11v-4a4 4 0 0 1 4 -4h4"></path><circle cx="9" cy="9" r="2"></circle></svg>
+                            &nbsp;Parent Categories
                         </NavLink>
                       </li>
                       <li>

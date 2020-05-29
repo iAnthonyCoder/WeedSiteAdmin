@@ -12,3 +12,4 @@ export * from './subscription.service';
 export * from './plan.service';
 export * from './payment.service';
 export * from './purchase.service'
+export * from './parentcategory.service'

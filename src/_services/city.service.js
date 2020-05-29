@@ -1,7 +1,7 @@
 import { fetchWrapper, history } from '../_helpers';
-import { getApi } from '../_helpers/config';
+import { getPublicApi } from '../_helpers/config';
 
-const baseUrl = getApi+"cities";
+const baseUrl = getPublicApi+"cities";
 
 
 export const cityService = {

@@ -44,9 +44,14 @@ import * as Yup from 'yup';
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { accountService, alertService, dispensaryService, cityService } from '../_services';
+import { InputText } from '../_components'
 
 
 function Create({ history }) {
+    const visaImg = "/static/payments/visa.svg"
+    const atmImg = "/static/payments/atm.svg"
+    const AEImg = "/static/payments/americanexpress.svg"
+    const mastercardImg = "/static/payments/mastercard.svg"
     const user = accountService.userValue;
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
@@ -65,6 +70,8 @@ function Create({ history }) {
     const initialValues = {
         name: '',
         address: '', 
+        addresszip: '', 
+        city: '', 
         phone: ''
     };
     const mp = {
@@ -78,14 +85,11 @@ function Create({ history }) {
         city: Yup.string()
             .required('City is required'),
         address: Yup.string()
-            .required('Addres is required'),
+            .required('Address is required'),
+        addresszip: Yup.string()
+            .required('Zip code is required'),
         phone: Yup.string()
             .required('Phone number is required'),
-        // opens_at: Yup.number()
-        //     .required('Opens time is required'),
-        // closes_at: Yup.number()
-        //     .moreThan(Yup.ref('opens_at'), 'Closes at value should be higher than opens at value')
-        //     .required('Closes time is required'),
     });
 
 
@@ -187,26 +191,28 @@ function Create({ history }) {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-12">
+                <div className="">
+                    <div className="">
                         <Form className="card">
                             <div className="card-header">
                                 <h4 className="card-title">New dispensary</h4>
                             </div>
                             <div className="card-body">
+                            <div className="row">
+                                <div className="col-md-6 col-xl-8">
                                 <div className="row">
-                                    <div className="col-xl-4">
+                                    <div className="col-xl-6 col-md-6">
                                         <div className="row">
-                                            <div className="col-md-6 col-xl-12">
+                                            <div className="">
                                                 <div className="mb-3">
-                                                    <label>Name</label>
+                                                    <label>Name *</label>
                                                     <Field name="name" type="text" placeholder="Input name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>City</label>
+                                                    <label>Address *</label>
                                                     <Field name="city" as="select" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} >
-                                                        <option value="">Select one</option>
+                                                        <option value="">Select city</option>
                                                         {cities && cities.map( city => 
                                                             <option value={city._id}>{city.name}</option>
                                                         )}
@@ -214,59 +220,103 @@ function Create({ history }) {
                                                     <ErrorMessage name="city" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>Address</label>
+                                                    
                                                     <Field name="address" type="text" placeholder="Input address" className={'form-control' + (errors.address && touched.address ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="address" component="div" className="invalid-feedback" />
+                                                    <br></br>
+                                                    <Field name="addresszip" type="text" placeholder="Input zip code" className={'form-control' + (errors.addresszip && touched.addresszip ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="addresszip" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>Phone number</label>
+                                                    <label>Phone number *</label>
                                                     <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(+1) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="phone" component="div" className="invalid-feedback" />
 
                                                     
                                                 </div>
-                                                <label className="form-label">Schedule</label>
-
+                                                <div className="mb-3">
+                                                    <label>Medical license</label>
+                                                    <Field name="medicallicense"  placeholder="Input medical license" type="text" className={'form-control' + (errors.medicallicense && touched.medicallicense ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="medicallicense" component="div" className="invalid-feedback" />
+                                                </div>
+                                                <div className="mb-3">
                                                 
+                                                    {/* <InputText  
+                                                        label={"Recreational license license"}
+                                                        name={"recreationallicense"}
+                                                        placeholder={"Input recreational license"}
+                                                       
+                                                        errorName={"recreationallicense"}
+                                                    /> */}
+                                                    <label>Recreational license license</label>
+                                                    <Field name="recreationallicense"  placeholder="Input recreational license" 
+                                                    type="text" className={'form-control' + (errors.recreationallicense && touched.recreationallicense ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="recreationallicense" component="div" className="invalid-feedback" /> 
+                                                </div>
+                                                </div><div className="row">
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-6 col-md-6">
 
-
-
-
-
-
-
-
-
-                             {
-                              days.map( (name, index) => (
-                                <label className="form-selectgroup-item flex-fill">
-                             
-                              <div className="border-hours d-flex align-items-center p-3">
-                               
-                                <span>{name}: </span>
-                                <div style={{justifyContent:"flex-end",width:"100%"}} className="form-selectgroup-label-content d-flex align-items-center">
-                                  
-                                  <div style={{width:"6em"}} className="lh-sm">
-                                    
-                                    <Field name={`opens_at[${name}]`} type="number" min="0" max="23" className="form-control " placeholder="Opens"/>
-                                    
-                                      
-
-                                  </div>
-                                  <div style={{width:"6em"}} className="lh-sm">
-                                    
-                                  <Field name={`closes_at[${name}]`} type="number" min="0" max="23" className="form-control " placeholder="Opens"/>
-
-                                  </div>
+                                    <div className="mb-3">
+                          <label className="form-label">Select payment methods accepted in your dispensary</label>
+                          <div className="form-selectgroup">
+                          <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isVisaAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                  <img src={visaImg} style={{height:"2em"}}/>
+                                  <strong>VISA ACCEPTED</strong> 
                                 </div>
                               </div>
                             </label>
-                              ) )
-                            }
-                             
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isMastercardAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    <img src={mastercardImg} style={{height:"2em"}}/>
+                                    <strong>MASTERCARD ACCEPTED</strong> 
+                                </div>
+                              </div>
+                            </label>
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isAmericanexpressAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    <img src={AEImg} style={{height:"2em"}}/>
+                                    <strong>AMERICAN E. ACCEPTED</strong> 
+                                </div>
+                              </div>
+                            </label>
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isAtmAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    <img src={atmImg} style={{height:"2em", width:"3.5em"}}/>
+                                    <strong>ATM AVAILABLE</strong> 
+                                </div>
+                              </div>
+                            </label>
+                          </div>
+                        </div>
+
+                        </div>
 
 
-                           
 
 
 
@@ -275,115 +325,13 @@ function Create({ history }) {
 
 
 
-                                                
 
-                                                {/* <fieldset className="form-fieldset">
-                                                    <div className="row">
-                                                        <div className="col-md-6 col-xl-6">
-                                                            <label>Opens at</label>
-                                                            <Field name="opens_at" as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-                                                                <option value="">Select</option>
-                                                                <option value="0">0:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
-                                                                <option value="12">12:00</option>
-                                                                <option value="13">13:00</option>
-                                                                <option value="14">14:00</option>
-                                                                <option value="15">15:00</option>
-                                                                <option value="16">16:00</option>
-                                                                <option value="17">17:00</option>
-                                                                <option value="18">18:00</option>
-                                                                <option value="19">19:00</option>
-                                                                <option value="20">20:00</option>
-                                                                <option value="21">21:00</option>
-                                                                <option value="22">22:00</option>
-                                                                <option value="23">23:00</option>
-                                                            </Field>
-                                                            <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
-                                                        </div>
 
-                                                        
 
-                                                        <div className="col-md-6 col-xl-6">
-                                                            <label>Closes at</label>
-                                                            <Field name="closes_at" as="select" className={'form-control' + (errors.closes_at && touched.closes_at ? ' is-invalid' : '')} >
-                                                            <option value="">Select</option>
-                                                                <option value="0">0:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
-                                                                <option value="12">12:00</option>
-                                                                <option value="13">13:00</option>
-                                                                <option value="14">14:00</option>
-                                                                <option value="15">15:00</option>
-                                                                <option value="16">16:00</option>
-                                                                <option value="17">17:00</option>
-                                                                <option value="18">18:00</option>
-                                                                <option value="19">19:00</option>
-                                                                <option value="20">20:00</option>
-                                                                <option value="21">21:00</option>
-                                                                <option value="22">22:00</option>
-                                                                <option value="23">23:00</option>
-                                                            </Field>
-                                                            <ErrorMessage name="closes_at" component="div" className="invalid-feedback" />
-                                                        </div>
-                                                    
-                                                    </div>
-                                                    <br></br>
-                                                    <div className="form-selectgroup">
-                                                    <label className="form-selectgroup-item">
-                                                      <input type="checkbox" name="name" value="HTML" className="form-selectgroup-input"  />
-                                                      <span className="form-selectgroup-label">MONDAY</span>
-                                                    </label>
-                                                    <label className="form-selectgroup-item">
-                                                      <input type="checkbox" name="name" value="CSS" className="form-selectgroup-input" />
-                                                      <span className="form-selectgroup-label">TUESDAY</span>
-                                                    </label>
-                                                    <label className="form-selectgroup-item">
-                                                      <input type="checkbox" name="name" value="PHP" className="form-selectgroup-input" />
-                                                      <span className="form-selectgroup-label">WEDNESDAY</span>
-                                                    </label>
-                                                    <label className="form-selectgroup-item">
-                                                      <input type="checkbox" name="name" value="JavaScript" className="form-selectgroup-input" />
-                                                      <span className="form-selectgroup-label">THUSRDAY</span>
-                                                    </label>
-                                                    <label className="form-selectgroup-item">
-                                                      <input type="checkbox" name="name" value="CSS" className="form-selectgroup-input" />
-                                                      <span className="form-selectgroup-label">FRIDAY</span>
-                                                    </label>
-                                                    <label className="form-selectgroup-item">
-                                                      <input type="checkbox" name="name" value="PHP" className="form-selectgroup-input" />
-                                                      <span className="form-selectgroup-label">SATURDAY</span>
-                                                    </label>
-                                                    <label className="form-selectgroup-item">
-                                                      <input type="checkbox" name="name" value="JavaScript" className="form-selectgroup-input" />
-                                                      <span className="form-selectgroup-label">SUNDAY</span>
-                                                    </label>
-                                                  </div>
-                                                </fieldset> */}
-                                            </div>
-                                            <div className="col-md-6 col-xl-12">
-                                            
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col xl-8">
-                                    <div className="card-title">Set the location in the map</div>
+
+                                    <div className=" ">
+                                    
+                                    <h2>Set the location in the map</h2>
                          
                                          
                                           <div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
@@ -396,6 +344,99 @@ function Create({ history }) {
                                     </div>
                                 </div>
                             </div>
+
+                            
+                            <div className="col-md-6 col-xl-4 ">
+                            <fieldset class="form-fieldset" style={{padding:"1em"}}>
+                                <h3 className="">Hours of operation</h3>       
+                                {
+                                    days.map( (name, index) => (
+                               
+                            //     <label className="form-selectgroup-item flex-fill">
+                            //   <span>{name}: </span>
+                              <div style={{borderTop: "1px solid rgba(110,117,130,.2)"}} className=" row align-items-center p-3">
+                               
+                                <h4>{name}: </h4> 
+                                {/* <div style={{justifyContent:"flex-end",width:"100%"}} className="form-selectgroup-label-content d-flex align-items-center"> */}
+                             
+                                    
+                                  <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-3 col-xl-3">
+                                                            <label>Opens at</label>
+                                                            <Field name={`opens_at[${name}]`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
+                                                            <option value="">Select</option>
+                                                            <option value="12">12:00</option>
+                                                                <option value="1">1:00</option>
+                                                                <option value="2">2:00</option>
+                                                                <option value="3">3:00</option>
+                                                                <option value="4">4:00</option>
+                                                                <option value="5">5:00</option>
+                                                                <option value="6">6:00</option>
+                                                                <option value="7">7:00</option>
+                                                                <option value="8">8:00</option>
+                                                                <option value="9">9:00</option>
+                                                                <option value="10">10:00</option>
+                                                                <option value="11">11:00</option>
+                                                                
+                                                            </Field>
+                                                            <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
+                                                            
+                                                        </div>
+
+                                                        <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-2 col-xl-2">
+                                                        <label></label>
+                                                        <Field  name={`opens_at_type[${name}]`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
+                                                        <option value="">Select</option>
+                                                                <option value="AM">AM</option>
+                                                                <option value="PM">PM</option>
+                                                                
+                                                            </Field>
+                                                            <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
+                                                      </div>
+                                                            
+                                                    
+                                                      
+                                                      <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-md-2 col-xl-2"></div>
+
+                             
+                                  {/* <div style={{width:"12em"}} className="lh-sm"> */}
+                                    
+                                  <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-3 col-xl-3">
+                                                            <label>Closes at</label>
+                                                            <Field name={`closes_at[${name}]`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
+                                                            <option value="">Select</option>
+                                                            <option value="12">12:00</option>
+                                                                <option value="1">1:00</option>
+                                                                <option value="2">2:00</option>
+                                                                <option value="3">3:00</option>
+                                                                <option value="4">4:00</option>
+                                                                <option value="5">5:00</option>
+                                                                <option value="6">6:00</option>
+                                                                <option value="7">7:00</option>
+                                                                <option value="8">8:00</option>
+                                                                <option value="9">9:00</option>
+                                                                <option value="10">10:00</option>
+                                                                <option value="11">11:00</option>
+                                                                
+                                                            </Field>
+                                                            <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
+                                                        </div>
+                                                        <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-2 col-xl-2">
+                                                        <label></label>
+                                                        <Field  name={`closes_at_type[${name}]`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
+                                                        <option value="">Select</option>
+                                                                <option value="AM">AM</option>
+                                                                <option value="PM">PM</option>
+                                                                
+                                                            </Field>
+                                                            <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
+                                                      </div>
+
+                                  </div>
+                       
+                              ) )
+                            }</fieldset>
+                             </div>
+
                             <div className="card-footer text-right">
                               <div className="d-flex" style={{justifyContent:"space-between"}}>
                                 <a href="#" className="btn btn-link">Cancel</a>
@@ -408,12 +449,14 @@ function Create({ history }) {
                             // isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
                             
                             }
-                            Send data
+                            Save
 
 
 
                         </button>
                               </div>
+                            </div>
+                            </div>
                             </div>
                         </Form>
                     </div>

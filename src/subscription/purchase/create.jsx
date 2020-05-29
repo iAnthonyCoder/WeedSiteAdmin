@@ -73,7 +73,7 @@ function Create(props) {
               <Form>
               <div className="card-body">
                   <div className="form-group mb-3 row">
-                    <label className="form-label col-3 col-form-label">Transaction date</label>
+                    <label className="form-label col-3 col-form-label">Date</label>
                     <div className="col">
                         <Field name="date" type="date" className={'form-control' + (errors.date && touched.date ? ' is-invalid' : '')} />
                         <ErrorMessage name="date" component="div" className="invalid-feedback" />
@@ -81,7 +81,7 @@ function Create(props) {
                     </div>
                     <Field name="plan" type="hidden" />
                   <div className="form-group mb-3 row">
-                    <label className="form-label col-3 col-form-label">Reference</label>
+                    <label className="form-label col-3 col-form-label">Reference #</label>
                     <div className="col">
                         <Field name="reference" type="reference" placeholder="Input the reference number" className={'form-control' + (errors.reference && touched.reference ? ' is-invalid' : '')} />
                         <ErrorMessage name="reference" component="div" className="invalid-feedback" />
@@ -95,7 +95,7 @@ function Create(props) {
                     </div>
                   </div>
                   <div className="form-group mb-3 row">
-                  <label className="form-label col-3 col-form-label">Method</label>
+                  <label className="form-label col-3 col-form-label">Payment method</label>
                   <div className="col">
                       <Field name="method" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.method && touched.method ? ' is-invalid' : '')} >
                         <option value="">Select</option>
@@ -107,7 +107,7 @@ function Create(props) {
                       </div>
                   </div>
                   <div className="form-group mb-3 row">
-                    <label className="form-label col-3 col-form-label">Transaction support</label>
+                    <label className="form-label col-3 col-form-label">Transaction confirmation</label>
            
                     <div className="col">
                           <div className="form-file">
@@ -149,7 +149,7 @@ function Create(props) {
                             isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
                             
                             }
-                            Send data
+                            Save
                         </button>
                               </div>
                             </div>

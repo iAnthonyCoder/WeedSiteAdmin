@@ -1,41 +1,29 @@
-import React, {useState,useEffect} from 'react';
-import { Link } from 'react-router-dom';
-import { productService, categoryService, brandService, alertService } from '../../_services';
+import React,{ useEffect, useState } from 'react';
 import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components';
 import { Create } from './create';
-import $ from "jquery"
-import { Update } from './update'
-import { history } from '../../_helpers'
+import { Update } from './update';
+import { parentcategoryService, alertService } from '../../_services';
+import $ from 'jquery';
 
 
 function Table({ match }) {
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [items, setItems] = useState("");
-    const [categories, setCategories] = useState("");
-    const [brands, setBrands] = useState("");
-    
-    const [filtering, setFiltering] = useState("");
+    const { path } = match;
     const [scopedItem, setScopedItem] = useState("")
+    const [items, setItems] = useState("")
+    const [mutatedItems, setMutatedItems] = useState("")
     const [fetched, setFetched] = useState(false);
+    const defaultAvatar = "./static/user.png";
     const columns = [{
       dataField: 'name',
       text: 'Name',
-      sort: true,
-      formatter: (rowContent, row) => {
-        return (    
-          <div className="d-flex lh-sm py-1 align-items-center">
-            <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture:''}")`}}></span>
-            <div className="flex-fill"><div className="strong">{row.name}</div></div>
-          </div>
-        )
-      }
-    }, {
-      dataField: 'category.name',
-      text: 'Category',
       sort: true
     }, {
-      dataField: 'brand.name',
-      text: 'Brand',
+      dataField: '_id',
+      text: 'ID',
+      sort: true
+    }, {
+      dataField: 'description',
+      text: 'Description',
       sort: true
     }, {
       dataField: 'slug',
@@ -44,73 +32,18 @@ function Table({ match }) {
       }
     ];
 
-
-
-
-    const fetchItems = () => {
-      categoryService.getAll().then((res) => {setCategories(res)})
-      brandService.getAll().then((res) => {setBrands(res)})
-      productService.getAll().then((res) => {setItems(res);setMutatedItems(res);setFetched(true)})
-      
+    const fetch = async () => {
+      await parentcategoryService.getAll()
+        .then((res)=>{
+          setItems(res)
+          setMutatedItems(res)
+          setFetched(true)
+        })
     }
-
     
-    
-    // const setActive = (e) => {
-    //   const el=e.target;
-    //   console.log(el);
-    //   var cusid_ele = document.getElementsByClassName('categoryFilter');
-    //   for (var i = 0; i < cusid_ele.length; ++i) {
-    //     var item = cusid_ele[i];  
-    //     if(item.classList.contains("active")){item.classList.remove("active")}
-    //   }
-    //   el.classList.add("active");
-    // }
-
-    const handleFilter = (e) => {
-      const { name, value } = e.target;
-      setFiltering({...filtering, [name]:value })
-    }
-
-    // const handleBrandFilter = (e) => {
-    //   const value = e.target.value;
-    //   setCategoryFilter(value)
-    // }
-
-    // const handleFilters = async (e) => {
-    //       setSearchMode(!searchMode)
-       
-    //       var searchResult = await products.map((product)=>{
-    //         return  product.category.id
-    //       });
-    //       setMutatedProducts(searchResult); 
-    //   }
-
-    // const filterProducts = async () => {
-    //   var filterRules = [];
-    //   var searchResult="";
-    //   for (var n in filtering) {
-    //     if (filtering.hasOwnProperty(n)) {
-    //       filterRules.push(filtering[n])
-    //     }
-    //   }
-    
-
-     
-    //   var searchResult = await products.map((product)=>{
-    //     return  product.category.id.includes(filterRules)
-    //   })
-    //   console.log(searchResult);
-    // }
-   
-    // const filterProducts = async (filterRules) => {
-
-    //      var searchResult = await products.filter((product)=>{
-         
-    //         return  product.brand._id.includes(filtering) || product.category._id.includes(filtering)
-    //       });
-    //     }
-      
+    useEffect(() => {
+      fetch()
+    }, [])
     
     const handleSearch = async (e) => {
       const { value } = e.target;
@@ -121,90 +54,55 @@ function Table({ match }) {
         var searchResult = await items.filter((item)=>{
           return  item.name.toLowerCase().includes(value.toLowerCase()) ||
                   item.description.toLowerCase().includes(value.toLowerCase()) ||
-                  item.category.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.brand.name.toLowerCase().includes(value.toLowerCase())
+                  item._id.toLowerCase().includes(value.toLowerCase())
         });
         setMutatedItems(searchResult); 
       }
     }
 
-  
-
-    // useEffect(() => {
-    //   var filterRules = [];
-    //   var searchResult="";
-    //   for (var n in filtering) {
-    //     if (filtering.hasOwnProperty(n)) {
-    //       filterRules.push(filtering[n])
-    //     }
-    //   }
-
-    //   filterProducts(filterRules);
-    // }, [filtering])
-
-
-
     function addNew(item){
-  
       setItems([...items, item])
       setMutatedItems([...items, item]); 
     }
-
-
+    function updateOne(_id, newItem){
+      setItems(items.map(item => (item._id === _id ? newItem : item)))
+      setMutatedItems(items.map(item => (item._id === _id ? newItem : item)));
+    }
 
     function deleteByID(id){
+  
       if(window.confirm("Are you sure do you want to delete this item?")){
-        productService.delete(id).then(()=>{
+        parentcategoryService.delete(id).then(()=>{
           let filteredState = items.filter( item => item._id !== id );
           setItems(filteredState)
           setMutatedItems(filteredState)
           alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
-        });
+        })
       };     
     }
 
     function scopeItem(object){
       setScopedItem(object);
-    
-      $("#modal-update-product").modal("show");
+      $("#modal-update").modal("show");
     }
-    
-    function updateOne(_id, newItem){
-      setItems(items.map(item => (item._id === _id ? newItem : item)))
-      setMutatedItems(items.map(item => (item._id === _id ? newItem : item)));
-      $("#modal-update-product").modal("hide");
-    }
-
-    const details = (id) => {
-
-      history.push(`products/${id}`)
-    }
-
-    
-
-    useEffect(() => {
-      fetchItems();
-    }, [])
-
 
     function renderTable(){
       return  <div className="card">
-                <TableCardHeader title="Products" handleSearch={handleSearch} />
+                <TableCardHeader title="Parent categories" handleSearch={handleSearch} />
                   <div className="table-responsive">
-                    <SuperTable items={mutatedItems} details={details} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
+                    <SuperTable items={mutatedItems} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
                   </div>
               </div>
     }
   
-    if(!fetched) return <LoadingSpinner /> 
     return (
       <>
         <Create addNew={addNew}/>
         <Update updateOne={updateOne} object={scopedItem}/>
-        <PageHeader title="Admin/Products" link="create" nameButton="Add product" subtitle="Products list" toggle="modal" target="#modal-new-product" />
+        <PageHeader title="Admin/Parent categories" link="create" nameButton="Add parent category" subtitle="Parent categories list" toggle="modal" target="#modal-create" />
         <div className="box">
         {
-          renderTable()     
+          (fetched) ? renderTable() : <LoadingSpinner />       
         }
         </div>
       </>
@@ -260,7 +158,7 @@ export { Table };
 // import { PageHeader, NoResults, TableCardHeader } from '../../_components';
 // import { Create } from './create';
 // import { Update } from './update';
-// import { categoryService, alertService } from '../../_services';
+// import { parentcategoryService, alertService } from '../../_services';
 // import $ from 'jquery';
 // import Pagination from "react-js-pagination";
 
@@ -275,7 +173,7 @@ export { Table };
 //     const [itemsPerPage, setItemsPerPage] = useState(8);
 
 //     const fetch = async () => {
-//       await categoryService.getAll()
+//       await parentcategoryService.getAll()
 //         .then((res)=>{
 //           setItems(res)
 //           setMutatedItems(res)
@@ -341,7 +239,7 @@ export { Table };
 
 //     function deleteByID(id, name){
 //       if(window.confirm("Are you sure do you want to delete "+name+"?")){
-//         categoryService.delete(id).then(()=>{
+//         parentcategoryService.delete(id).then(()=>{
 //           let filteredState = items.filter( item => item._id !== id );
 //           setItems(filteredState)
 //           setMutatedItems(filteredState)

@@ -53,9 +53,8 @@ function Edit(props) {
         setStatus();
         packageService.update(props.match.params.id, fields)
             .then((newItem) => {
-
-              setItems(items.map(item => (item._id === newItem._id ? newItem : item)))
-               resetForm({});
+                setItems(items.map(item => (item._id === newItem._id ? newItem : item)))
+                resetForm({});
                 alertService.success('Items edited!', { keepAfterRouteChange: true });
                 history.push("/product/mylist")
             })
@@ -170,7 +169,7 @@ function Edit(props) {
                           <a href="#" className="btn btn-link" data-dismiss="modal"  onClick={handleReset}>Cancel</a>
                           <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
                             {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
-                            Send data
+                            Save
                           </button>
                       </div>
                     </div>
@@ -226,7 +225,7 @@ export { Edit };
                             isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
                             
                             }
-                            Send data
+                            Save
                         </button>
               </div>
             

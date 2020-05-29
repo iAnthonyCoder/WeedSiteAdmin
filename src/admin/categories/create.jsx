@@ -1,24 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery';
-import { categoryService, alertService } from '../../_services';
+import { categoryService, parentcategoryService, alertService } from '../../_services';
 
 function Create(props) {
    
-
+	const [parentcategories, setParentcategories] = useState("")
+	
     const initialValues = {
         name: '',
-        description: '',
-    };
+		description: '',
+		parentcategory: '',
+	};
 
-
+	const fetchParentCategories = async () => {
+		parentcategoryService.getAll().then(result => {
+			setParentcategories(result)
+		})
+	}
+	
+	useEffect(() => {
+		fetchParentCategories();
+	}, [])
 
     const validationSchema = Yup.object().shape({
         name: Yup.string()
             .required('Name is required'),
         description: Yup.string()
-            .required('Description is required'),
+			.required('Description is required'),
+			
     });
 
     const getSlug = (text) => {
@@ -34,7 +45,7 @@ function Create(props) {
       
         categoryService.create(fields)
             .then((data) => {
-              resetForm({});
+              	resetForm({});
                 alertService.success('Item saved successfully', { keepAfterRouteChange: true });
                 $("#modal-create").modal("hide");
                 props.addNew(data.payload);
@@ -59,6 +70,19 @@ function Create(props) {
              					</button>
            					</div>
            					<div className="modal-body">
+
+							   <label className="form-label">Parent category</label>
+							   	<Field name="parentcategory" as="select" className={'form-control' + (errors.parentcategories && touched.parentcategories ? ' is-invalid' : '')} >      
+								   <option value="">Select</option>
+									{
+										parentcategories && parentcategories.map( parentcategory => 
+											<option value={parentcategory._id}>{parentcategory.name}</option>
+										)
+									}  
+						  		</Field>
+								  <ErrorMessage name="parentcategories" component="div" className="invalid-feedback" />
+								  <small className="form-hint"><strong>Leave this empty if this category doesn't have a parent category.</strong></small>
+
              					<div className="row mb-3 align-items-end">
                						{/* <div className="col-auto">
                						  <a href="#" className="avatar avatar-upload rounded">
@@ -85,7 +109,7 @@ function Create(props) {
      								<a href="#" className="btn btn-link"  onClick={handleReset}>Cancel</a>
      								<button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
      								    {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
-     								    Send data
+     								    Save
      								</button>
    								</div>
  							</div>
@@ -205,7 +229,7 @@ export { Create };
 
 //     <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
 //         {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
-//         Send data
+//         Save
 //     </button>
 //   </div>
 // </div>

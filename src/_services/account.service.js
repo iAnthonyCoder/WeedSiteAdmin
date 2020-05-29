@@ -1,12 +1,12 @@
 import { BehaviorSubject } from 'rxjs';
-import { getApi } from './../_helpers/config'
+import { getPrivateApi, getPublicApi } from './../_helpers/config'
 
 import { fetchWrapper, history } from '../_helpers';
 
 const userSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('user')));
 
-const baseUrl = getApi;
-const accountUrl = getApi+"users";
+const baseUrl = getPublicApi;
+const accountUrl = getPrivateApi+"users";
 
 export const accountService = {
     login,
@@ -18,6 +18,7 @@ export const accountService = {
     resetPassword,
     getAll,
     getById,
+    resendToken,
     updateOwn,
     create,
     update,
@@ -28,17 +29,16 @@ export const accountService = {
 };
 
 function login(email, password) {
-    console.log(`${baseUrl}auth/login`)
     return fetchWrapper.post(`${baseUrl}auth/login`, { email, password })
-        .then(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
-            
-            // publish user to subscribers
-            userSubject.next(user);
-
-            return user;
-        });
+    .then(user => {
+        // store user details and jwt token in local storage to keep user logged in between page refreshes
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // publish user to subscribers
+        userSubject.next(user);
+        
+        return user;
+    });
 }
 
 function logout() {
@@ -46,6 +46,10 @@ function logout() {
     localStorage.removeItem('user');
     userSubject.next(null);
     history.push('/account/login');
+}
+
+function resendToken(params) {
+    return fetchWrapper.post(`${baseUrl}auth/resend`, params)
 }
 
 function register(params) {
@@ -68,9 +72,6 @@ function resetPassword(token, password) {
     return fetchWrapper.post(`${baseUrl}password/reset`, { token, password });
 }
 
-
-
-
 function getAll() {
     return fetchWrapper.get(accountUrl);
 }
@@ -84,42 +85,43 @@ function create(params) {
 }
 
 function updateOwn(id, params) {
-   
+    
     return fetchWrapper.putUserImg(`${accountUrl}/own/${id}`, params)
-        .then(user => { 
-            // update stored user if the logged in user updated their own record
-            if (user._id === userSubject.value._id) {
-                
-                // update local storage
-                user = { ...userSubject.value, ...user };
-              
-                localStorage.setItem('user', JSON.stringify(user));
-
-                // publish updated user to subscribers
-                userSubject.next(user);
-            }
-            return user;
-        });
+    .then(user => { 
+        // update stored user if the logged in user updated their own record
+        if (user._id === userSubject.value._id) {
+            
+            // update local storage
+            user = { ...userSubject.value, ...user };
+            
+            localStorage.setItem('user', JSON.stringify(user));
+            
+            // publish updated user to subscribers
+            userSubject.next(user);
+        }
+        return user;
+    });
 }
 
 function update(id, params) {
-   
+    
     return fetchWrapper.putUserImg(`${accountUrl}/${id}`, params)
-        .then(user => { 
-            // update stored user if the logged in user updated their own record
-            if (user._id === userSubject.value._id) {
-                
-                // update local storage
-                user = { ...userSubject.value, ...user };
-              
-                localStorage.setItem('user', JSON.stringify(user));
-
-                // publish updated user to subscribers
-                userSubject.next(user);
-            }
-            return user;
-        });
+    .then(user => { 
+        // update stored user if the logged in user updated their own record
+        if (user._id === userSubject.value._id) {
+            
+            // update local storage
+            user = { ...userSubject.value, ...user };
+            
+            localStorage.setItem('user', JSON.stringify(user));
+            
+            // publish updated user to subscribers
+            userSubject.next(user);
+        }
+        return user;
+    });
 }
+
 
 
 function updateIsActive(id, params) {

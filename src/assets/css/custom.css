@@ -22,7 +22,10 @@
     .badge-success{
         background-color: rgb(38, 114, 185) !important;
     }
-
+    #pageDropDown{
+        display: none !important;
+      }
+     
     .close{
         cursor: pointer;
     }

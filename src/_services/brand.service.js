@@ -1,7 +1,7 @@
 import { fetchWrapper } from '../_helpers';
-import { getApi } from '../_helpers/config';
+import { getPrivateApi } from '../_helpers/config';
 
-const baseUrl = getApi+"brands";
+const baseUrl = getPrivateApi+"brands";
 
 
 export const brandService = {
@@ -10,6 +10,7 @@ export const brandService = {
     create,
     update,
     getByUserId,
+    getProductsByBrandId,
     delete: _delete,
 };
 
@@ -21,6 +22,8 @@ function getAll() {
 function getById(id) {
     return fetchWrapper.get(`${baseUrl}/${id}`);
 }
+
+function getProductsByBrandId(id) {return fetchWrapper.get(`${baseUrl}/${id}/products/`);}
 
 function getByUserId(id) {
    

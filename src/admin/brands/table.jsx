@@ -3,6 +3,7 @@ import { PageHeader, TableCardHeader, SuperTable, LoadingSpinner } from '../../_
 import { Create } from './create';
 import { Update } from './update';
 import { brandService, alertService } from '../../_services';
+import { history } from '../../_helpers'
 import $ from 'jquery';
 const _thisService = brandService;
 
@@ -98,6 +99,10 @@ function Table({ match }) {
       	};     
     }
 
+    const details = (id) => {
+      history.push(`brands/${id}`)
+    }
+
     function scopeItem(object){
       	setScopedItem(object);
       	$("#modal-update").modal("show");
@@ -107,7 +112,7 @@ function Table({ match }) {
 		return  <div className="card">
 	        		<TableCardHeader title="Brands" handleSearch={handleSearch} />
 	              	<div className="table-responsive">
-	                	<SuperTable items={mutatedItems} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
+	                	<SuperTable items={mutatedItems} scopeItem={scopeItem} details={details} deleteByID={deleteByID} columns={columns}/>
 	              	</div>
 	          	</div>
 	}

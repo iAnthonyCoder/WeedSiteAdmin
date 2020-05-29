@@ -152,7 +152,7 @@ function Create({ history }) {
                             <ErrorMessage name="description" component="div" className="invalid-feedback" />
                         </div>
                     </div>
-                    <small className="form-hint">A moderator will review your request as soon as possible. This may takes up to 24h. <br></br>Sending this request you are automatically acepting the terms described in the next card.</small>
+                    <small className="form-hint">A moderator will review your request as soon as possible. This may takes up to 24h. <br></br>By adding sending this form you agree to all Weedzly.com terms and services.</small>
               </div>
               
 
@@ -176,7 +176,7 @@ function Create({ history }) {
                             isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
                             
                             }
-                            Send data
+                            Save
                         </button>
                               </div>
                             </div>
@@ -190,14 +190,6 @@ function Create({ history }) {
                 </Form>
             </div>
         </div>
-        <div className="col-md-6">
-        <div className="card d-flex flex-column">
-          <div className="card-body d-flex flex-column">
-            <h3 className="card-title">Terms and condition</h3>
-            <div className="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit enim voluptatum ratione doloremque atque quasi inventore ipsum harum? Nam, excepturi. Facere voluptate voluptates dolores quasi officia consequatur voluptatem quo repellendus. Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit sed doloribus dignissimos, ea hic ullam delectus, eligendi suscipit labore numquam ratione! Ea aspernatur rerum quae aperiam officia vel odio aliquid.</div>
-          </div>
-        </div>
-      </div>
       </div>
         )}
         </Formik>
