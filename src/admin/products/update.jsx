@@ -30,17 +30,19 @@ function Update(props) {
     const [brands, setBrands] = useState("");
 
     const picturesInitialState=[];
-    const [pictures, setPictures] = useState(picturesInitialState)
+	const [pictures, setPictures] = useState(picturesInitialState)
 
 	const removePicture = (pictureObj, pictures, setFieldValue) => {
 	    let filteredState = pictures.filter( picture => pictureObj !== picture );
         setFieldValue('picture',filteredState)
     }
 
-    const removePictures = (pictureObj) => {
-        let filteredState = pictures.filter( picture => pictureObj !== picture );
-      setPictures(filteredState)
-    }
+    
+
+	const removePictures = (pictureObj) => {
+		let filteredState = pictures.filter( picture => pictureObj !== picture );
+        setPictures(filteredState)
+	}
   
     const widget = window.cloudinary.createUploadWidget({
         cloudName: 'timj111',
@@ -52,7 +54,7 @@ function Update(props) {
         (error, result) => { 
             if (!error && result && result.event === "success") { 
 	  		    let url = result.info.url
-	  			setPictures([pictures.concat(url)])
+	  			setPictures(pictures.concat(url))
 	  		}
     });
 
