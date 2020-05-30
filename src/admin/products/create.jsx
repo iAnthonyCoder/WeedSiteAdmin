@@ -169,7 +169,7 @@ function Create(props) {
 									pictures && pictures.map( picture =>
 										<div className="col-auto">
 											<span style={{position: "absolute",color: "red",zIndex: "1",borderRadius: "20px",margin: "-10px"}}>
-												<button onClick={()=>{removePicture(picture)}} type="button" style={{borderRadius:"20px",width:"30px", height:"30px"}} class="btn btn-danger">x</button>
+												<button onClick={()=>{removePicture(picture)}} type="button" style={{borderRadius:"20px", padding: "0",width:"30px", height:"30px"}} class="btn btn-danger">x</button>
 											</span>
                						  		<a style={{width:"80px", border:"1px solid silver", height:"80px",backgroundSize:"cover",backgroundPositionX: "center", backgroundImage: `url(${picture})`}} className="avatar avatar-upload rounded">
                						  		</a>
@@ -192,7 +192,7 @@ function Create(props) {
             	        				<div className="mb-3">
             	          					<label className="form-label">Category</label>
             	          					<Field name="category" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.category && touched.category ? ' is-invalid' : '')} >
-            	          					    <option value="">Seleccione</option>
+            	          					    <option value="">Select</option>
             	          					    {
             	          					      categories && categories.map(category => <option value={category._id}>{category.name}</option>)
             	          					    }
@@ -204,7 +204,7 @@ function Create(props) {
             	        				<div className="mb-3">
             	          					<label className="form-label">Brand</label>
             	        					<Field name="brand" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.brand && touched.brand ? ' is-invalid' : '')} >
-            	            				  <option value="">Seleccione</option>		
+            	            				  <option value="">Select</option>		
             	            				  {
             	            				    brands && brands.map(brand => <option value={brand._id}>{brand.name}</option>)
             	            				  }

@@ -103,7 +103,7 @@ function Create({ history }) {
                   <label className="form-label col-3 col-form-label">Category</label>
                   <div className="col">
                       <Field name="category" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.category && touched.category ? ' is-invalid' : '')} >
-                          <option value="">Seleccione</option>
+                          <option value="">Select</option>
                           {
                             categories && categories.map(category => <option value={category._id}>{category.name}</option>)
                           }
@@ -115,7 +115,7 @@ function Create({ history }) {
                     <label className="form-label col-3 col-form-label">Brand</label>
                     <div className="col">
                     <Field name="brand" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.brand && touched.brand ? ' is-invalid' : '')} >
-                          <option value="">Seleccione</option>
+                          <option value="">Select</option>
 
                           {
                             brands && brands.map(brand => <option value={brand._id}>{brand.name}</option>)
