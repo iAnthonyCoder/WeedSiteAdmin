@@ -32,11 +32,11 @@ function getByUserId(id) {
 })}
 
 function create(params) {
-    return fetchWrapper.postMultiBrand(baseUrl, params);
+    return fetchWrapper.post(baseUrl, params);
 }
 
 function update(id, params) {
-    return fetchWrapper.putBrandWithImage(`${baseUrl}/${id}`, params)
+    return fetchWrapper.put(`${baseUrl}/${id}`, params)
 }
 
 function _delete(id) {

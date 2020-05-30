@@ -24,7 +24,7 @@ function Table({ match }) {
       formatter: (rowContent, row) => {
         return (    
           <div className="d-flex lh-sm py-1 align-items-center">
-            <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture:''}")`}}></span>
+            <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture[0]:''}")`}}></span>
             <div className="flex-fill"><div className="strong">{row.name}</div></div>
           </div>
         )

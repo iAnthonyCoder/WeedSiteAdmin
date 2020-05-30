@@ -73,7 +73,6 @@ function Update(props) {
          		<div className="modal modal-blur fade" id="modal-update" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
          				<div className="modal-content">
-							 {console.log(initialValues)}
            					<div className="modal-header">
              					<h5 className="modal-title">Manage category</h5>
             					<button type="button" className="close" data-dismiss="modal" aria-label="Close">

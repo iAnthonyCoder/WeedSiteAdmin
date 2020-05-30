@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery';
@@ -6,14 +6,30 @@ import { brandService, alertService } from '../../_services';
 
 function Update(props) {
    
+	const pictureInitialState=""
+	const [picture, setPicture] = useState(pictureInitialState)
 
     const initialValues = {
     	name: props.object.name,
     	description: props.object.description,
     	_id:props.object._id,    
-    };
+	};
+	
+	const widget = window.cloudinary.createUploadWidget({
+        cloudName: 'timj111',
+        multiple: false, 
+        uploadPreset: 'pzmxiahe'}, 
+        (error, result) => { 
+            if (!error && result && result.event === "success") { 
+				setPicture(result.info.url)
+			}
+		});
 
-    const [picture, setPicture] = useState("props.object.picture")
+
+    function showWidget(){
+        widget.open()
+    }
+    
 
     const validationSchema = Yup.object().shape({
         name: Yup.string()
@@ -29,6 +45,7 @@ function Update(props) {
     };
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
+		fields.picture=picture;
         setStatus();
         fields.slug=getSlug(fields.name);
         brandService.update(fields._id,fields)
@@ -48,6 +65,7 @@ function Update(props) {
     	<Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize >
         {({ errors, touched, setFieldValue, isSubmitting }) => (
         	<Form>
+				{console.log(props)}
          		<div className="modal modal-blur fade" id="modal-update" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
          				<div className="modal-content">
@@ -60,7 +78,7 @@ function Update(props) {
            					<div className="modal-body">
              					<div className="row mb-3 align-items-end">
                 					<div className="col-auto">
-                 						<div   style={{width:"80px", border:"1px solid silver", height:"80px",backgroundSize:"cover", backgroundImage: `url(${props.object.picture})`}}></div>
+                 						<div onClick={showWidget}  style={{width:"80px", border:"1px solid silver", cursor:"pointer", height:"80px",backgroundSize:"cover", backgroundImage: `url(${(picture)?picture:props.object.picture})`}}></div>
                						</div> 
                						<div className="col">
                							<label className="form-label">Name</label>
@@ -75,20 +93,11 @@ function Update(props) {
                  						<ErrorMessage name="description" component="div" className="invalid-feedback" />
              						</div>
            						</div>
-           						<div className="mb-3">
-             						<div>
-             							<label className="form-label">Picture</label>
-          		 						<input id="picturea" name="picture" type="file" onChange={(event) => {
-                    						setFieldValue("picture", event.currentTarget.files[0]);
-                  								}} className="form-label col-3 col-form-label" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')}/>
-                  							<ErrorMessage name="brand" component="div" className="invalid-feedback" />
-                  						<small className="form-hint">
+           						<small className="form-hint">
               								Leave it empty if you don't want to update the preview image.
 											<br></br>
               								If you add a new one, you will see changes in the next refresh.
             							</small>
-                  					</div>
-           						</div>
                					<Field name="_id" type="hidden"></Field>
 							 </div>
          					<div className="card-footer text-right">

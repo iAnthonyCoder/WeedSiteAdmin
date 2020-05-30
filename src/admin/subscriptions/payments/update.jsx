@@ -60,7 +60,7 @@ function Update(props) {
            <div className="modal-body">
              <div className="row mb-3 align-items-end">
                <div className="col">
-               <label className="form-label">Method</label>
+               <label className="form-label">Payment Method</label>
                <input name="name" readOnly type="text" value={props.object.method}  className={'form-control'} />
                </div>
              </div>
@@ -73,7 +73,7 @@ function Update(props) {
 
              <div className="row mb-3 align-items-end">
                <div className="col">
-               <label className="form-label">Reference</label>
+               <label className="form-label">Reference #</label>
                <input name="name" readOnly type="text" value={props.object.reference}  className={'form-control'} />
                </div>
              </div>
@@ -82,7 +82,7 @@ function Update(props) {
 
              <div className="row mb-3 align-items-end">
                <div className="col">
-               <label className="form-label">Support</label>
+               <label className="form-label">Confirmation</label>
                <a target="_blank" href={props.object.picture}>SEE THE IMAGE</a>
                </div>
              </div>
@@ -120,8 +120,8 @@ function Update(props) {
          </div>
          <div className="card-footer text-right">
    <div className="d-flex">
-     <a href="#" className="btn btn-link">Cancel</a>
-     <button type="submit" onClick={(()=>handleStatus("REJECTED"))}  className="btn btn-danger ml-auto">Decline</button>
+     {/* <a href="#" className="btn btn-link">Cancel</a> */}
+     <button type="submit" onClick={(()=>handleStatus("REJECTED"))}  className="btn btn-danger ">Decline</button>
      <button type="submit" onClick={(()=>handleStatus("ACEPTED"))}  className="btn btn-primary ml-auto">
          
          Approve

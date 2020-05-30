@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery';
@@ -6,11 +6,29 @@ import { brandService, alertService } from '../../_services';
 
 function Create(props) {
    
-
+	const pictureInitialState=''
+	const [picture, setPicture] = useState(pictureInitialState)
+	
     const initialValues = {
         name: '',
-        description: '',
-    };
+		description: '',
+	};
+	
+	const widget = window.cloudinary.createUploadWidget({
+        cloudName: 'timj111',
+        multiple: false, 
+        uploadPreset: 'pzmxiahe'}, 
+        (error, result) => { 
+			console.log(result)
+            if (!error && result && result.event === "success") { 
+				setPicture(result.info.url)
+			}
+        });
+
+
+    function showWidget(){
+        widget.open()
+    }
     
 
     const validationSchema = Yup.object().shape({
@@ -28,7 +46,8 @@ function Create(props) {
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-        fields.slug=getSlug(fields.name);
+		fields.slug=getSlug(fields.name);
+		fields.picture=picture;
       
         brandService.create(fields)
             .then((data) => {
@@ -58,12 +77,12 @@ function Create(props) {
            					</div>
            					<div className="modal-body">
              					<div className="row mb-3 align-items-end">
-               						{/* <div className="col-auto">
-               						  <a href="#" className="avatar avatar-upload rounded">
+               						 <div className="col-auto">
+               						  <a href="#" onClick={showWidget} style={{width:"80px", border:"1px solid silver", height:"80px",backgroundSize:"cover", backgroundImage: `url(${picture})`}} className="avatar avatar-upload rounded">
                						    <svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                						    <span className="avatar-upload-text">Add</span>
                						  </a>
-               						</div> */}
+               						</div> 
                						<div className="col">
                							<label className="form-label">Name</label>
                							<Field name="name" type="text" placeholder="Enter name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
@@ -77,22 +96,7 @@ function Create(props) {
                  						<ErrorMessage name="description" component="div" className="invalid-feedback" />
              						</div>
            						</div>
-           						<div className="mb-3 row">
-           							<div>
-           								<label className="form-label">Picture</label>
-                          				<input id="picture" name="picture" type="file" onChange={(event) => {
-                    						setFieldValue("picture", event.currentTarget.files[0]);
-                  							}} className="form-label col-3 col-form-label" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')}/>
-                  							<ErrorMessage name="brand" component="div" className="invalid-feedback" />
-                         
-                             					{/* <Field name="picture" accept="image/x-png,image/gif,image/jpeg" type="file" id="form-file-input" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')} />
-                             					 <label className="form-file-label" for="customFile">
-                             					  <span className="form-file-text">Choose file...</span>
-                             					  <span className="form-file-button">Browse</span>
-                             					</label> 
-                             					<ErrorMessage name="picture" component="div" className="invalid-feedback" /> */}
-                        			</div>
-                  				</div>
+
          					</div>
          					<div className="card-footer text-right">
    								<div className="d-flex">

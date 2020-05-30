@@ -7,6 +7,24 @@ import { history } from '../../_helpers'
 function Create(props) {
 
     const [plan, setPlan] = useState("")
+
+    const widget = window.cloudinary.createUploadWidget({
+      cloudName: 'timj111',
+      multiple: false, 
+      uploadPreset: 'djfefiwm'}, 
+      (error, result) => { 
+          if (!error && result && result.event === "success") { 
+              setPicture(result.info.url)
+          }
+      }
+  );
+
+  function showWidget(){
+      widget.open()
+  }
+
+  const pictureInitialState=false;
+  const [picture, setPicture] = useState(pictureInitialState)
    
     const initialValues = {
         method: '',
@@ -49,17 +67,23 @@ function Create(props) {
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-        purchaseService.create(fields)
-            .then(() => {
-               resetForm({});
-                alertService.success('Request sent!', { keepAfterRouteChange: true });
-                history.push('/subscription');
-            })
-            .catch(error => {
-                setSubmitting(false);
-                // alertService.error(error);
-            });
-    }
+        fields.picture=picture;
+        if(!picture){
+          alert("Confirmation of the transaction is required")
+          setSubmitting(false);
+        }else{
+          purchaseService.create(fields)
+              .then(() => {
+                 resetForm({});
+                  alertService.success('Request sent!', { keepAfterRouteChange: true });
+                  history.push('/subscription');
+              })
+              .catch(error => {
+                  setSubmitting(false);
+                  // alertService.error(error);
+              });
+        }
+    } 
 
     return (
         <Formik initialValues={initialValues} enableReinitialize validationSchema={validationSchema} onSubmit={onSubmit}>
@@ -108,22 +132,14 @@ function Create(props) {
                   </div>
                   <div className="form-group mb-3 row">
                     <label className="form-label col-3 col-form-label">Transaction confirmation</label>
-           
-                    <div className="col">
-                          <div className="form-file">
-                          <input id="picture" name="picture" type="file" onChange={(event) => {
-                    setFieldValue("picture", event.currentTarget.files[0]);
-                  }} className="form-label col-3 col-form-label" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')}/>
-                  <ErrorMessage name="brand" component="div" className="invalid-feedback" />
-                         
-                             {/* <Field name="picture" accept="image/x-png,image/gif,image/jpeg" type="file" id="form-file-input" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')} />
-                              <label className="form-file-label" for="customFile">
-                               <span className="form-file-text">Choose file...</span>
-                               <span className="form-file-button">Browse</span>
-                             </label> 
-                             <ErrorMessage name="picture" component="div" className="invalid-feedback" /> */}
-                          </div>
-                        </div>
+                    <div className="col-auto">
+               						  <a href="#" onClick={showWidget} style={{width:"80px", border:"1px solid silver", height:"80px",backgroundSize:"cover", backgroundImage: `url(${picture})`}} className="avatar avatar-upload rounded">
+               						    {!picture?<><svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+               						    <span className="avatar-upload-text">Add</span></>
+                               :""}
+               						  </a>
+               						</div> 
+                    
                   </div>
                     <small className="form-hint">A moderator will review your request as soon as possible. This may takes up to 24h. <br></br>Sending this request you are automatically acepting the terms described in the next card.</small>
               </div>

@@ -1,21 +1,46 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import {Image, Video, Transformation, CloudinaryContext} from 'cloudinary-react';
 
 import { accountService, alertService } from '../_services';
 
 function Update({ history }) {
     const user = accountService.userValue;
+  
+    const widget = window.cloudinary.createUploadWidget({
+        cloudName: 'timj111',
+        multiple: false, 
+        uploadPreset: 's9zss5g9'}, 
+        (error, result) => { 
+            if (!error && result && result.event === "success") { 
+                setPicture(result.info.url)
+
+                accountService.updateOwn(user._id, {picture:result.info.url})
+                .then(() => {
+                    alertService.success('Update successful', { keepAfterRouteChange: true });
+                })
+                .catch(error => {
+                    alertService.error(error);
+                });
+            }
+        }
+    );
+
+    function showWidget(){
+        widget.open()
+    }
+
+    
+
     const initialValues = {
         name: user.name,
         email: user.email,
-        isVerified: user.isVerified,
         birthdate: user.birthdate.split('T')[0],
-        password:"",
-        newPassword:"",
-        confirmPassword:""
-
     };
+
+    const [picture, setPicture] = useState(user.picture)
+
     const defaultAvatar = "./static/user.png";
     const validationSchema = Yup.object().shape({
         password: Yup.string()
@@ -33,7 +58,6 @@ function Update({ history }) {
     });
 
     function onSubmit(fields, { setStatus, setSubmitting }) {
-     
         setStatus();
         accountService.updateOwn(user._id, fields)
             .then(() => {
@@ -61,7 +85,7 @@ function Update({ history }) {
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ errors, touched, isSubmitting, setFieldValue }) => (
+            {({ errors, touched, isSubmitting,handleReset, setFieldValue }) => (
                 <Form >
              
                     <div className="row">
@@ -72,27 +96,13 @@ function Update({ history }) {
                                 </div>
                                     <div className="card-body">
                                     <div className="row">
-                                        <div className="col-md-2 col-sm-12">
-                                        <span className="avatar" style={{width:"8em", height:"8em", border:"1px solid #ceceff",backgroundImage: `url("${(user && user.picture)?user.picture:defaultAvatar}")`}}></span>
+                                        {console.log(user)}
+                                        <div onClick={showWidget} style={{cursor:"pointer"}} className="col-md-2 col-sm-12">
+                                        <span className="avatar" style={{width:"8em", height:"8em", border:"1px solid #ceceff",backgroundImage: `url("${(picture)?picture:defaultAvatar}")`}}></span>
                                         </div>
                                         <div className="col-md-4 col-sm-12">
                                             <p className="empty-title h3">Change profile picture</p>
-                                            <p className="h4">Leave this empty if you don't want to update it.</p>
-                                            <div className="form-file">
-
-                                              <input id="picture" name="picture" className="form-file-input" type="file" onChange={(event) => {
-                                               setFieldValue("picture", event.currentTarget.files[0]);
-                                             }} className="form-file-input" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')}/>
-                                             <ErrorMessage name="brand" component="div" className="invalid-feedback" />
-
-                                                {/* <input type="file" className="form-file-input" id="customFile"/> */}
-
-
-                                                {/* <label className="form-file-label" for="picture">
-                                                  <span className="form-file-text">Choose file...</span>
-                                                  <span className="form-file-button">Browse</span>
-                                                </label> */}
-                                              </div>
+                                            <p className="h4">Click on the picture to change.</p>
                                         </div>
                                         <div className="col-md-3 col-sm-12">
                                         <div className="mb-3">
@@ -129,7 +139,7 @@ function Update({ history }) {
                                         </div>
                                          {console.log(user)}
                                         {
-                                           (initialValues.isVerified)?(""):<div className="col-md-4 col-sm-12"> <div className="row">
+                                           (user.isVerified)?(""):<div className="col-md-4 col-sm-12"> <div className="row">
                                                 <div className="">
                                                     <a href="#" onClick={()=>{resendToken(initialValues.email)}} className="btn btn-primary btn-block">
                                                         Resend verification mail
@@ -180,17 +190,20 @@ function Update({ history }) {
                                            </div></div>
                                         <div className="col-md-3 offset-md-9 col-sm-12">
                                         <br></br>
-                                            <a href="#" className="btn btn-outline-info active btn-block">
+                                            {/* <a href="#" className="btn btn-outline-info active btn-block">
                                               Change password
-                                            </a>
+                                            </a> */}
                                         </div>  
                                     </div>
                                     <br></br>
                                 </div>
                                 <div className="card-footer text-right">
                                   <div className="d-flex">
-                                    <a href="#" className="btn btn-link">Cancel</a>
-                                    <button type="submit" className="btn btn-primary ml-auto">Save</button>
+                                    <button type="button" onClick={handleReset} className="btn btn-link">Reset Form</button>
+                                    <button type="submit" className="btn btn-primary ml-auto">
+                                        {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
+                                        Save
+                                    </button>
                                   </div>
                                 </div>
                             </form>

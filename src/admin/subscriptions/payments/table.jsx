@@ -51,6 +51,9 @@ function Table({ match }) {
     const fetch = async () => {
       await _thisService.getAll()
         .then((res)=>{
+          res.map(item => {
+            item.date=item.date.substr(0, item.date.indexOf("T"));
+          })
           setItems(res)
           setMutatedItems(res)
           setFetched(true)

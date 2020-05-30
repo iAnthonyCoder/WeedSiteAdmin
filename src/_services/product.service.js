@@ -46,11 +46,11 @@ function getByUserId(id) {
 })}
 
 function create(params) {
-    return fetchWrapper.postMulti(baseUrl, params);
+    return fetchWrapper.post(baseUrl, params);
 }
 
 function update(id, params) {
-    return fetchWrapper.putMulti(`${baseUrl}/${id}`, params)
+    return fetchWrapper.put(`${baseUrl}/${id}`, params)
 
 }
 

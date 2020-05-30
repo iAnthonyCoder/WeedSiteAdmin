@@ -86,7 +86,7 @@ function create(params) {
 
 function updateOwn(id, params) {
     
-    return fetchWrapper.putUserImg(`${accountUrl}/own/${id}`, params)
+    return fetchWrapper.put(`${accountUrl}/own/${id}`, params)
     .then(user => { 
         // update stored user if the logged in user updated their own record
         if (user._id === userSubject.value._id) {

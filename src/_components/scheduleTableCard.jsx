@@ -79,10 +79,27 @@ function ScheduleTableCard(props) {
           .catch(error => {
               setSubmitting(false);
           });
-   	}
+	   }
+	   
+	   	const sortDays = (data) => {
+			const sorter = {
+				"SUNDAY": 0, 
+				"MONDAY": 1,
+				"TUESDAY": 2,
+				"WEDNESDAY": 3,
+				"THURSDAY": 4,
+				"FRIDAY": 5,
+				"SATURDAY": 6,
+			}
+			const sorted = data.sort(function sortByDay(a, b) {
+				return sorter[a.day] - sorter[b.day];
+			});
+			return sorted;
+	   }
+
 
     useEffect(() => {
-    	setSchedule(props.schedule)
+		setSchedule(sortDays(props.schedule))
     	setTodayInfo(props.schedule);
     }, [])
 

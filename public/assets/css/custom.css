@@ -32,4 +32,8 @@
   #pageDropDown{
     display: none !important;
   }
- 
+  
+  #app-root > div > div > div.css-1uq9ies.ExpandedQueue.relative.left-0.right-0.bottom-0.top-0.w-100.h-100.flex.flex-column > div.css-yw8dyr.ExpandedQueue--FOOTER.flex.items-center.bg-window.bg-window-c.bt.bc-window-border.justify-between > div.flex.items-center > button:nth-child(2) > span,
+  #app-root > div > div > div.css-1uq9ies.ExpandedQueue.relative.left-0.right-0.bottom-0.top-0.w-100.h-100.flex.flex-column > div.css-yw8dyr.ExpandedQueue--FOOTER.flex.items-center.bg-window.bg-window-c.bt.bc-window-border.justify-between > div.flex.items-center > button.css-acnn1w.mr3.BUTTON.outline-0.flex-nowrap.items-center.justify-center.pointer.fw6.c-link.mr3{
+    display: none !important;
+  }

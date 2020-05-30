@@ -4,19 +4,26 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery'
 import { productService } from '../../_services';
-import { PageHeader } from '../../_components';
+import { PageHeader, LoaderBounce } from '../../_components';
 import ReactStars from 'react-rating-stars-component'
 
 function Details(props) {
    
+    const fetchedInitialState = false;
+    const scopedPictureInitialState = "";
     const [item, setItem] = useState("");
     const [retailers, setRetailers] = useState("");
+    const [fetched, setFetched] = useState(fetchedInitialState)
+    const [scopedPicture, setScopedPicture] = useState(scopedPictureInitialState)
 
 
     const fetchItems = () => {
       productService.getById(props.match.params.id).then((res) => {
         setItem(res.product);
         setRetailers(res.retailers);
+        setScopedPicture(res.product.picture[0])
+        setFetched(true)
+
       })
     }
 
@@ -24,7 +31,11 @@ function Details(props) {
       fetchItems();
     }, [])
 
+    const handleScopedPicture = picture => {
+        setScopedPicture(picture)
+    }
 
+    if(!fetched) return <LoaderBounce />
     return (
         <>
         	<PageHeader title="Admin/Products" subtitle="Product Details" />
@@ -38,8 +49,18 @@ function Details(props) {
                            <div className="row">
                                <div  className="col-lg-4">
                                     <div className="mb-3">
-                                        <img className="w-100 h-100 object-cover" src={item.picture}></img>
-                                    </div>  
+                                        <img className="w-100 h-100 object-cover" src={scopedPicture}></img>
+                                    </div> 
+                                    <div className="row">
+                                    {
+									    item.picture && item.picture.map( (picture) =>
+									    	<div key={picture} className="col-auto">
+									    		<a onClick={()=>handleScopedPicture(picture)} style={{width:"80px", border:"1px solid silver", height:"80px",backgroundSize:"cover",backgroundPositionX: "center", backgroundImage: `url(${picture})`}} className="avatar avatar-upload rounded">
+               						  		    </a>
+               						    	</div> 
+									    )
+								    } 
+                                    </div>
                                </div>
                                <div className="col-lg-8">
                                     <span className="badge badge-success">{(item.category)?item.category.name:""}</span>
