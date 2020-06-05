@@ -81,7 +81,7 @@ function Create({ history }) {
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        {({ errors, touched, setFieldValue, isSubmitting }) => (
+        {({ errors, touched, setFieldValue, handleReset, isSubmitting }) => (
         <div className="row">
         <div className="col-md-6">
             <div className="card">
@@ -148,7 +148,7 @@ function Create({ history }) {
                         <label className="form-label col-3 col-form-label">Description</label>
                         <div className="col">
                             
-                            <Field name="description" as="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "53.9792px"}}></Field>
+                            <Field name="description" as="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", height: "53.9792px"}}></Field>
                             <ErrorMessage name="description" component="div" className="invalid-feedback" />
                         </div>
                     </div>
@@ -168,7 +168,7 @@ function Create({ history }) {
 
                     <div className="card-footer text-right">
                               <div className="d-flex">
-                                <a href="#" className="btn btn-link">Cancel</a>
+                                <button type="button" onClick={handleReset} className="btn btn-link">Reset form</button>
                                 
                                 <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
                             {

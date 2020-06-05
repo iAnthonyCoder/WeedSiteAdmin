@@ -132,7 +132,7 @@ function ScheduleTableCard(props) {
                					<div className="col-6">
                						<label className="form-label">Opens at</label>
                						<Field name={`opens_at`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-                                                  
+									   <option value="">Select</option>
                                                             <option value="12">12:00</option>
                                                                 <option value="1">1:00</option>
                                                                 <option value="2">2:00</option>
@@ -151,7 +151,7 @@ function ScheduleTableCard(props) {
 								</div>
 								<div className="col-6">
 									<Field  name={`opens_at_type`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-                                 
+									<option value="">Select</option>
                                            <option value="AM">AM</option>
                                            <option value="PM">PM</option>
                                            
@@ -163,7 +163,7 @@ function ScheduleTableCard(props) {
                					<div className="col-6">
                						<label className="form-label">Closes at</label>
                						<Field name={`closes_at`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-                                                    
+									   <option value="">Select</option>
                                                             <option value="12">12:00</option>
                                                                 <option value="1">1:00</option>
                                                                 <option value="2">2:00</option>
@@ -182,7 +182,7 @@ function ScheduleTableCard(props) {
 															</div>
 								<div className="col-6">
 									<Field  name={`closes_at_type`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-                              
+									<option value="">Select</option>
                                            <option value="AM">AM</option>
                                            <option value="PM">PM</option>
                                            

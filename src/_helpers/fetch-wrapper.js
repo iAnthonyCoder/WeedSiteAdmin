@@ -185,7 +185,7 @@ function handleResponse(response) {
         if ([429].includes(response.status)) {
             // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
             accountService.logout();
-            alertService.error(response.message);
+            alertService.error("TOO MANY REQUESTS... LOGGING OFF");
         }
     }
     return response.text().then(text => {

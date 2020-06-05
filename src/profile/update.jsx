@@ -71,15 +71,17 @@ function Update({ history }) {
     }
 
      function resendToken(email){
-      
-         var json = {'email':email}
-         accountService.resendToken(json)
+        alertService.success('Trying to send...', { keepAfterRouteChange: true });
+        
+        var json = {'email':email}
+        accountService.resendToken(json)
              .then(() => {
+                history.push('/');
                  alertService.success('Check your email inbox', { keepAfterRouteChange: true });
-                 history.push('/');
              })
              .catch(error => {
-                 alertService.error(error);
+                 console.log(error)
+                //  alertService.error(error);
              });
      }
 

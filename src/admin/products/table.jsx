@@ -199,9 +199,9 @@ function Table({ match }) {
     if(!fetched) return <LoadingSpinner /> 
     return (
       <>
-        <Create addNew={addNew}/>
+        {/* <Create addNew={addNew}/> */}
         <Update updateOne={updateOne} object={scopedItem}/>
-        <PageHeader title="Admin/Products" link="create" nameButton="Add product" subtitle="Products list" toggle="modal" target="#modal-new-product" />
+        <PageHeader title="Admin/Products"  link="products/create" nameButton="Add product" subtitle="Products list" />
         <div className="box">
         {
           renderTable()     

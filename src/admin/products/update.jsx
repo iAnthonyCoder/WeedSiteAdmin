@@ -207,7 +207,7 @@ function Update(props) {
                                     <div className="col-lg-12">
                                         <div>
                                             <label className="form-label">Description</label>
-                                            <Field name="description" as="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "53.9792px"}}></Field>
+                                            <Field name="description" as="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", height: "53.9792px"}}></Field>
                                             <ErrorMessage name="description" component="div" className="invalid-feedback" />
                                         </div>
                                     </div>

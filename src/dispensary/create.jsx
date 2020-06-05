@@ -72,7 +72,9 @@ function Create({ history }) {
         address: '', 
         addresszip: '', 
         city: '', 
-        phone: ''
+        phone: '',
+        license: '',
+        licenseType: ''
     };
     const mp = {
         lng: 5,
@@ -90,6 +92,10 @@ function Create({ history }) {
             .required('Zip code is required'),
         phone: Yup.string()
             .required('Phone number is required'),
+        license: Yup.string()
+            .required('License is required'),
+        licenseType: Yup.string()
+            .required('License type is required'),
     });
 
 
@@ -234,22 +240,30 @@ function Create({ history }) {
 
                                                     
                                                 </div>
-                                                <div className="mb-3">
-                                                    <label>Medical license</label>
-                                                    <Field name="medicallicense"  placeholder="Input medical license" type="text" className={'form-control' + (errors.medicallicense && touched.medicallicense ? ' is-invalid' : '')} />
-                                                    <ErrorMessage name="medicallicense" component="div" className="invalid-feedback" />
-                                                </div>
-                                                <div className="mb-3">
                                                 
-                                                    {/* <InputText  
-                                                        label={"Recreational license license"}
-                                                        name={"recreationallicense"}
-                                                        placeholder={"Input recreational license"}
-                                                       
-                                                        errorName={"recreationallicense"}
-                                                    /> */}
-                                                    <label>Recreational license license</label>
-                                                    <Field name="recreationallicense"  placeholder="Input recreational license" 
+                                                
+                                                <div className="mb-3">
+                                                <label>License Type</label>
+                                                    <Field name="licenseType" as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
+                                                        <option value="">Select</option>
+                                                        <option value="Recreational Cultivation">Recreational Cultivation</option>
+                                                        <option value="Recreational Mfg.">Recreational Mfg.</option>
+                                                        <option value="Recreational Nonstorefront">Recreational Nonstorefront</option>
+                                                        <option value="Recreational Retail">Recreational Retail</option>
+                                                        <option value="Medical Cultivation">Medical Cultivation</option>
+                                                        <option value="Medical Mfg.">Medical Mfg.</option>
+                                                        <option value="Medical Nonstorefront">Medical Nonstorefront</option>
+                                                        <option value="Medical Retail">Medical Retail</option>
+                                                        <option value="Microbusiness">Microbusiness</option>
+                                                        <option value="Testing Lab">Testing Lab</option>
+                                                        <option value="Event">Event</option>
+                                                        <option value="Distributor">Distributor</option>
+                                                            
+                                                    </Field>
+                                                    <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
+                                           
+                                                    <br></br>
+                                                    <Field name="license"  placeholder="Input license" 
                                                     type="text" className={'form-control' + (errors.recreationallicense && touched.recreationallicense ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="recreationallicense" component="div" className="invalid-feedback" /> 
                                                 </div>

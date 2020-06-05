@@ -27,6 +27,7 @@
     "react-rating-stars-component": "^1.0.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-select": "^3.1.0",
     "react-spinners": "^0.8.3",
     "rxjs": "^6.5.5",
     "yup": "^0.28.5"

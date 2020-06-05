@@ -71,13 +71,13 @@ function Update({ history, match }) {
         name: dispensary.name,
         address: dispensary.address, 
         addresszip: dispensary.addresszip, 
-        medicallicense: (dispensary.medicallicense)?dispensary.medicallicense:"", 
-        recreationallicense: dispensary.recreationallicense?dispensary.recreationallicense:"", 
         isAmericanexpressAcepted: (dispensary.isAmericanexpressAcepted)?dispensary.isAmericanexpressAcepted:false, 
         isMastercardAcepted: dispensary.isMastercardAcepted?dispensary.isMastercardAcepted:false, 
         isVisaAcepted: (dispensary.isVisaAcepted)?dispensary.isVisaAcepted:false, 
-        isAtmAcepted: (dispensary.isVisaAcepted)?dispensary.isVisaAcepted:false, 
+        isAtmAcepted: (dispensary.isAtmAcepted)?dispensary.isAtmAcepted:false, 
         phone: dispensary.phone,
+        license: dispensary.license,
+        licenseType: dispensary.licenseType,
         city: (dispensary.city)?dispensary.city._id:"",
     };
     const mp = {
@@ -193,7 +193,7 @@ function Update({ history, match }) {
           
             .then(() => {
                 resetForm({});
-                alertService.success('Dispensary created', { keepAfterRouteChange: true });
+                alertService.success('Dispensary updated', { keepAfterRouteChange: true });
                 history.push('../../home');
             })
             .catch(error => {
@@ -274,21 +274,27 @@ function Update({ history, match }) {
                                                     
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>Medical license</label>
-                                                    <Field name="medicallicense"  placeholder="Input medical license" type="text" className={'form-control' + (errors.medicallicense && touched.medicallicense ? ' is-invalid' : '')} />
-                                                    <ErrorMessage name="medicallicense" component="div" className="invalid-feedback" />
-                                                </div>
-                                                <div className="mb-3">
-                                                
-                                                    {/* <InputText  
-                                                        label={"Recreational license license"}
-                                                        name={"recreationallicense"}
-                                                        placeholder={"Input recreational license"}
-                                                       
-                                                        errorName={"recreationallicense"}
-                                                    /> */}
-                                                    <label>Recreational license license</label>
-                                                    <Field name="recreationallicense"  placeholder="Input recreational license" 
+                                                <label>License Type</label>
+                                                    <Field name="licenseType" as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
+                                                        <option value="">Select</option>
+                                                        <option value="Recreational Cultivation">Recreational Cultivation</option>
+                                                        <option value="Recreational Mfg.">Recreational Mfg.</option>
+                                                        <option value="Recreational Nonstorefront">Recreational Nonstorefront</option>
+                                                        <option value="Recreational Retail">Recreational Retail</option>
+                                                        <option value="Medical Cultivation">Medical Cultivation</option>
+                                                        <option value="Medical Mfg.">Medical Mfg.</option>
+                                                        <option value="Medical Nonstorefront">Medical Nonstorefront</option>
+                                                        <option value="Medical Retail">Medical Retail</option>
+                                                        <option value="Microbusiness">Microbusiness</option>
+                                                        <option value="Testing Lab">Testing Lab</option>
+                                                        <option value="Event">Event</option>
+                                                        <option value="Distributor">Distributor</option>
+                                                            
+                                                    </Field>
+                                                    <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
+                                           
+                                                    <br></br>
+                                                    <Field name="license"  placeholder="Input license" 
                                                     type="text" className={'form-control' + (errors.recreationallicense && touched.recreationallicense ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="recreationallicense" component="div" className="invalid-feedback" /> 
                                                 </div>
