@@ -98,11 +98,13 @@ function Create(props) {
 			// });
 	}
 	
-	function create(fields, setSubmitting) {
+	function create(fields, setSubmitting,resetForm) {
         strainService.create(fields)
             .then(() => {
 				alertService.success('Item added!', { keepAfterRouteChange: true });
 				setPictures(picturesInitialState)
+				setSubmitting(false);
+				resetForm({});
             })
             .catch(() => {
                 setSubmitting(false);

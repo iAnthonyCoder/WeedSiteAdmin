@@ -38,6 +38,10 @@ function Table({ match }) {
       text: 'Brand',
       sort: true
     }, {
+      dataField: 'brand.strain',
+      text: 'Strain',
+      sort: true
+    }, {
       dataField: 'slug',
       text: 'Slug',
       sort: true

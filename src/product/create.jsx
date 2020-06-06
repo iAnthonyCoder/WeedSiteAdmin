@@ -12,7 +12,6 @@ function Create({ history }) {
         category: '',
         brand: '',
         description: '',
-        acceptTerms: false
     };
 
     const [categories, setCategories] = useState("");
