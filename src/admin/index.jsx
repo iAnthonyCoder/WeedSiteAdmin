@@ -14,6 +14,7 @@ import { Users } from './users';
 import { Categories } from './categories';
 import { Subscriptions } from './subscriptions'
 import { Parentcategories } from './parentcategories'
+import { Strains } from './strains'
 import Loadable from 'react-loadable';
 
 function Admin({ match }) {
@@ -46,6 +47,7 @@ function Admin({ match }) {
                     <Route path={`${path}/security`} component={Security} />
                     <Route path={`${path}/products`} component={Products} />
                     <Route path={`${path}/subscriptions`} component={Subscriptions} />
+                    <Route path={`${path}/strains`} component={Strains} />
                 </Switch>
                 </div>
             </div>

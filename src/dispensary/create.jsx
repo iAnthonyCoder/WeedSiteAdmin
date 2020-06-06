@@ -38,13 +38,12 @@
 
 
 import React, { useState, useEffect, useRef } from 'react';
-
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { accountService, alertService, dispensaryService, cityService } from '../_services';
-import { InputText } from '../_components'
+import { accountService, alertService, dispensaryService, cityService, stateService } from '../_services';
+import { InputText, SingleSelect } from '../_components'
 
 
 function Create({ history }) {
@@ -59,6 +58,7 @@ function Create({ history }) {
     const [latitude, setLatitude] = useState(latitudeInitialValue)
     const [longitude, setLongitude] = useState(latitudeInitialValue)
     const [cities, setCities] = useState("")
+    const [states, setStates] = useState("")
     const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY','SUNDAY'];
  
 
@@ -84,8 +84,10 @@ function Create({ history }) {
     const validationSchema = Yup.object().shape({
         name: Yup.string()
             .required('Name is required'),
+        // state: Yup.string()
+        //     .required('City is required'),
         city: Yup.string()
-            .required('City is required'),
+            .required('State and city is required'),
         address: Yup.string()
             .required('Address is required'),
         addresszip: Yup.string()
@@ -101,13 +103,20 @@ function Create({ history }) {
 
     
     const fetchElements = async () => {
-        await cityService.getAll().then( cities =>
-            setCities(cities)
+        await stateService.getAll().then( states =>
+            setStates(states)
         )
 
     }
+    const fetchCities = (name, value) => {
+      
+         cityService.getByState(value._id).then( cities =>
+             setCities(cities)
+         )
 
+    }
 
+    
 
 
     useEffect(() => {
@@ -186,7 +195,7 @@ function Create({ history }) {
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ errors, touched, isSubmitting }) => (
+            {({ errors, touched, isSubmitting, values, setFieldValue, setFieldTouched }) => (
                 <>
                 <div className="page-header">
                     <div className="row align-items-center">
@@ -217,13 +226,36 @@ function Create({ history }) {
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Address *</label>
-                                                    <Field name="city" as="select" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} >
+                                                    <SingleSelect
+      										            value={values.states}
+      										            onChange={fetchCities}
+      										            onBlur={setFieldTouched}
+      										            error={errors.state}
+											        	touched={touched.state}
+											        	values={states}
+											        	name={"state"}
+											        	placeholder={"Select state"}
+      										        />
+                                                      
+                                                   {cities.length>1?<SingleSelect
+      										            value={values.cities}
+      										            onChange={setFieldValue}
+      										            onBlur={setFieldTouched}
+      										            error={errors.city}
+											        	touched={touched.city}
+											        	values={cities}
+											        	name={"city"}
+                                                        placeholder={"Select city"}
+      										        />:""
+                                                   }
+											
+                                                    {/* <Field name="city" as="select" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} >
                                                         <option value="">Select city</option>
                                                         {cities && cities.map( city => 
                                                             <option value={city._id}>{city.name}</option>
                                                         )}
                                                     </Field>
-                                                    <ErrorMessage name="city" component="div" className="invalid-feedback" />
+                                                    <ErrorMessage name="city" component="div" className="invalid-feedback" /> */}
                                                 </div>
                                                 <div className="mb-3">
                                                     
@@ -475,65 +507,7 @@ function Create({ history }) {
                         </Form>
                     </div>
                 </div>
-                {/* <Form>
-                    <h1>Update Profile</h1>
-                    <div className="form-row">
-                        <div className="form-group col">
-                            <label>Title</label>
-                            <Field name="title" as="select" className={'form-control' + (errors.title && touched.title ? ' is-invalid' : '')}>
-                                <option value=""></option>
-                                <option value="Mr">Mr</option>
-                                <option value="Mrs">Mrs</option>
-                                <option value="Miss">Miss</option>
-                                <option value="Ms">Ms</option>
-                            </Field>
-                            <ErrorMessage name="title" component="div" className="invalid-feedback" />
-                        </div>
-                        <div className="form-group col-5">
-                            <label>First Name</label>
-                            <Field name="firstName" type="text" className={'form-control' + (errors.firstName && touched.firstName ? ' is-invalid' : '')} />
-                            <ErrorMessage name="firstName" component="div" className="invalid-feedback" />
-                        </div>
-                        <div className="form-group col-5">
-                            <label>Last Name</label>
-                            <Field name="lastName" type="text" className={'form-control' + (errors.lastName && touched.lastName ? ' is-invalid' : '')} />
-                            <ErrorMessage name="lastName" component="div" className="invalid-feedback" />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label>Email</label>
-                        <Field name="email" type="text" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
-                        <ErrorMessage name="email" component="div" className="invalid-feedback" />
-                    </div>
-                    <h3 className="pt-3">Change Password</h3>
-                    <p>Leave blank to keep the same password</p>
-                    <div className="form-row">
-                        <div className="form-group col">
-                            <label>Password</label>
-                            <Field name="password" type="password" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
-                            <ErrorMessage name="password" component="div" className="invalid-feedback" />
-                        </div>
-                        <div className="form-group col">
-                            <label>Confirm Password</label>
-                            <Field name="confirmPassword" type="password" className={'form-control' + (errors.confirmPassword && touched.confirmPassword ? ' is-invalid' : '')} />
-                            <ErrorMessage name="confirmPassword" component="div" className="invalid-feedback" />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <button type="submit" disabled={isSubmitting} className="btn btn-primary mr-2">
-                            {isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                            Update
-                        </button>
-                        <button type="button" onClick={() => onDelete()} className="btn btn-danger" style={{ width: '75px' }} disabled={isDeleting}>
-                            {isDeleting
-                                ? <span className="spinner-border spinner-border-sm"></span>
-                                : <span>Delete</span>
-                            }
-                        </button>
-                        <Link to="." className="btn btn-link">Cancel</Link>
-                    </div>
-                </Form> */}
-             
+               
               
                 </>
             )}

@@ -1,12 +1,12 @@
 import { fetchWrapper, history } from '../_helpers';
 import { getPublicApi } from '../_helpers/config';
 
-const baseUrl = getPublicApi+"cities";
+const baseUrl = getPublicApi+"states";
 
 
-export const cityService = {
+export const stateService = {
     getAll,
-    getByState
+    // getByState
 };
 
 
@@ -15,8 +15,3 @@ function getAll() {
     return fetchWrapper.get(baseUrl);
 }
 
-
-function getByState(id) {
-
-    return fetchWrapper.get(`${baseUrl}/state/${id}`);
-}

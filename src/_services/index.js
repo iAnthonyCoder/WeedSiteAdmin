@@ -12,4 +12,6 @@ export * from './subscription.service';
 export * from './plan.service';
 export * from './payment.service';
 export * from './purchase.service'
+export * from './state.service'
 export * from './parentcategory.service'
+export * from './strain.service'
