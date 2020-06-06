@@ -208,7 +208,7 @@ function Create(props) {
 										<div className="row" style={{height:"50%"}}>
 											<div>
 												<label className="form-label">References</label>
-												<Field name="references" as="textarea" className={'form-control' + (errors.references && touched.references ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", height: "calc( 100% - 3em)"}}></Field>
+												<Field name="references" as="textarea" className={'form-control' + (errors.references && touched.references ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter references" style={{overflow: "hidden", overflowWrap: "break-word", height: "calc( 100% - 3em)"}}></Field>
 												<ErrorMessage name="references" component="div" className="invalid-feedback" />
 											</div>
 										</div>
