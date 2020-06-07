@@ -48,10 +48,11 @@ function Create(props) {
         setStatus();
 		fields.slug=getSlug(fields.name);
 		fields.picture=picture;
-      
+		
         brandService.create(fields)
             .then((data) => {
-              resetForm({});
+			  resetForm({});
+			  setPicture('');
                 alertService.success('Item saved', { keepAfterRouteChange: true });
                 $("#modal-create").modal("hide");
                 props.addNew(data.payload);
