@@ -60,12 +60,11 @@ function Create({ history }) {
     const [cities, setCities] = useState("")
     const [states, setStates] = useState("")
     const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY','SUNDAY'];
- 
 
     const styles = {
-      width: "100%",
-      position: "relative",
-      height:"500px"
+        width: "100%",
+        position: "relative",
+        height:"500px"
     };
     const initialValues = {
         name: '',
@@ -74,7 +73,12 @@ function Create({ history }) {
         city: '', 
         phone: '',
         license: '',
-        licenseType: ''
+        licenseType: '',
+        website:'',
+        email:'',
+        twitter:'',
+        instagram:'',
+        facebook:'',
     };
     const mp = {
         lng: 5,
@@ -98,6 +102,16 @@ function Create({ history }) {
             .required('License is required'),
         licenseType: Yup.string()
             .required('License type is required'),
+        website: Yup.string(),
+        email: Yup.string(),
+        twitter: Yup.string(),
+        instagram: Yup.string(),
+        facebook: Yup.string(),
+        introduction: Yup.string(),
+        about: Yup.string(),
+        firstpatient: Yup.string(),
+        announcement: Yup.string(),
+        
     });
 
 
@@ -109,65 +123,57 @@ function Create({ history }) {
 
     }
     const fetchCities = (name, value) => {
-      
          cityService.getByState(value._id).then( cities =>
              setCities(cities)
          )
-
     }
-
-    
 
 
     useEffect(() => {
-
         fetchElements();
-      mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
-      const initializeMap = ({ setMap, mapContainer }) => {
-        const map = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-          center: [-119.77548846586623, 36.796441467509496],
-          zoom: 4.5
-        });
-        
-        var marker = new mapboxgl.Marker({
-            draggable: true
-            })
-        map.on('click', addMarker);
-        function addMarker(e){
-            marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
-            var lngLat = marker.getLngLat();
-            setLatitude(lngLat.lat);
-            setLongitude(lngLat.lng);
-        }
+        mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
+        const initializeMap = ({ setMap, mapContainer }) => {
+            const map = new mapboxgl.Map({
+                container: mapContainer.current,
+                style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
+                center: [-119.77548846586623, 36.796441467509496],
+                zoom: 4.5
+            });
 
-        map.on("load", () => {
-          setMap(map);
-          map.resize();
-          
-        });
-      };
-      if (!map) initializeMap({ setMap, mapContainer });
+            var marker = new mapboxgl.Marker({
+                draggable: true
+            })
+
+            map.on('click', addMarker);
+
+            function addMarker(e){
+                marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
+                var lngLat = marker.getLngLat();
+                setLatitude(lngLat.lat);
+                setLongitude(lngLat.lng);
+            }
+
+            map.on("load", () => {
+                setMap(map);
+                map.resize();
+            });
+        };
+
+        if (!map) initializeMap({ setMap, mapContainer });
+
     }, [map]);
 
-
-
-
-
-
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        
         fields.latitude=latitude;
         fields.longitude=longitude;
+        
         if(!latitude){
             alert("Add a place in the map")
             setSubmitting(false);
-        }else{
+        } else {
           setStatus();
           fields.user=user._id;
           dispensaryService.create(fields)
-          
             .then(() => {
                 resetForm({});
                 alertService.success('Dispensary created', { keepAfterRouteChange: true });
@@ -248,14 +254,6 @@ function Create({ history }) {
                                                         placeholder={"Select city"}
       										        />:""
                                                    }
-											
-                                                    {/* <Field name="city" as="select" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} >
-                                                        <option value="">Select city</option>
-                                                        {cities && cities.map( city => 
-                                                            <option value={city._id}>{city.name}</option>
-                                                        )}
-                                                    </Field>
-                                                    <ErrorMessage name="city" component="div" className="invalid-feedback" /> */}
                                                 </div>
                                                 <div className="mb-3">
                                                     
@@ -267,17 +265,22 @@ function Create({ history }) {
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Phone number *</label>
-                                                    <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(+1) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
+                                                    <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(000) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="phone" component="div" className="invalid-feedback" />
 
                                                     
                                                 </div>
-                                                
-                                                
                                                 <div className="mb-3">
-                                                <label>License Type</label>
+                                                    <label>Dispensary email</label>
+                                                    <Field name="email" type="text" placeholder="info@example.com" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="email" component="div" className="invalid-feedback" />
+                                                </div>
+                                                
+                                               
+                                                <div className="mb-3">
+                                                <label>License</label>
                                                     <Field name="licenseType" as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-                                                        <option value="">Select</option>
+                                                        <option value="">Select Type</option>
                                                         <option value="Recreational Cultivation">Recreational Cultivation</option>
                                                         <option value="Recreational Mfg.">Recreational Mfg.</option>
                                                         <option value="Recreational Nonstorefront">Recreational Nonstorefront</option>
@@ -307,7 +310,7 @@ function Create({ history }) {
                                     <div className="col-xl-6 col-md-6">
 
                                     <div className="mb-3">
-                          <label className="form-label">Select payment methods accepted in your dispensary</label>
+                          <label >Select payment methods accepted in your dispensary</label>
                           <div className="form-selectgroup">
                           <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
                               <Field type="checkbox" name="form-payment" name="isVisaAcepted" class="form-selectgroup-input" />
@@ -358,16 +361,38 @@ function Create({ history }) {
                               </div>
                             </label>
                           </div>
+                          
+                        </div>
+                    
+                        <div className="mb-3">
+                            <label>Website url</label>
+                            <Field name="website" type="text" placeholder="https://example.com" className={'form-control' + (errors.website && touched.website ? ' is-invalid' : '')} />
+                            <ErrorMessage name="website" component="div" className="invalid-feedback" />
                         </div>
 
+                        <div className="mb-3">
+                            <label>Facebook</label>
+                            <Field name="facebook" type="text" placeholder="https://www.facebook.com/example" className={'form-control' + (errors.facebook && touched.facebook ? ' is-invalid' : '')} />
+                            <ErrorMessage name="facebook" component="div" className="invalid-feedback" />
                         </div>
 
+                        <div className="mb-3">
+                            <label>Twitter</label>
+                            <Field name="twitter" type="text" placeholder="https://twitter.com/example" className={'form-control' + (errors.twitter && touched.twitter ? ' is-invalid' : '')} />
+                            <ErrorMessage name="twitter" component="div" className="invalid-feedback" />
+                        </div>
+
+                        <div className="mb-3">
+                            <label>Instagram</label>
+                            <Field name="instagram" type="text" placeholder="https://www.instagram.com/example" className={'form-control' + (errors.instagram && touched.instagram ? ' is-invalid' : '')} />
+                            <ErrorMessage name="instagram" component="div" className="invalid-feedback" />
+                        </div>
+
+                        
 
 
 
-
-
-
+                    </div>
 
 
 
@@ -481,8 +506,53 @@ function Create({ history }) {
                        
                               ) )
                             }</fieldset>
+
                              </div>
 
+                            <hr></hr>
+
+                      
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>Introduction</label>
+                                        <Field name="introduction" as="textarea" className={'form-control' + (errors.introduction && touched.introduction ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter introduction" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="introduction" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>About us</label>
+                                        <Field name="about" as="textarea" className={'form-control' + (errors.about && touched.about ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter about us" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="about" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>First-Time Patients</label>
+                                        <Field name="firstpatient" as="textarea" className={'form-control' + (errors.firstpatient && touched.firstpatient ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter first time patient details" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="firstpatient" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>Announcement</label>
+                                        <Field name="announcement" as="textarea" className={'form-control' + (errors.announcement && touched.announcement ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter announcement" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="announcement" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+                   
+
+                            
+
+                             
+
+                            
+                            </div>
+                           
+                            </div>
                             <div className="card-footer text-right">
                               <div className="d-flex" style={{justifyContent:"space-between"}}>
                                 <a href="#" className="btn btn-link">Cancel</a>
@@ -502,10 +572,10 @@ function Create({ history }) {
                         </button>
                               </div>
                             </div>
-                            </div>
-                            </div>
                         </Form>
+                        
                     </div>
+                    
                 </div>
                
               

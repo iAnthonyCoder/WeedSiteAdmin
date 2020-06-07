@@ -8,8 +8,11 @@ function BasicInfoCard(props) {
         <div className="card-actions"></div>
       </div>
       {
+      
         (props.dispensary && props.dispensary.name)?(
+         
           <div className="card-body">
+            { console.log(props)}
             <dl className="row">
               <dt className="col-5">Name: </dt>
               <dd className="col-7">{props.dispensary.name}</dd>
