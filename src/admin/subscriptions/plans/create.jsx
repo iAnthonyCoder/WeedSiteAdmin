@@ -11,7 +11,8 @@ function Create(props) {
         name: '',
 		description: '',
 		days: '',
-        price: '',
+		price: '',
+		priority: ''
     };
 
     const validationSchema = Yup.object().shape({
@@ -22,7 +23,9 @@ function Create(props) {
 		price: Yup.string()
             .required('Price is required'),
         description: Yup.string()
-            .required('Description is required'),
+			.required('Description is required'),
+		priority: Yup.string()
+            .required('Priority is required'),
     });
 
 
@@ -80,6 +83,13 @@ function Create(props) {
             			 				<label className="form-label">Price</label>
             			 				<Field name="price" type="number"  placeholder="Enter total price" className={'form-control' + (errors.price && touched.price ? ' is-invalid' : '')} ></Field>
             			 				<ErrorMessage name="price" component="div" className="invalid-feedback" />
+             						</div>
+           						</div>
+								   <div className="mb-3">
+             						<div>
+            			 				<label className="form-label">Priority</label>
+            			 				<Field name="priority" type="number"  placeholder="Enter total priority" className={'form-control' + (errors.priority && touched.priority ? ' is-invalid' : '')} ></Field>
+            			 				<ErrorMessage name="priority" component="div" className="invalid-feedback" />
              						</div>
            						</div>
              					<div className="mb-3">

@@ -4,13 +4,7 @@ export const fetchWrapper = {
     get,
     post,
     put,
-    postMulti,
     delete: _delete,
-    postMultiBrand,
-    putBrandWithImage,
-    putMulti,
-    putUserImg,
-    postMultiPurchase
 }
 
 function get(url) {
@@ -18,115 +12,6 @@ function get(url) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader(url)
-    };
-    return fetch(url, requestOptions).then(handleResponse);
-}
-
-
-function postMulti(url, body) {
-    const formData = new FormData();
-    formData.append("name", body.name);
-    formData.append("category", body.category);
-    formData.append("brand", body.brand);
-    formData.append("picture", body.picture);
-    formData.append("description", body.description);
-    formData.append("_id", body._id)
-    formData.append("slug", body.slug)
-    const requestOptions = {
-        method: 'POST',
-        headers: {  ...authHeader(url) },
-        body:formData
-    };
-    return fetch(url, requestOptions).then(handleResponse);
-}
-
-function putMulti(url, body) {
-
-    const formData = new FormData();
-    formData.append("name", body.name);
-    formData.append("category", body.category);
-    formData.append("brand", body.brand);
-    formData.append("picture", body.picture);
-    formData.append("description", body.description);
-    formData.append("_id", body._id)
-    formData.append("slug", body.slug)
-    const requestOptions = {
-        method: 'PUT',
-        headers: {  ...authHeader(url) },
-        body:formData
-    };
-    return fetch(url, requestOptions).then(handleResponse);
-}
-
-function postMultiBrand(url, body) {
-    const formData = new FormData();
-    formData.append("name", body.name);
-    formData.append("picture", body.picture);
-    formData.append("description", body.description);
-    formData.append("slug", body.slug)
-    const requestOptions = {
-        method: 'POST',
-        headers: {  ...authHeader(url) },
-        body:formData
-    };
-    return fetch(url, requestOptions).then(handleResponse);
-}
-
-function postMultiPurchase(url, body) {
-
-    const formData = new FormData();
-    formData.append("date", body.date);
-    formData.append("reference", body.reference);
-    formData.append("method", body.method);
-    formData.append("amount", body.amount);
-    formData.append("picture", body.picture);
-    formData.append("plan", body.plan)
-    const requestOptions = {
-        method: 'POST',
-        headers: {  ...authHeader(url) },
-        body:formData
-    };
-    return fetch(url, requestOptions).then(handleResponse);
-}
-
-
-
-
-
-
-function putUserImg(url, body) {
-   
-    const formData = new FormData();
-
-    formData.append("email", body.email);
-    formData.append("name", body.name);
-    formData.append("birthdate", body.birthdate);
-    formData.append("password", body.password)
-    formData.append("newPassword", body.newPassword)
-    formData.append("confirmPassword", body.confirmPassword)
-    formData.append("picture", body.picture)
-    const requestOptions = {
-        method: 'PUT',
-        headers: {  ...authHeader(url) },
-        body:formData
-    };
-    return fetch(url, requestOptions).then(handleResponse);
-}
-
-
-
-function putBrandWithImage(url, body) {
-   
-    const formData = new FormData();
-
-    formData.append("name", body.name);
-    formData.append("picture", body.picture);
-    formData.append("description", body.description);
-    formData.append("slug", body.slug)
-    const requestOptions = {
-        method: 'PUT',
-        headers: {  ...authHeader(url) },
-        body:formData
     };
     return fetch(url, requestOptions).then(handleResponse);
 }

@@ -27,6 +27,10 @@ function Pending({ match }) {
       text: 'Date',
       sort: true
     }, {
+      dataField: 'planDetails.name',
+      text: 'Plan',
+      sort: true
+      },{
       dataField: 'reference',
       text: 'Reference',
       sort: true

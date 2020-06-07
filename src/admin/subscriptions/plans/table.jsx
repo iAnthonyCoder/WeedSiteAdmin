@@ -23,6 +23,11 @@ function Table({ match }) {
       sort: true
     },
     {
+      dataField: 'priority',
+      text: 'Priority',
+      sort: true
+    },
+    {
       dataField: 'days',
       text: 'Days',
       sort: true
