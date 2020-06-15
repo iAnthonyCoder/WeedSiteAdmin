@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import './assets/css/demo.css';
 import './assets/css/tabler.min.css';
 import './assets/css/custom.css';
-import $ from 'jquery';
+import jQuery from 'jquery';
 // import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 

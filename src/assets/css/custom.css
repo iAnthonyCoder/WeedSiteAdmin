@@ -83,3 +83,8 @@
       label{
         font-weight: 700;
       }
+
+      .card-table tr td:last-child, .card-table tr th:last-child {
+        padding-right: 1.25rem;
+        width: 120px !important;
+    }

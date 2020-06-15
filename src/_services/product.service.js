@@ -1,8 +1,8 @@
 import { fetchWrapper } from '../_helpers';
 import { getPrivateApi } from '../_helpers/config';
-
+import { getPublicApi } from '../_helpers/config';
 const baseUrl = getPrivateApi+"products";
-
+const publicBaseUrl = getPublicApi+"products";
 export const productService = {
     getAll,
     getById,
@@ -13,13 +13,15 @@ export const productService = {
     getAddList,
     deleteFromDispensary,
     delete: _delete,
+
 };
 
 
-
-
-function getAll() {
-    return fetchWrapper.get(baseUrl);
+function getAll(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}`}
+    else{fetchParam=`${baseUrl}${query}`}
+    return fetchWrapper.get(fetchParam);
 }
 function getAllRequest() {
     return fetchWrapper.get(baseUrl+"/requests/list");

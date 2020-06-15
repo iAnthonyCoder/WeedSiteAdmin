@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { MainTable } from '../_components'
 
 function Overview({ match }) {
     const { path } = match;
@@ -21,7 +22,15 @@ function Overview({ match }) {
             <strong>FELIX:</strong> LA DESCRIPTION SE TOMARA DESDE <a target="_blank" href="https://www.wikileaf.com" style={{color:"blue"}}>WWW.WIKILEAF.COM</a> Y SE COLOCARA EN LA REFERENCIA "WWWW.WIKILEAF.COM"<br></br>
             </h2>
             <p><Link to={`${path}/strains/create`}><button type="button" class="btn btn-success">AGREGAR STRAINS</button></Link></p>
+            <hr></hr>
+            <h2 style={{color:"red"}}>
+            <strong>SERVER MANTENIANCE ON 15/6/2020:</strong> 11:00PM GTM-4:30 - EXPECTED TIME 30 MINUTES<br></br>
+            <p>Adding async table: the example can be tested bellow.</p>
+            </h2>
+
             <br></br><br></br>
+
+            <MainTable />
         </div>
     );
 }
