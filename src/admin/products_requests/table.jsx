@@ -1,5 +1,5 @@
-import React,{ useEffect, useState } from 'react';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components';
+import React,{ useRef, useState } from 'react';
+import { PageHeader, NoResults, TableCardHeader, MainTable, LoadingSpinner } from '../../_components';
 import { Update } from './update';
 import { productService, alertService } from '../../_services';
 import $ from 'jquery';
@@ -10,116 +10,78 @@ const _thisSectionPl = "Products";
 
 
 
-function Table({ match }) {
-    const { path } = match;
+function Table() {
+    const callApiTrigger = useRef()
     const [scopedItem, setScopedItem] = useState("")
-    const [items, setItems] = useState("")
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [fetched, setFetched] = useState(false);
     const defaultAvatar = "./static/user.png";
-    const columns = [{
-      dataField: 'name',
-      text: 'Name',
-      sort: true,
-      formatter: (rowContent, row) => {
-        return (    
-          <div className="d-flex lh-sm py-1 align-items-center">
-            <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture:defaultAvatar}")`}}></span>
-            <div className="flex-fill"><div className="strong">{row.name}</div></div>
-          </div>
+    const columns = [
+      {
+        Header: 'Name',
+        accessor: 'name'
+      },
+      {
+        Header: 'Category',
+        accessor: row => row.category.name
+      },
+      {
+        Header: 'Brand',
+        accessor: row => row.brand.name
+      },
+      {
+        Header: 'Strain',
+        accessor: "a",
+      },
+      {
+      Header: 'Actions',
+      width:"100px",
+
+        Cell:({row})=>(
+          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+            <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
+                  Edit
+                </button>
+                <button onClick={()=>{deleteByID(row.original._id)}} class="dropdown-item">
+                  Delete
+                </button>
+              </div>
+            </span>
         )
       }
-    }, {
-      dataField: '_id',
-      text: 'ID',
-      sort: true
-    }, {
-      dataField: 'description',
-      text: 'Description',
-      sort: true
-    }, {
-      dataField: 'slug',
-      text: 'Slug',
-      sort: true
-      }
-    ];
-
-    // const firePagination = (length,pageChange, items) => {
-    //   setTotalItems(res.length);
-    //   _handlePageChange(1)
-    //   setPaginatedItems(res.slice(0,itemsPerPage))
-    // }
+  ]
 
 
-    const fetch = async () => {
-      await _thisService.getAllRequest()
-        .then((res)=>{
-          setItems(res)
-          setMutatedItems(res)
-          setFetched(true)
-        })
-    }
-    
-    useEffect(() => {
-      fetch()
-    }, [])
-    
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
-      }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.description.toLowerCase().includes(value.toLowerCase()) ||
-                  item._id.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
 
-    function updateOne(id){
-      let filteredState = items.filter( item => item._id !== id );
-          setItems(filteredState)
-          setMutatedItems(filteredState)
-    }
+    function updateOne(_id, newItem){
+      callApiTrigger.current.fetchData();
+  }
 
-    function deleteByID(id){
-    
+  function deleteByID(id){
       if(window.confirm("Are you sure do you want to delete this item?")){
         _thisService.delete(id).then(()=>{
-          let filteredState = items.filter( item => item._id !== id );
-          setItems(filteredState)
-          setMutatedItems(filteredState)
           alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
+          callApiTrigger.current.fetchData();
         });
       };     
-    }
+  }
 
-    function scopeItem(object){
+
+  function scopeItem(object){
       setScopedItem(object);
       $("#modal-update").modal("show");
-    }
+  }
 
 
-function renderTable(){
-  return  <div className="card">
-            <TableCardHeader title={_thisSectionPl} handleSearch={handleSearch} />
-              <div className="table-responsive">
-                <SuperTable items={mutatedItems} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
-              </div>
-          </div>
-}
+
+
 
 return (
   <>
     <Update updateOne={updateOne} object={scopedItem}/>
     <PageHeader title={`Admin/Requests/${_thisSection}`} link="create" subtitle={`${_thisSectionPl} list`} toggle="modal" target="#modal-create" />
     <div className="box">
-    {
-      (fetched) ? renderTable() : <LoadingSpinner />       
-    }
+      <MainTable ref={callApiTrigger} title={"PRODUCT REQUESTS"} endPoint={productService.getAllRequest} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns} />  
     </div>
   </>
 );

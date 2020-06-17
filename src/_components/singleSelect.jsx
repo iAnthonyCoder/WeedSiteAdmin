@@ -1,38 +1,68 @@
 import React from 'react'
-import Select from 'react-select';
+import AsyncSelect  from 'react-select/async';
+import _ from 'lodash';
+
+
 
 class SingleSelect extends React.Component {
-	handleChange = value => {
-	    this.props.onChange(this.props.name, value);
-	};
-  
-	handleBlur = () => {
-	    this.props.onBlur(this.props.name, true);
-	};
-  
-	render() {
-	    return (
-		    <div style={{ margin: '1rem 0' }}>
-		        {this.props.title?<label htmlFor="color">{this.props.title}</label>:""}
-		        <Select
-		            getOptionLabel={values => values.name}
-					getOptionValue={values => values._id}
-			        isClearable={true}
-			        isSearchable={true}
-			        name={this.props.name}
-		            options={this.props.values}
-			        onChange={this.handleChange}
-			        onBlur={this.handleBlur}
-                    value={this.props.value}
-                    placeholder={<div>{this.props.placeholder}</div>}
-		        />
+	constructor(props) {
+		super(props);
+		this.getOptions = _.debounce(this.getOptions.bind(this), 500);
+	  }
+	
+	  handleChange = selectedOption => {
+		  this.props.onChange(this.props.name, selectedOption);
+	  };
 
-		        {!!this.props.error &&this.props.touched && (
+	  handleBlur = () => {
+		  console.log("object")
+	    this.props.onBlur(this.props.name, true);
+		};
+	
+	  mapOptionsToValues = options => {
+		return options
+	  };
+	
+	  getOptions = (inputValue, callback) => {
+		if (!inputValue) {
+		  return callback([]);
+		}
+	
+		this.props.endPoint(`?page=0&size=10&search=${inputValue}`).then(data => {
+			const results = data.totalData;
+			callback(this.mapOptionsToValues(results));
+		 
+		});
+	  };
+	
+	  render() {
+		const { defaultOptions, placeholder,  } = this.props;
+		return (
+			<div style={{ margin: '1rem 0' }}>
+			{this.props.title?<label htmlFor="color">{this.props.title}</label>:""}
+		  <AsyncSelect
+		  	getOptionLabel={values => values.name}
+			getOptionValue={values => values._id}
+			cacheOptions
+			value={this.props.value}
+			defaultOptions={defaultOptions}
+			loadOptions={this.getOptions}
+			onBlur={this.handleBlur}
+			placeholder={this.props.placeholder}
+			onChange={this.handleChange}
+		  />
+		  {!!this.props.error &&this.props.touched && (
 			        <div style={{ color: 'red', marginTop: '.5rem' }}>{this.props.error}</div>
 		        )}
 		    </div>
-	  );
-	}
+		);
+	  }
 }
 
 export { SingleSelect };
+
+
+
+// const response = await this.props.endPoint(`?page=0&size=10&search=${inputValue}`).then(response=>
+// 	{return response.totalData;}
+//   )

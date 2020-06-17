@@ -1,16 +1,10 @@
-import React from 'react'
+import React,{forwardRef, useRef, useImperativeHandle } from 'react'
 // import styled from 'styled-components'
 import { useTable, usePagination } from 'react-table'
 import { productService, categoryService, brandService, alertService } from '../_services';
-import { LoaderBounce } from '../_components'
+import { LoaderBounce, NoResults } from '../_components'
 
-function Table({
-  columns,
-  data,
-  fetchData,
-  loading,
-  pageCount: controlledPageCount,
-  totalData,
+function Table({columns, title, data,fetchData,loading,pageCount: controlledPageCount, totalData,
 }) {
   const {
     getTableProps,
@@ -25,7 +19,8 @@ function Table({
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
+	setPageSize,
+	setPageIndex,
     // Get the state from the instance
     state: { pageIndex, pageSize },
   } = useTable(
@@ -47,7 +42,7 @@ function Table({
     const [searchQuery, setSearchQuery] = React.useState(searchQueryInitialState)
 
   React.useEffect(() => {
-    fetchData({ pageIndex, pageSize, searchQuery })
+	fetchData({ pageIndex, pageSize, searchQuery })
   }, [fetchData, pageIndex, pageSize, searchQuery])
 
   // Render the UI for your table
@@ -55,7 +50,7 @@ function Table({
     <>
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">PRODUCTS</h3>
+              <h3 class="card-title">{title}</h3>
             </div>
             <div class="card-body border-bottom py-3">
               <div class="d-flex">
@@ -80,14 +75,14 @@ function Table({
                   Search:
                   <div class="ml-2 d-inline-block">
                     <input value={searchQuery} onChange={e => {
-            setSearchQuery(e.target.value)
+            setSearchQuery(e.target.value); setSearchQuery(e.target.value); gotoPage(0)
           }} type="text" class="form-control form-control-sm" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="table-responsive">
-            {loading?<LoaderBounce></LoaderBounce>:
+            {loading?<LoaderBounce></LoaderBounce>:totalData<1?<NoResults />:
       <table className={"table card-table table-vcenter text-nowrap datatable"} {...getTableProps()}>
         <thead>
 
@@ -123,8 +118,8 @@ function Table({
       </table>}
       </div>
       <div class="card-footer d-flex align-items-center">
-
-              <p class="m-0 text-muted">Showing <span>{(pageIndex==0)?1:pageIndex*pageSize}</span> to <span>{((pageIndex*pageSize)+pageSize)>totalData?totalData:(pageIndex*pageSize)+pageSize}</span> of <span>{totalData}</span> entries</p>
+		  	
+              <p class="m-0 text-muted">Showing <span>{(pageIndex==0&&totalData<1)?0:pageIndex*pageSize==0?1:pageIndex*pageSize}</span> to <span>{((pageIndex*pageSize)+pageSize)>totalData?totalData:(pageIndex*pageSize)+pageSize}</span> of <span>{totalData}</span> entries</p>
               <ul class="pagination m-0 ml-auto">
               <li class={`page-item ${!canPreviousPage?"disabled":""}`}>
                   <button class="page-link" onClick={() => gotoPage(0)}  href="#" tabindex="-1">
@@ -163,56 +158,28 @@ function Table({
 
 
 
-function MainTable() {
+const MainTable = forwardRef((props, ref) => {
   const columns = React.useMemo(
-    () => [
-          {
-            Header: 'Name',
-            accessor: 'name',
-          },
-          {
-            Header: 'Category',
-            accessor: row => row.category.name
-          },
-          {
-            Header: 'Brand',
-            accessor: row => row.brand.name
-          },
-          {
-            Header: 'Strain',
-            accessor: "a",
-          },
-          {
-			Header: 'Actions',
-			width:"100px",
-            Cell:({row})=>(
-          
-            		<span style={{width:"100px"}} class="dropdown ml-1 position-static">
-                    	<button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
-                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
-                        	<a class="dropdown-item" href="#">
-                        		Action
-                        	</a>
-                        	<a class="dropdown-item" href="#">
-                        		Another action
-                        	</a>
-                        </div>
-                    </span>
-              
-            )
-          }
-    ],
+    () => props.columns,
     []
   )
+   	useImperativeHandle(ref, () => {
+      	return {
+			  fetchData:
+				  ()=>{fetchData(currentQuery)}
+ 	  	};
+	});
 
   // We'll start our table without any data
   const [data, setData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const [pageCount, setPageCount] = React.useState(0)
+  const [currentQuery, setCurrentQuery] = React.useState({})
   const [totalData, setTotalData] = React.useState(0)
   const fetchIdRef = React.useRef(0)
 
   const fetchData = React.useCallback(({ pageSize, pageIndex, searchQuery }) => {
+	setCurrentQuery({ pageSize, pageIndex, searchQuery })
     // This will get called when the table needs new data
     // You could fetch your data from literally anywhere,
     // even a server. But for this example, we'll just fake it.
@@ -231,20 +198,24 @@ function MainTable() {
         const endRow = startRow + pageSize
 
 
-        productService.getAll(`?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}`)
+        props.endPoint(`?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}`)
         .then(data => {
-            console.log(data);
-            setData(data.totalData)
+           
+			      setData(data.totalData)
+            console.log(data)
             if(data.totalCount.length>0){
                 setPageCount(Math.ceil(data.totalCount[0].count / pageSize))
-                setTotalData(data.totalCount[0].count)
+				        setTotalData(data.totalCount[0].count)
+                setLoading(false)
+                
             }
             else{
                 setPageCount(0)
-                setTotalData(0)
+				        setTotalData(0)
+				        setLoading(false)
             }
             
-        })
+		})
 
 
 
@@ -252,7 +223,7 @@ function MainTable() {
         // For now we'll just fake it, too
 
 
-        setLoading(false)
+       
       }
     }, 1000)
   }, [])
@@ -265,10 +236,11 @@ function MainTable() {
         fetchData={fetchData}
         loading={loading}
         pageCount={pageCount}
-        totalData={totalData}
+		totalData={totalData}
+		title={props.title}
       />
 
   )
-}
+})
 
 export { MainTable }

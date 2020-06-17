@@ -23,14 +23,7 @@ function Overview({ match }) {
             </h2>
             <p><Link to={`${path}/strains/create`}><button type="button" class="btn btn-success">AGREGAR STRAINS</button></Link></p>
             <hr></hr>
-            <h2 style={{color:"red"}}>
-            <strong>SERVER MANTENIANCE ON 15/6/2020:</strong> 11:00PM GTM-4:30 - EXPECTED TIME 30 MINUTES<br></br>
-            <p>Adding async table: the example can be tested bellow.</p>
-            </h2>
-
-            <br></br><br></br>
-
-            <MainTable />
+           
         </div>
     );
 }

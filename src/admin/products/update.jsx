@@ -106,7 +106,6 @@ function Update(props) {
             {({ errors, touched, setFieldValue, isSubmitting,values, handleChange, }) => (
             <div className="modal modal-blur fade show" id="modal-update-product" tabindex="-1" role="dialog" aria-modal="true" style={{paddingRight: "15px; display: block"}}>
                 <Form>
-                    {console.log(props.object.picture)}
                     <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div className="modal-content">
                             <div className="modal-header">

@@ -1,107 +1,37 @@
-import React,{ useEffect, useState } from 'react';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../../_components';
+import React,{ useRef, useState } from 'react';
+import { PageHeader, MainTable, TableCardHeader, SuperTable, LoadingSpinner } from '../../../_components';
 import { securityService, alertService } from '../../../_services';
 
-function Table({ match }) {
-    const [items, setItems] = useState("")
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [fetched, setFetched] = useState(false);
-
-    const columns = [{
-      dataField: 'user.name',
-      text: 'Responsible',
-      sort: true
-    }, {
-      dataField: 'date',
-      text: 'Date',
-      sort: true
-    },{
-      dataField: 'time',
-      text: 'Time',
-      sort: true
-    }, {
-      dataField: 'method',
-      text: 'Type',
-      sort: true
-    }, {
-      dataField: 'collectionName',
-      text: 'Target',
-      sort: true
-      }, {
-        dataField: 'ip',
-        text: 'IP',
-        sort: true
-        }, {
-          dataField: 'status',
-          text: 'Status',
-          sort: true
-          }
-      // , {
-      //   dataField: 'actions',
-      //   text: 'Actions',
-      //   sort: true,
-      //   formatter: (cell, row, rowIndex,) => (
-      //     <div>
-      //       <span>ID: {row.id}</span>
-      //       <br />
-      //       <span>state:adw</span>
-      //     </div>
-      //   ),
-      // }
-    ];
-    
-    const defaultSorted = [{
-      dataField: 'name',
-      order: 'desc'
-    }];
-
-    const fetch = async () => {
-      await securityService.getAllActivity()
-        .then((res)=>{
-
-          res.map(item => {
-            item.time=item.date.substr(item.date.indexOf("T")+1,5);
-            item.date=item.date.substr(0, item.date.indexOf("T"));
-          })
-
-          setItems(res)
-          setMutatedItems(res)
-          setFetched(true)
-        })
-    }
-    
-    useEffect(() => {
-      fetch()
-    }, [])
-    
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
-      }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.user.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.date.toLowerCase().includes(value.toLowerCase()) ||
-                  item.collectionName.toLowerCase().includes(value.toLowerCase()) ||
-                  item.ip.toLowerCase().includes(value.toLowerCase()) ||
-                  item.status.toLowerCase().includes(value.toLowerCase()) ||
-                  item.method.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
-
-
-    function renderTable(){
-      return  <div className="card">
-                <TableCardHeader title="Users activity" handleSearch={handleSearch} />
-                <div className="table-responsive">
-                  <SuperTable items={mutatedItems}  columns={columns}/> 
-                    {/* <p className="m-0 text-muted">Showing <span>{(activePage)?activePage:""}</span> to <span>8</span> of <span>{brands.length}</span> entries</p> */}
-                </div>
-              </div>
-    }
+function Table() {
+    const callApiTrigger = useRef()
+    const columns = [
+      {
+        Header: 'Responsible',
+        accessor: 'user.name'
+      },
+      {
+        Header: 'Date',
+        accessor: 'date'
+      },
+      {
+        Header: 'Type',
+        accessor: 'method',
+      },
+      {
+        Header: 'Target',
+        accessor: 'collectionName',
+      },
+      {
+        Header: 'IP',
+        accessor: 'ip',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+     
+    ]
+   
 
 
     return (
@@ -110,7 +40,7 @@ function Table({ match }) {
         <PageHeader title="Admin/Security/Activity"   subtitle="Users activity" />
         <div className="box">
 	    	{
-	    	  (fetched) ? renderTable() : <LoadingSpinner />       
+	    	  <MainTable ref={callApiTrigger} title={"Users activity"} endPoint={securityService.getAllActivity} columns={columns} />   
 	    	}
         </div> 
       </>

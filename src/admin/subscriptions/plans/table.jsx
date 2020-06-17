@@ -1,5 +1,5 @@
-import React,{ useEffect, useState } from 'react';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../../_components';
+import React,{ useRef, useState } from 'react';
+import { PageHeader, NoResults, TableCardHeader, SuperTable, MainTable } from '../../../_components';
 import { Create } from './create';
 import { Update } from './update';
 import { planService, alertService } from '../../../_services';
@@ -7,119 +7,90 @@ import $ from 'jquery';
 
 
 function Table({ match }) {
-    const { path } = match;
     const [scopedItem, setScopedItem] = useState("")
-    const [items, setItems] = useState("")
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [fetched, setFetched] = useState(false);
-    const defaultAvatar = "./static/user.png";
-    const columns = [{
-      dataField: 'name',
-      text: 'Name',
-      sort: true
-    }, {
-      dataField: 'price',
-      text: 'Price',
-      sort: true
-    },
-    {
-      dataField: 'priority',
-      text: 'Priority',
-      sort: true
-    },
-    {
-      dataField: 'days',
-      text: 'Days',
-      sort: true
-    },
-    
-    {
-      dataField: 'isEnabled',
-      text: 'Status',
-      sort: true,
-      formatter: (rowContent, row) => {
-        return ( row.isEnabled?<span className="badge badge-success">Active</span>:<span className="badge badge-danger">Disabled</span>)}
+    const callApiTrigger = useRef()
+    const _thisService=planService
 
-    },
-    {
-      dataField: 'description',
-      text: 'Description',
-      sort: true
-    }
-    ];
+    const columns = [
+      {
+        Header: 'Name',
+        accessor: 'name'
+      },
+      {
+        Header: 'Price',
+        accessor: 'price'
+      },
+      {
+        Header: 'Priority',
+        accessor: 'priority',
+      },
+      {
+        Header: 'Days',
+        accessor: 'days',
+      },
+      {
+        Header: 'Status',
+        accessor: row => ( row.isEnabled?<span className="badge badge-success">Active</span>:<span className="badge badge-danger">Disabled</span>)
+      },
+      {
+      Header: 'Actions',
+      width:"100px",
 
-    const fetch = async () => {
-      await planService.getAll()
-        .then((res)=>{
-          setItems(res)
-          setMutatedItems(res)
-          setFetched(true)
-        })
-    }
-    
-    useEffect(() => {
-      fetch()
-    }, [])
-    
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
+        Cell:({row})=>(
+          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+            <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                {/* <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+                  Details
+                </button> */}
+                <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
+                  Edit
+                </button>
+                <button onClick={()=>{deleteByID(row.original._id)}} class="dropdown-item">
+                  Delete
+                </button>
+              </div>
+            </span>
+        )
       }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.description.toLowerCase().includes(value.toLowerCase()) ||
-                  item._id.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
+  ]
 
-    function addNew(item){
-      setItems([...items, item])
-      setMutatedItems([...items, item]); 
-    }
+
+
+    function addNew(){
+      callApiTrigger.current.fetchData();
+	}
+	
     function updateOne(_id, newItem){
-      setItems(items.map(item => (item._id === _id ? newItem : item)))
-      setMutatedItems(items.map(item => (item._id === _id ? newItem : item)));
+      	callApiTrigger.current.fetchData();
     }
 
     function deleteByID(id){
-
-      if(window.confirm("Are you sure do you want to delete this item?")){
-        planService.delete(id).then(()=>{
-          let filteredState = items.filter( item => item._id !== id );
-          setItems(filteredState)
-          setMutatedItems(filteredState)
-          alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
-        })
-      };     
+      	if(window.confirm("Are you sure do you want to delete this item?")){
+        	_thisService.delete(id).then(()=>{
+            alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
+            callApiTrigger.current.fetchData();
+        	});
+      	};     
     }
+
+    // const details = (id) => {
+    //   history.push(`brands/${id}`)
+    // }
 
     function scopeItem(object){
-      setScopedItem(object);
-      $("#modal-update").modal("show");
+      	setScopedItem(object);
+      	$("#modal-update").modal("show");
     }
 
-    function renderTable(){
-      return  <div className="card">
-                <TableCardHeader title="Plans" handleSearch={handleSearch} />
-                  <div className="table-responsive">
-                    <SuperTable items={mutatedItems} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
-                  </div>
-              </div>
-    }
-  
+
     return (
       <>
         <Create addNew={addNew}/>
         <Update updateOne={updateOne} object={scopedItem}/>
         <PageHeader title="Admin/Plans" link="create" nameButton="Add plan" subtitle="Plans list" toggle="modal" target="#modal-create" />
         <div className="box">
-        {
-          (fetched) ? renderTable() : <LoadingSpinner />       
-        }
+          <MainTable ref={callApiTrigger} title={"PLANS"} endPoint={planService.getAll} columns={columns} scopeItem={scopeItem} deleteByID={deleteByID}/>
         </div>
       </>
     );

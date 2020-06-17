@@ -86,16 +86,6 @@ function Create(props) {
 		(createMode)?
 			create(fields,setSubmitting,resetForm):
 			update(fields,setSubmitting,resetForm)
-        	// .then((data) => {
-            // 	resetForm({});
-            //     alertService.success('Item added!', { keepAfterRouteChange: true });
-			// 	setPictures(picturesInitialState)
-			// 	if(!createMode){history.push('/admin/strains')}
-            // })
-            // .catch(error => {
-            //     setSubmitting(false);
-            //     alertService.error(error);
-			// });
 	}
 	
 	function create(fields, setSubmitting,resetForm) {
@@ -127,7 +117,7 @@ function Create(props) {
 
 	if(!createMode && !fetched) return <LoaderBounce />
     return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+        <Formik enableReinitialize initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
         {({ errors, touched, setFieldValue, isSubmitting, setFieldTouched, values, handleChange, handleReset, formikProps }) => (
         	<div className="row">
 				<div className="col-12">

@@ -23,8 +23,12 @@ function getAll(query) {
     else{fetchParam=`${baseUrl}${query}`}
     return fetchWrapper.get(fetchParam);
 }
-function getAllRequest() {
-    return fetchWrapper.get(baseUrl+"/requests/list");
+function getAllRequest(query) {
+    console.log(query)
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}/requests/list`}
+    else{fetchParam=`${baseUrl}/requests/list${query}`}
+    return fetchWrapper.get(fetchParam);
 }
 function getMyList() {
     return fetchWrapper.get(baseUrl+"/mylist");

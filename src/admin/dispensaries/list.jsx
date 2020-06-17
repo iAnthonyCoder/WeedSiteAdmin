@@ -1,5 +1,5 @@
-import React,{ useEffect, useState } from 'react';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components';
+import React,{ useRef, useState } from 'react';
+import { PageHeader, NoResults, TableCardHeader, SuperTable, MainTable } from '../../_components';
 import { brandService, alertService, dispensaryService } from '../../_services';
 import $ from 'jquery';
 import {history} from '../../_helpers';
@@ -7,103 +7,72 @@ const _thisService = dispensaryService;
 
 
 
-function List({ match }) {
-    const { path } = match;
-    const [scopedItem, setScopedItem] = useState("")
-    const [items, setItems] = useState("")
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [fetched, setFetched] = useState(false);
-    const defaultAvatar = "./static/user.png";
-    const columns = [{
-      dataField: 'name',
-      text: 'Name',
-      sort: true,
-    }, {
-      dataField: 'city.name',
-      text: 'City',
-      sort: true
-    }, {
-      dataField: 'address',
-      text: 'Address',
-      sort: true
-    }, {
-      dataField: 'phone',
-      text: 'Phone number',
-      sort: true
-    }
-    ];
+function List() {
+	const callApiTrigger = useRef()
+	const columns = [
+		{
+		  Header: 'Name',
+		  accessor: 'name',
+		},
+		{
+		  Header: 'City',
+		  accessor: 'city.name',
+		},
+		{
+		  Header: 'Address',
+		  accessor: 'address',
+		},
+		{
+		  Header: 'Phone number',
+		  accessor: 'phone',
+		},
+		{
+		  Header: 'Owner',
+		  accessor: 'user.name',
+		},
+		{
+		Header: 'Actions',
+		width:"100px",
+		  Cell:({row})=>(
+			<span style={{width:"100px"}} class="dropdown ml-1 position-static">
+			  <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+				<div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+				  <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+					Details
+				  </button>
+				</div>
+			  </span>
+		  )
+		}
+	]
 
-    // const firePagination = (length,pageChange, items) => {
-    //   setTotalItems(res.length);
-    //   _handlePageChange(1)
-    //   setPaginatedItems(res.slice(0,itemsPerPage))
-    // }
 
 
-    const fetch = async () => {
-    	await _thisService.getAll()
-        	.then((res)=>{
-          		setItems(res)
-          		setMutatedItems(res)
-          		setFetched(true)
-        	})
-    }
-    
-    useEffect(() => {
-      	fetch()
-    }, [])
-    
-    const handleSearch = async (e) => {
-    	const { value } = e.target;
-      	if(value.length < 1){
-        	setMutatedItems(items); 
-      	}
-      	else  {
-        	var searchResult = await items.filter((item)=>{
-          		return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-						  item.city.name.toLowerCase().includes(value.toLowerCase()) ||
-						  item.address.toLowerCase().includes(value.toLowerCase()) ||
-						  item.phone.toLowerCase().includes(value.toLowerCase()) ||
-                  		item._id.toLowerCase().includes(value.toLowerCase())
-        	});
-        	setMutatedItems(searchResult); 
-      	}
-    }
+
+
+
     
     const details = (id) => {
     	history.push(`users/${id}`)
     }
 
+    // function deleteByID(id){
+    //   	if(window.confirm("Are you sure do you want to delete this item?")){
+    //     	_thisService.delete(id).then(()=>{
+    //       		let filteredState = items.filter( item => item._id !== id );
+    //       		setItems(filteredState)
+    //       		setMutatedItems(filteredState)
+    //       		alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
+    //     	});
+    //   	};     
+    // }
 
-    function deleteByID(id){
-    
-      	if(window.confirm("Are you sure do you want to delete this item?")){
-        	_thisService.delete(id).then(()=>{
-          		let filteredState = items.filter( item => item._id !== id );
-          		setItems(filteredState)
-          		setMutatedItems(filteredState)
-          		alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
-        	});
-      	};     
-    }
-
-
-    function renderTable(){
-    	return  <div className="card">
-                	<TableCardHeader title="Dispensaries" handleSearch={handleSearch} />
-                  	<div className="table-responsive">
-                    	<SuperTable items={mutatedItems} details={details} columns={columns}/>
-                  	</div>
-              	</div>
-    }
 
 	return (
   		<>
     		<PageHeader title="Admin/Dispensaries" link="create" subtitle="Dispensaries list" />
     		<div className="box">
-    		{
-      			(fetched) ? renderTable() : <LoadingSpinner />       
-    		}
+				<MainTable ref={callApiTrigger} details={details} title={"DISPENSARIES"} endPoint={dispensaryService.getAll} columns={columns}/>
     		</div>
   		</>
 	);

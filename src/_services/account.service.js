@@ -72,8 +72,11 @@ function resetPassword(token, password) {
     return fetchWrapper.post(`${baseUrl}password/reset`, { token, password });
 }
 
-function getAll() {
-    return fetchWrapper.get(accountUrl);
+function getAll(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${accountUrl}`}
+    else{fetchParam=`${accountUrl}${query}`}
+    return fetchWrapper.get(fetchParam);
 }
 
 function getById(id) {

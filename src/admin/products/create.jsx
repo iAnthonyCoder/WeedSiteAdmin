@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { SingleSelect } from '../../_components'
+import { history } from '../../_helpers'
 import * as Yup from 'yup';
 import { productService, alertService, strainService, categoryService, brandService } from '../../_services';
 
-function Create() {
-
+function Create(props) {
+	const brandGetAll = brandService.getAll;
+	const categoryGetAll = categoryService.getAll;
+	const strainGetAll = strainService.getAll;
+	const createModeInitialValue=true;
+	const fetchedInitialState=false;
+	const itemInitialState={}
 	const picturesInitialState=[];
+	const [ createMode, setCreateMode ] = useState(createModeInitialValue)
 	const [pictures, setPictures] = useState(picturesInitialState)
+	const [ fetched, setFetched ] = useState(fetchedInitialState)
+	const [ item, setItem ] = useState(itemInitialState)
 
 	const removePicture = (pictureObj) => {
 		let filteredState = pictures.filter( picture => pictureObj !== picture );
@@ -28,39 +37,33 @@ function Create() {
 			}
         });
 
-    const initialValues = {
-        name: '',
-        category: '',
-        brand: '',
-        description: '',
-	};
+    // const initialValues = {
+    //     name: '',
+    //     category: '',
+	// 	brand: '',
+	// 	strain: '',
+    //     description: '',
+	// };
+	
 	
 	function showWidget(){
         widget.open()
     }
 
-    const [categories, setCategories] = useState("");
-	const [brands, setBrands] = useState("");
-	const [strains, setStrains] = useState("");
-	
-
-    const fetchItems = () => {
-      	categoryService.getAll().then((res) => {
-        	setCategories(res);
-      	})
-      	brandService.getAll().then((res) => {
-        	setBrands(res);
-		  })
-		  strainService.getAll().then((res) => {
-        	setStrains(res);
-      	})
+	const fetchItem = (id) => {
+		productService.getById(id).then( res => {
+			setItem(res.product);
+			setPictures(res.product.picture);
+			setFetched(true);
+		} )
 	}
-	
-
 
     useEffect(() => {
-      	fetchItems();
-    }, [])
+		if(props.match.params.id){
+			setCreateMode(false)
+			fetchItem(props.match.params.id)
+		}
+	}, [])
 
 
     const validationSchema = Yup.object().shape({
@@ -69,43 +72,80 @@ function Create() {
      	category: Yup.string()
      	    .required('Category is required'),
      	brand: Yup.string()
-     	    .required('Brand is required'),
+			 .required('Brand is required'),
+		strain: Yup.string(),
+     	    // .required('Strain is required'),
         description: Yup.string()
             .required('Description is required'),
-    });
+	});
+	
+	const initialValues = {
+        name: createMode?'':item.name,
+        description: createMode?'':item.description,
+        category: createMode?'':item.category,
+		brand: createMode?'':item.brand,
+		strain: createMode?'':item.strain,
+		description: createMode?'':item.description,
+		slug: createMode?'':item.slug,
+	};
 
-
-    function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        setStatus();
+	const clearFields = (fields) => {
 		fields.picture=pictures;
+		fields.strain = fields.strain._id
 		fields.category = fields.category._id
 		fields.brand = fields.brand._id
-		console.log(fields)
+		return fields
+	}
+	
+
+    function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
+		setStatus();
+		const clearedFields = clearFields(fields);
+		(createMode)?
+			create(clearedFields,setSubmitting,resetForm):
+			update(clearedFields,setSubmitting,resetForm)
 		
+	}
+	
+	function create(fields, setSubmitting,resetForm) {
         productService.create(fields)
-        	.then((data) => {
-            	resetForm({});
-                alertService.success('Item added!', { keepAfterRouteChange: true });
-				// $("#modal-new-product").modal("hide");
+            .then(() => {
+				alertService.success('Item added!', { keepAfterRouteChange: true });
 				setPictures(picturesInitialState)
-                // props.addNew(data.payload);
+				setSubmitting(false);
+				resetForm({});
+            })
+            .catch(() => {
+                setSubmitting(false);
+                // alertService.error(error);
+            });
+    }
+
+    function update(fields, setSubmitting) {
+		const id = item._id;
+        productService.update(id, fields)
+            .then(() => {
+                alertService.success('Update successful', { keepAfterRouteChange: true });
+                history.push('..');
             })
             .catch(error => {
                 setSubmitting(false);
-                alertService.error(error);
-			});
-		
+                // alertService.error(error);
+            });
     }
 
+
+
     return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+        <Formik enableReinitialize  initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
         {({ errors, touched, setFieldValue, isSubmitting, setFieldTouched, values, handleChange, handleReset, formikProps }) => (
         	<div className="row">
 				<div className="col-12">
 					<div className="card">
         				<Form>
+							{console.log(item)}
 							<div className="card-header">
-								<h5 className="modal-title">New product</h5>
+							<h5 className="modal-title">{createMode?"New":"Update"} product</h5>
               				</div>
 				  			<div className="card-body">
 				  				<div className="row">
@@ -117,14 +157,14 @@ function Create() {
       													value={values.category}
       												  	onChange={setFieldValue}
       												  	onBlur={setFieldTouched}
-      												  	error={errors.category}
+														error={errors.category}
+														endPoint={categoryGetAll}
 														touched={touched.category}
-														values={categories}
 														name={"category"}
 														title={"Category"}
       												/>
             	        						</div>
-            	      						</div>
+            	      						</div> 
             	      						<div className="col-lg-6">
             	        						<div className="mb-3">
 													<SingleSelect
@@ -133,7 +173,7 @@ function Create() {
       												  	onBlur={setFieldTouched}
       												  	error={errors.brand}
 														touched={touched.brand}
-														values={brands}
+														endPoint={brandGetAll}
 														name={"brand"}
 														title={"Brand"}
       												/>
@@ -144,15 +184,15 @@ function Create() {
 													<SingleSelect
       													value={values.strain}
       												  	onChange={setFieldValue}
-      												  	onBlur={setFieldTouched}
+														onBlur={setFieldTouched}
+														endPoint={strainGetAll}
       												  	error={errors.strain}
 														touched={touched.strain}
-														values={strains}
 														name={"strain"}
-														title={"Strains"}
+														title={"Strain"}
       												/>
             	        						</div>
-            	      						</div>
+            	      						</div> 
             	    					</div>
             	    					<div className="mb-3">
             	      						<label className="form-label">Name</label>

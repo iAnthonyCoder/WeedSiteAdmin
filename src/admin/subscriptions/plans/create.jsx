@@ -88,7 +88,7 @@ function Create(props) {
 								   <div className="mb-3">
              						<div>
             			 				<label className="form-label">Priority</label>
-            			 				<Field name="priority" type="number"  placeholder="Enter total priority" className={'form-control' + (errors.priority && touched.priority ? ' is-invalid' : '')} ></Field>
+            			 				<Field name="priority" type="number"  placeholder="Enter priority" className={'form-control' + (errors.priority && touched.priority ? ' is-invalid' : '')} ></Field>
             			 				<ErrorMessage name="priority" component="div" className="invalid-feedback" />
              						</div>
            						</div>

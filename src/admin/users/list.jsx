@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { accountService, alertService } from '../../_services';
-import { PageHeader, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components'
+import { PageHeader, MainTable, SuperTable, LoadingSpinner } from '../../_components'
 import { history } from "../../_helpers";
 const _thisService = accountService
 
@@ -12,96 +12,113 @@ function List() {
     const [mutatedItems, setMutatedItems] = useState(null)
     const [fetched, setFetched] = useState(false);
     const defaultAvatar = "/static/user.png";
-    const columns = [{
-      dataField: 'name',
-      text: 'Name',
-      sort: true,
-      formatter: (rowContent, row) => {
-        return (    
-          <div className="d-flex lh-sm py-1 align-items-center">
-            <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture:defaultAvatar}")`}}></span>
-            <div className="flex-fill"><div className="strong">{row.name}</div></div>
-          </div>
-        )
-      }
-    }, {
-      dataField: 'dispensary',
-      text: 'Dispensary',
-      sort: true, 
-      formatter: (rowContent, row) => {
-        return(
-          <>
+
+
+
+    const callApiTrigger = useRef()
+	const columns = [
+		{
+		  Header: 'Name',
+		  accessor: 'name',
+		},
+		{
+		  Header: 'Type',
+		  accessor: row => (
+        <>
            <div>{(row.type==="DISPENSARY")?"Dispensary owner":"Customer"}</div>
-           <div className="text-muted text-h5">{row.dispensary && row.dispensary.name}</div>
-          </>
-        )
-      }
+        </>
+      )
+		},
+		{
+		  Header: 'Email',
+		  accessor: 'email',
+		},
+		{
+		  Header: 'Status',
+		  cell:({row})=>(
+        ( row.original.isActive===true)?(<span className="badge badge-success">Active</span>):(<span className="badge badge-danger">Banned</span>)
+      )
+		},
+		{
+		  Header: 'Subscription',
+		  accessor: row=>(
+          (row.subscriptions)?(<span className="badge badge-success">{row.subscriptions.subscription_start} - {row.subscriptions.subscription_end}</span>):<span className="badge badge-danger">UNSUBSCRIBED</span>
+      )
+		},
+		{
+		Header: 'Actions',
+		width:"100px",
+		  Cell:({row})=>(
+			<span style={{width:"100px"}} class="dropdown ml-1 position-static">
+			  <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+				<div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+				  <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+					Details
+				  </button>
+				</div>
+			  </span>
+		  )
+		}
+	]
+
+
+    // const columns = [{
+    //   dataField: 'name',
+    //   text: 'Name',
+    //   sort: true,
+    //   formatter: (rowContent, row) => {
+    //     return (    
+    //       <div className="d-flex lh-sm py-1 align-items-center">
+    //         <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture:defaultAvatar}")`}}></span>
+    //         <div className="flex-fill"><div className="strong">{row.name}</div></div>
+    //       </div>
+    //     )
+    //   }
+    // }, {
+    //   dataField: 'dispensary',
+    //   text: 'Dispensary',
+    //   sort: true, 
+    //   formatter: (rowContent, row) => {
+    //     return(
+    //       <>
+    //        <div>{(row.type==="DISPENSARY")?"Dispensary owner":"Customer"}</div>
+    //        <div className="text-muted text-h5">{row.dispensary && row.dispensary.name}</div>
+    //       </>
+    //     )
+    //   }
       
-    }, {
-      dataField: 'email',
-      text: 'Email',
-      sort: true, 
-      formatter: (rowContent, row) => {
-        return(
-          <>
-          {row.email}
-          </>
-        )
-      }
-    }, {
-      dataField: 'isActive',
-      text: 'Status',
-      sort: true,
-      formatter: (rowContent, row) => {
-        return ( row.isActive?<span className="badge badge-success">Active</span>:<span className="badge badge-danger">Banned</span>)}
-    }, {
-      dataField: 'subscription',
-      text: 'Subscription',
-      sort: true,
-      formatter: (rowContent, row) => {
+    // }, {
+    //   dataField: 'email',
+    //   text: 'Email',
+    //   sort: true, 
+    //   formatter: (rowContent, row) => {
+    //     return(
+    //       <>
+    //       {row.email}
+    //       </>
+    //     )
+    //   }
+    // }, {
+    //   dataField: 'isActive',
+    //   text: 'Status',
+    //   sort: true,
+    //   formatter: (rowContent, row) => {
+    //     return ( row.isActive?<span className="badge badge-success">Active</span>:<span className="badge badge-danger">Banned</span>)}
+    // }, {
+    //   dataField: 'subscription',
+    //   text: 'Subscription',
+    //   sort: true,
+    //   formatter: (rowContent, row) => {
         
-        return (
-          (row.subscriptions)?(<p>{row.subscriptions.subscription_start} to {row.subscriptions.subscription_end}</p>):"Unsubscribed"
-        )
+    //     return (
+    //       (row.subscriptions)?(<p>{row.subscriptions.subscription_start} to {row.subscriptions.subscription_end}</p>):"Unsubscribed"
+    //     )
       
-      }
-      }
-    ];
+    //   }
+    //   }
+    // ];
 
-    // const firePagination = (length,pageChange, items) => {
-    //   setTotalItems(res.length);
-    //   _handlePageChange(1)
-    //   setPaginatedItems(res.slice(0,itemsPerPage))
-    // }
-
-
-    const fetch = async () => {
-      await _thisService.getAll()
-        .then((res)=>{
-          setItems(res)
-          setMutatedItems(res)
-          setFetched(true)
-        })
-    }
-    
-    useEffect(() => {
-      fetch()
-    }, [])
-    
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
-      }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.description.toLowerCase().includes(value.toLowerCase()) ||
-                  item._id.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
+   
 
 
     // function deleteByID(id){
@@ -115,6 +132,7 @@ function List() {
     //     });
     //   };     
     // }
+
     const details = (id) => {
 
       history.push(`users/${id}`)
@@ -126,32 +144,19 @@ function List() {
       if(window.confirm("Are you sure do you want to change the status of "+item.name+" ?")){
           accountService.updateIsActive(id,itemUpdated).then((res) => {
               alertService.success('Updated Sucessfully', { keepAfterRouteChange: true });
-              
-               setItems(items.map(item => (res._id === id ? res.payload : item)))
+              callApiTrigger.current.fetchData();
           });
       }
   }
 
-
-
-  if (!fetched) return <LoadingSpinner />;
   return (
     <>
-      <PageHeader title="Admin/Users" link="create" nameButton="Add user" subtitle="Users list" toggle="modal" target="#modal-create" />
-      <div className="box">
-      <div className="card">
-        <TableCardHeader title="Users" handleSearch={handleSearch} />
-          <div className="table-responsive">
-            <SuperTable items={mutatedItems} details={details}  changeStatus={changeStatus}  columns={columns}/>
-          </div>
-        </div>
-      </div>
+    		<PageHeader title="Admin/Users" link="create" subtitle="Users list" subtitle="Users list" toggle="modal" target="#modal-create" />
+    		<div className="box">
+				<MainTable items={mutatedItems} title={'USERS'} details={details} endPoint={accountService.getAll}  changeStatus={changeStatus}  columns={columns}/>
+    		</div>
     </>
   )}
-
-  // List.propTypes = {
-  //   mutatedItems: PropTypes.arrayOf(PropTypes.object).isRequired
-  // }
 
 export { List };
 

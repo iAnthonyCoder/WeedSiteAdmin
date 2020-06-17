@@ -10,10 +10,16 @@ export const securityService = {
     getAllSessions
 };
 
-function getAllActivity() {
-    return fetchWrapper.get(baseUrl+"/activity");
+function getAllActivity(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}/activity`}
+    else{fetchParam=`${baseUrl}/activity${query}`}
+    return fetchWrapper.get(fetchParam);
 }
 
-function getAllSessions() {
-    return fetchWrapper.get(baseUrl+"/sessions");
+function getAllSessions(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}/sessions`}
+    else{fetchParam=`${baseUrl}/sessions${query}`}
+    return fetchWrapper.get(fetchParam);
 }

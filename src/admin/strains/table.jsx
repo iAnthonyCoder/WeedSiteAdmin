@@ -1,149 +1,97 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useRef} from 'react';
 import { Link } from 'react-router-dom';
 import { strainService, alertService } from '../../_services';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../_components';
-import { Create } from './create';
+import { PageHeader, MainTable } from '../../_components';
 import $ from "jquery"
 import { Update } from './update'
 import { history } from '../../_helpers'
 
 
 function Table({ match }) {
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [items, setItems] = useState("");
-    
-    const [filtering, setFiltering] = useState("");
+  const callApiTrigger = useRef()
+  const _thisService = strainService
     const [scopedItem, setScopedItem] = useState("")
-    const [fetched, setFetched] = useState(false);
-    const columns = [{
-      dataField: 'name',
-      text: 'Name',
-      sort: true,
-      formatter: (rowContent, row) => {
-        return (    
-          <div className="d-flex lh-sm py-1 align-items-center">
-            <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture[0]:''}")`}}></span>
-            <div className="flex-fill"><div className="strong">{row.name}</div></div>
-          </div>
+    const columns = [
+      {
+        Header: 'Name',
+        accessor: 'name'
+      },
+      {
+        Header: 'ID',
+        accessor: '_id',
+      },
+      {
+        Header: 'Type',
+        accessor: 'type',
+      },
+      {
+        Header: 'Slug',
+        accessor: 'slug',
+      },
+      {
+      Header: 'Actions',
+      width:"100px",
+
+        Cell:({row})=>(
+          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+            <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+                  Details
+                </button>
+                <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
+                  Edit
+                </button>
+                <button onClick={()=>{deleteByID(row.original._id)}} class="dropdown-item">
+                  Delete
+                </button>
+              </div>
+            </span>
         )
       }
-    }, {
-      dataField: 'type',
-      text: 'Type',
-      sort: true
-    }, {
-      dataField: 'slug',
-      text: 'Slug',
-      sort: true
-      }
-    ];
+  ]
 
 
 
 
-    const fetchItems = () => {
-      strainService.getAll().then((res) => {setItems(res);setMutatedItems(res);setFetched(true)})
+
+    function addNew(){
+      callApiTrigger.current.fetchData();
+	}
+	
+    function updateOne(_id, newItem){
+      	callApiTrigger.current.fetchData();
     }
-    
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
-      }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.name.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
-
-  
-
-    // useEffect(() => {
-    //   var filterRules = [];
-    //   var searchResult="";
-    //   for (var n in filtering) {
-    //     if (filtering.hasOwnProperty(n)) {
-    //       filterRules.push(filtering[n])
-    //     }
-    //   }
-
-    //   filterProducts(filterRules);
-    // }, [filtering])
-
-
-
-    function addNew(item){
-  
-      setItems([...items, item])
-      setMutatedItems([...items, item]); 
-    }
-
-
 
     function deleteByID(id){
-      if(window.confirm("Are you sure do you want to delete this item?")){
-        strainService.delete(id).then(()=>{
-          let filteredState = items.filter( item => item._id !== id );
-          setItems(filteredState)
-          setMutatedItems(filteredState)
-          alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
-        });
-      };     
-    }
-
-    function scopeItem(object){
-      
-      history.push(`strains/update/${object._id}`)
-    
-      // $("#modal-update-product").modal("show");
-    }
-    
-    function updateOne(_id, newItem){
-      setItems(items.map(item => (item._id === _id ? newItem : item)))
-      setMutatedItems(items.map(item => (item._id === _id ? newItem : item)));
-      $("#modal-update-product").modal("hide");
+      	if(window.confirm("Are you sure do you want to delete this item?")){
+        	_thisService.delete(id).then(()=>{
+            alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
+            callApiTrigger.current.fetchData();
+        	});
+      	};     
     }
 
     const details = (id) => {
-
-      history.push(`products/${id}`)
+      history.push(`brands/${id}`)
     }
 
-    
-
-    useEffect(() => {
-      fetchItems();
-    }, [])
-
-
-    function renderTable(){
-      return  <div className="card">
-                <TableCardHeader title="Strains" handleSearch={handleSearch} />
-                  <div className="table-responsive">
-                    <SuperTable items={mutatedItems} details={details} scopeItem={scopeItem} deleteByID={deleteByID} columns={columns}/>
-                  </div>
-              </div>
+    function scopeItem(object){
+        history.push(`strains/update/${object._id}`)
     }
-  
-    if(!fetched) return <LoadingSpinner /> 
-    return (
-      <>
-        {/* <Create addNew={addNew}/> */}
-        <Update updateOne={updateOne} object={scopedItem}/>
-        <PageHeader title="Admin/Strains"  link="strains/create" nameButton="Add strain" subtitle="Strains list" />
-        <div className="box">
-        {
-          renderTable()     
-        }
-        </div>
-      </>
-    );
+
+
+
+	return (
+		<>
+	    	<PageHeader title="Admin/Strains"  link="strains/create" nameButton="Add strain" subtitle="Strains list" />
+	    	<div className="box">
+	    	  <MainTable ref={callApiTrigger} details={details} title={"STRAINS"} endPoint={strainService.getAll} columns={columns} scopeItem={scopeItem} deleteByID={deleteByID}/>
+	    	</div>
+		</>
+	)
 }
-
 export { Table };
-
 
 
 

@@ -17,8 +17,8 @@ function Overview({ match }) {
                 setSubscription(subscription)
                 setComponentMode(1)
             }else{
-                planService.getAll().then(plans => {
-                    setPlans(plans)
+                planService.getAll("?size=20&page=0").then(plans => {
+                    setPlans(plans.totalData)
                     setComponentMode(0)
                 })
             }

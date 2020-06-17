@@ -1,5 +1,5 @@
-import React,{ useEffect, useState } from 'react';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../../_components';
+import React,{ useRef, useState } from 'react';
+import { PageHeader, NoResults, TableCardHeader, MainTable, LoadingSpinner } from '../../../_components';
 import { Update } from './update';
 import { purchaseService, alertService } from '../../../_services';
 import $ from 'jquery';
@@ -11,39 +11,61 @@ const _thisSectionPl = "Purchases";
 
 
 function Pending({ match }) {
+    const callApiTrigger = useRef()
     const { path } = match;
     const [scopedItem, setScopedItem] = useState("")
     const [items, setItems] = useState("")
     const [mutatedItems, setMutatedItems] = useState("")
     const [fetched, setFetched] = useState(false);
     const defaultAvatar = "./static/user.png";
+    
     const columns = [
       {
-      dataField: 'method',
-      text: 'Method',
-      sort: true
-    }, {
-      dataField: 'date',
-      text: 'Date',
-      sort: true
-    }, {
-      dataField: 'planDetails.name',
-      text: 'Plan',
-      sort: true
-      },{
-      dataField: 'reference',
-      text: 'Reference',
-      sort: true
-      }, {
-        dataField: 'amount',
-        text: 'Amount',
-        sort: true
-        }, {
-          dataField: 'status',
-          text: 'Status',
-          sort: true
-          }
-    ];
+        Header: 'Method',
+        accessor: 'method'
+      },
+      {
+        Header: 'Date',
+        accessor: 'date'
+      },
+      {
+        Header: 'Plan',
+        accessor: 'plan',
+      },
+      {
+        Header: 'Reference',
+        accessor: 'reference',
+      },
+      {
+        Header: 'amount',
+        accessor: 'amount',
+      },
+      {
+        Header: 'Status',
+        accessor: row => ( row.status=="ACEPTED"?<span className="badge badge-success">ACEPTED</span>:<span className="badge badge-danger">REJECTED</span>)
+      },
+      {
+      Header: 'Actions',
+      width:"100px",
+
+        Cell:({row})=>(
+          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+            <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                {/* <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+                  Details
+                </button> */}
+                <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
+                  Edit
+                </button>
+                {/* <button onClick={()=>{deleteByID(row.original._id)}} class="dropdown-item">
+                  Delete
+                </button> */}
+              </div>
+            </span>
+        )
+      }
+    ]
 
     // const firePagination = (length,pageChange, items) => {
     //   setTotalItems(res.length);
@@ -52,36 +74,9 @@ function Pending({ match }) {
     // }
 
 
-    const fetch = async () => {
-      await _thisService.getAllPending()
-        .then((res)=>{
-          res.map(item => {
-            item.date=item.date.substr(0, item.date.indexOf("T"));
-          })
-          setItems(res)
-          setMutatedItems(res)
-          setFetched(true)
-        })
-    }
     
-    useEffect(() => {
-      fetch()
-    }, [])
     
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
-      }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.description.toLowerCase().includes(value.toLowerCase()) ||
-                  item._id.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
+   
 
     function updateOne(id, newItem){
       let filteredState = items.filter( item => item._id !== id );
@@ -107,23 +102,13 @@ function Pending({ match }) {
     }
 
 
-function renderTable(){
-  return  <div className="card">
-            <TableCardHeader title={_thisSectionPl} handleSearch={handleSearch} />
-              <div className="table-responsive">
-                <SuperTable items={mutatedItems}  scopeItem={scopeItem}  columns={columns}/>
-              </div>
-          </div>
-}
 
 return (
   <>
     <Update updateOne={updateOne} object={scopedItem}/>
     <PageHeader title={`Admin/Requests/${_thisSection}`} link="create" subtitle={`${_thisSectionPl} list`} toggle="modal" target="#modal-create" />
     <div className="box">
-    {
-      (fetched) ? renderTable() : <LoadingSpinner />       
-    }
+      <MainTable ref={callApiTrigger} title={"PENDING PURCHASES"} endPoint={purchaseService.getAllPending} scopeItem={scopeItem} columns={columns} />  
     </div>
   </>
 );

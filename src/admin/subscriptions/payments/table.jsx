@@ -1,9 +1,8 @@
-import React,{ useEffect, useState } from 'react';
-import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner } from '../../../_components';
-import { Update } from './update';
+import React,{ useEffect, useState, useRef } from 'react';
+import { PageHeader, NoResults, TableCardHeader, SuperTable, MainTable } from '../../../_components';
 import { purchaseService, alertService } from '../../../_services';
+import { Update } from './update';
 import $ from 'jquery';
-import Pagination from "react-js-pagination";
 const _thisService = purchaseService;
 const _thisSection = "Purchase";
 const _thisSectionPl = "Purchases";
@@ -11,119 +10,70 @@ const _thisSectionPl = "Purchases";
 
 
 function Table({ match }) {
-    const { path } = match;
-    const [scopedItem, setScopedItem] = useState("")
-    const [items, setItems] = useState("")
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [fetched, setFetched] = useState(false);
-    const defaultAvatar = "./static/user.png";
+  const [scopedItem, setScopedItem] = useState("")
+  const callApiTrigger = useRef()
+  const _thisService=purchaseService
+
+
     const columns = [
       {
-      dataField: 'method',
-      text: 'Method',
-      sort: true
-    }, {
-      dataField: 'date',
-      text: 'Date',
-      sort: true
-    }, {
-      dataField: 'planDetails.name',
-      text: 'Plan',
-      sort: true
-      },{
-      dataField: 'reference',
-      text: 'Reference',
-      sort: true
-      }, {
-        dataField: 'amount',
-        text: 'Amount',
-        sort: true
-        }, {
-          dataField: 'status',
-          text: 'Status',
-          sort: true
-          }
-    ];
+        Header: 'Method',
+        accessor: 'method'
+      },
+      {
+        Header: 'Date',
+        accessor: 'date'
+      },
+      {
+        Header: 'Plan',
+        accessor: 'plan',
+      },
+      {
+        Header: 'Reference',
+        accessor: 'reference',
+      },
+      {
+        Header: 'amount',
+        accessor: 'amount',
+      },
+      {
+        Header: 'Status',
+        accessor: row => ( row.status=="ACEPTED"?<span className="badge badge-success">ACEPTED</span>:<span className="badge badge-danger">REJECTED</span>)
+      },
+      {
+      Header: 'Actions',
+      width:"100px",
 
-    // const firePagination = (length,pageChange, items) => {
-    //   setTotalItems(res.length);
-    //   _handlePageChange(1)
-    //   setPaginatedItems(res.slice(0,itemsPerPage))
-    // }
-
-
-    const fetch = async () => {
-      await _thisService.getAll()
-        .then((res)=>{
-          res.map(item => {
-            item.date=item.date.substr(0, item.date.indexOf("T"));
-          })
-          setItems(res)
-          setMutatedItems(res)
-          setFetched(true)
-        })
-    }
-    
-    useEffect(() => {
-      fetch()
-    }, [])
-    
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
-      }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.description.toLowerCase().includes(value.toLowerCase()) ||
-                  item._id.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
-
-    // function updateOne(_id, newItem){
-    //   console.log("object")
-    //   setItems(items.map(item => (item._id === _id ? newItem : item)))
-    //   setMutatedItems(items.map(item => (item._id === _id ? newItem : item)));
-    // }
-
-    // function deleteByID(id){
-    //   console.log(id);
-    //   if(window.confirm("Are you sure do you want to delete this item?")){
-    //     _thisService.delete(id).then(()=>{
-    //       let filteredState = items.filter( item => item._id !== id );
-    //       setItems(filteredState)
-    //       setMutatedItems(filteredState)
-    //       alertService.success('Item deleted successfully', { keepAfterRouteChange: true })
-    //     });
-    //   };     
-    // }
-
-    // function scopeItem(object){
-    //   setScopedItem(object);
-    //   $("#modal-update").modal("show");
-    // }
-
-
-function renderTable(){
-  return  <div className="card">
-            <TableCardHeader title={_thisSectionPl} handleSearch={handleSearch} />
-              <div className="table-responsive">
-                <SuperTable items={mutatedItems}  columns={columns}/>
+        Cell:({row})=>(
+          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+            <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                {/* <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+                  Details
+                </button> */}
+                <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
+                  Edit
+                </button>
+                {/* <button onClick={()=>{deleteByID(row.original._id)}} class="dropdown-item">
+                  Delete
+                </button> */}
               </div>
-          </div>
-}
+            </span>
+        )
+      }
+    ]
+ 
+    function scopeItem(object){
+      setScopedItem(object);
+      $("#modal-update").modal("show");
+    }
 
 return (
   <>
     <Update object={scopedItem}/>
     <PageHeader title={`Admin/Requests/${_thisSection}`} link="create" subtitle={`${_thisSectionPl} list`} toggle="modal" target="#modal-create" />
     <div className="box">
-    {
-      (fetched) ? renderTable() : <LoadingSpinner />       
-    }
+      <MainTable ref={callApiTrigger} title={"PURCHASES"} endPoint={purchaseService.getAll} columns={columns} />  
     </div>
   </>
 );

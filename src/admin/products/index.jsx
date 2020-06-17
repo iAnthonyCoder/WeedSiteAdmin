@@ -12,8 +12,9 @@ function Products({ match }) {
     return (
                 <Switch>
                     <Route exact path={path} component={Table} />
-                    <Route path={`${path}/listbeta`} component={List} />
+                    {/* <Route path={`${path}/listbeta`} component={List} /> */}
                     <Route path={`${path}/create`} component={Create} />
+                    <Route path={`${path}/update/:id`} component={Create} />
                     <Route path={`${path}/:id`} component={Details} />
                 </Switch>
     );

@@ -1,96 +1,67 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import { Link } from 'react-router-dom';
 
 import { productService } from '../_services';
-import { PageHeader, TableCardHeader, UserTable, LoadingSpinner } from '../_components';
+import {history} from '../_helpers'
+import { PageHeader, TableCardHeader, UserTable, LoadingSpinner, MainTable } from '../_components';
 import { Add } from '../packages/add'
 import $ from 'jquery';
 
 function Table({ match }) {
     const [scopedItem, setScopedItem] = useState("")
-    const [mutatedItems, setMutatedItems] = useState("")
-    const [items, setItems] = useState("");
-    const [fetched, setFetched] = useState(false);
+    const callApiTrigger = useRef()
 
-    const columns = [{
-      dataField: 'name',
-      text: 'Name',
-      sort: true,
-      formatter: (rowContent, row) => {
-        return (    
-          <div className="d-flex lh-sm py-1 align-items-center">
-            <span className="avatar mr-2" style={{backgroundImage: `url("${(row && row.picture)?row.picture:''}")`}}></span>
-            <div className="flex-fill"><div className="strong">{row.name}</div></div>
-          </div>
+    const columns = [
+      {
+        Header: 'Name',
+        accessor: 'name'
+      },
+      {
+        Header: 'Category',
+        accessor: row => row.category.name
+      },
+      {
+        Header: 'Brand',
+        accessor: row => row.brand.name
+      },
+      {
+        Header: 'Strain',
+        accessor: "a",
+      },
+      {
+      Header: 'Actions',
+      width:"100px",
+
+        Cell:({row})=>(
+          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+            <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+                  Details
+                </button>
+                {/* <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
+                  Add into my menu
+                </button> */}
+              </div>
+            </span>
         )
       }
-    }, {
-      dataField: 'category.name',
-      text: 'Category',
-      sort: true
-    }, {
-      dataField: 'brand.name',
-      text: 'Brand',
-      sort: true
-    }, {
-      dataField: 'slug',
-      text: 'Slug',
-      sort: true
+  ]
+
+      const details = (id) => {
+        history.push(`products/${id}`)
       }
-    ];
-
-    const fetchItems = () => {
-      productService.getAll().then((res) => {setItems(res);setMutatedItems(res); setFetched(true)})
-     
-    }
-
-    useEffect(() => {
-      fetchItems();
-      
-    }, [])
-
   
-
-    const handleSearch = async (e) => {
-      const { value } = e.target;
-      if(value.length < 1){
-        setMutatedItems(items); 
-      }
-      else  {
-        var searchResult = await items.filter((item)=>{
-          return  item.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.description.toLowerCase().includes(value.toLowerCase()) ||
-                  item.category.name.toLowerCase().includes(value.toLowerCase()) ||
-                  item.brand.name.toLowerCase().includes(value.toLowerCase())
-        });
-        setMutatedItems(searchResult); 
-      }
-    }
-
-    
-    function scopeItem(object){
-      setScopedItem(object);
-      $("#modal-new-package").modal("show");
-    }
-
-
-    function renderTable(){
-      return  <div className="card">
-                <TableCardHeader title="Products" handleSearch={handleSearch} />
-                  <div className="table-responsive">
-                    <UserTable items={mutatedItems} scopeItemAdd={scopeItem} columns={columns}/>
-                  </div>
-              </div>
-    }
   
     return (
       <>
         <Add product={scopedItem} />
-        <PageHeader title="Available products" link="/product/create" nameButton="Request a product inclussion" subtitle="Right click on an Item and select Add option"/>
+        <PageHeader title="Available products" 
+        // link="/product/create" 
+        // nameButton="Request a brand product inclussion" 
+        subtitle="Right click on an Item and select Add option"/>
         <div className="box">
-        {
-          (fetched) ? renderTable() : <LoadingSpinner />       
-        }
+          <MainTable ref={callApiTrigger} title={"BRAND PRODUCTS"} endPoint={productService.getAll} columns={columns} />
         </div>
       </>
     );

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery'
-import { productService } from '../../_services';
+import { strainService } from '../../_services';
 import { PageHeader, LoaderBounce } from '../../_components';
 import ReactStars from 'react-rating-stars-component'
 
@@ -18,7 +18,7 @@ function Details(props) {
 
 
     const fetchItems = () => {
-      productService.getById(props.match.params.id).then((res) => {
+      strainService.getById(props.match.params.id).then((res) => {
         setItem(res.product);
         setRetailers(res.retailers);
         setScopedPicture(res.product.picture[0])
