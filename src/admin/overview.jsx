@@ -70,7 +70,7 @@ function Overview({ match }) {
                         <table class="table card-table table-vcenter">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Product</th>
                                     <th>Date</th>
                                     <th>Time</th>
                                 </tr>
@@ -79,7 +79,7 @@ function Overview({ match }) {
                                 {
                                     tableData.map(dat => 
                                         <tr>
-                                            <td><Link to={`admin/products/${dat.product._id}`}>{dat.product.name}</Link></td>
+                                            <td><Link to={`admin/products/${dat.itemId}`}>{dat.itemId}</Link></td>
                                             <td>{dat.date.substr(0,dat.date.indexOf("T"))}</td>
                                             <td>{dat.date.substr(dat.date.indexOf("T")+1,8)}</td>
                                         </tr>
