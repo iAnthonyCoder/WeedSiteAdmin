@@ -15,6 +15,9 @@ function Overview({ match }) {
     const [addedRecords, setAddedRecords] = useState(addedRecordsInitialState)
     const [month, setMonth] = useState(monthInitialState)
     const [tableData, setTableData] = useState(addedRecordsInitialState)
+    const [totalRevenue, setTotalRevenue] = useState(monthInitialState)
+    const [totalCount, setTotalCount] = useState(monthInitialState)
+
     const fetch = () => {
         securityService.getAddedRecords()
             .then(res => {
@@ -32,6 +35,8 @@ function Overview({ match }) {
                     setAddedRecords(data)
                     setMonth(res.chartData[0]._id)
                     setTableData(res.tableData)
+                    setTotalCount(res.totalDataCount[0].count)
+                    setTotalRevenue(res.totalRevenue)
             })
             .catch()
     }
@@ -45,7 +50,7 @@ function Overview({ match }) {
     return (
         <div>
             <PageHeader title="Admin/Overview" link="admin/products/create" nameButton="Add product" subtitle="Dashboard" />
-            <div class="col-lg-8">
+            <div class="row"><div class="col-lg-9">
                 <div class="card">
                     <div className="card-body">
                         <h3 class="card-title">Lastest added products</h3>
@@ -59,8 +64,8 @@ function Overview({ match }) {
                             }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="day" tickFormatter={(label) => `${month} ${label}`}  />
-                            <YAxis />
+                            <XAxis tick={false} dataKey="day" tickFormatter={(label) => `${month} ${label}`}  />
+                            <YAxis tick={false} />
                             <Tooltip />
                             <Area name="Added Items" type="monotone" dataKey="count" stroke="#7223b5" fill="#7a39b1"  />
                         </AreaChart>
@@ -91,7 +96,43 @@ function Overview({ match }) {
                     </div>
                 </div>
             </div> 
+
+            
+                <div class="col-lg-3">
+            <div class="card">
+                <div class="card-body p-2 text-center">
+                <div class="text-right text-green">
+                        <span class="text-green d-inline-flex align-items-center lh-1">
+                        </span>
+                      </div>
+                    <div class="text-right text-green">  
+                </div>
+                <div class="h1 m-0">{totalCount}</div>
+                    <div class="text-muted mb-4">Added products</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-2 text-center">
+                <div class="text-right text-green">
+                        <span class="text-green d-inline-flex align-items-center lh-1">
+                        </span>
+                      </div>
+                    <div class="text-right text-green">  
+                </div>
+                <div class="h1 m-0">${totalRevenue}</div>
+                    <div class="text-muted mb-4">Total revenue</div>
+                </div>
+            </div>
+            </div>
+
+
+            </div>
+
+            
+
+
         </div>
+        
     );
 }
 
