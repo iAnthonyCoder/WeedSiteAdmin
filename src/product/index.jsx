@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import { Table } from './table';
 import { Create } from './create';
-import { Mylist } from './mylist';
+import { Mymenu } from './mymenu';
 
 function Product({ match }) {
     const { path } = match;
@@ -14,8 +14,9 @@ function Product({ match }) {
                 <Switch>
                     {/* <Route exact path={path} component={Table} /> */}
                     <Route path={`${path}/list`} component={Table} />
-                    <Route path={`${path}/create`} component={Create} />
-                    <Route path={`${path}/mylist`} component={Mylist} />
+                    <Route path={`${path}/mymenu/create`} component={Create} />
+                    <Route path={`${path}/mymenu/:id`} component={Create} />
+                    <Route path={`${path}/mymenu`} component={Mymenu} />
                 </Switch>
             </div>
 

@@ -1,7 +1,7 @@
 import React, {useState, useRef} from 'react';
 import { Link } from 'react-router-dom';
 
-import { productService } from '../_services';
+import { menuproductService, productService, alertService } from '../_services';
 import {history} from '../_helpers'
 import { PageHeader, TableCardHeader, UserTable, LoadingSpinner, MainTable } from '../_components';
 import { Add } from '../packages/add'
@@ -39,6 +39,9 @@ function Table({ match }) {
                 <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
                   Details
                 </button>
+                <button onClick={()=>{addIntoMyMenu(row.original._id)}} class="dropdown-item">
+                  Add into my menu
+                </button>
                 {/* <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
                   Add into my menu
                 </button> */}
@@ -52,6 +55,15 @@ function Table({ match }) {
         history.push(`products/${id}`)
       }
   
+      const addIntoMyMenu = (productId) =>{
+        menuproductService.create({product: productId})
+          .then(() => {
+              alertService.success('Item added!', { keepAfterRouteChange: true });
+          })
+          .catch(() => {
+
+          });
+      }
   
     return (
       <>

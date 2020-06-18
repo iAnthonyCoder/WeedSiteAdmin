@@ -346,7 +346,7 @@ function Nav() {
                     				</a>
                     				<ul className="dropdown-menu">
                       					<li>
-                      					  	<NavLink activeClassName="active" className="dropdown-item" to={`/product/mylist`}>
+                      					  	<NavLink activeClassName="active" className="dropdown-item" to={`/product/mymenu`}>
                       					  	  	My product list
                       					  	</NavLink>
                       					</li>

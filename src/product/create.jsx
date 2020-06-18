@@ -1,198 +1,239 @@
 import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { SingleSelect } from '../_components'
+import { history } from '../_helpers'
 import * as Yup from 'yup';
+import { menuproductService, alertService, strainService, categoryService } from '../_services';
 
-import { productService, alertService, categoryService, brandService } from '../_services';
+function Create(props) {
+	const categoryGetAll = categoryService.getAll;
+	const strainGetAll = strainService.getAll;
+	const createModeInitialValue=true;
+	const fetchedInitialState=false;
+	const itemInitialState={}
+	const picturesInitialState=[];
+	const [ createMode, setCreateMode ] = useState(createModeInitialValue)
+	const [pictures, setPictures] = useState(picturesInitialState)
+	const [ fetched, setFetched ] = useState(fetchedInitialState)
+	const [ item, setItem ] = useState(itemInitialState)
 
-function Create({ history }) {
-   
+	const removePicture = (pictureObj) => {
+		let filteredState = pictures.filter( picture => pictureObj !== picture );
+        setPictures(filteredState)
+	}
+	
+	const widget = window.cloudinary.createUploadWidget({
+        cloudName: 'timj111',
+		cropping: true,
+		multiple: false,
+		showSkipCropButton:true,
+		croppingAspectRatio: 1,
+        uploadPreset: 'ymhijlld'}, 
+        (error, result) => { 
+            if (!error && result && result.event === "success") { 
+				let url = result.info.url
+				setPictures(pictures.concat(url))
+			}
+        });
 
-    const initialValues = {
-        name: '',
-        category: '',
-        brand: '',
-        description: '',
-    };
-
-    const [categories, setCategories] = useState("");
-    const [brands, setBrands] = useState("");
-
-    const fetchItems = () => {
-      categoryService.getAll().then((res) => {
-        setCategories(res);
-      })
-      brandService.getAll().then((res) => {
-        setBrands(res);
-      })
+    // const initialValues = {
+    //     name: '',
+    //     category: '',
+	// 	brand: '',
+	// 	strain: '',
+    //     description: '',
+	// };
+	
+	
+	function showWidget(){
+        widget.open()
     }
 
-    useEffect(() => {
-      fetchItems();
-    }, [])
+	const fetchItem = (id) => {
+		menuproductService.getById(id).then( res => {
+			setItem(res);
+			setPictures(res.picture);
+			setFetched(true);
+		} )
+	}
 
+    useEffect(() => {
+		if(props.match.params.id){
+			setCreateMode(false)
+			fetchItem(props.match.params.id)
+		}
+	}, [])
 
 
     const validationSchema = Yup.object().shape({
         name: Yup.string()
             .required('Name is required'),
-        category: Yup.string()
-            .required('Category is required'),
-        brand: Yup.string()
-            .required('Brand is required'),
+     	category: Yup.string()
+     	    .required('Category is required'),
+		strain: Yup.string(),
+     	    // .required('Strain is required'),
         description: Yup.string()
             .required('Description is required'),
-        // picture: Yup
-        // .mixed()
-        // .required("A file is required")
-        // // .test(
-        // //   "fileSize",
-        // //   "File too large",
-        // //   value => value && value.size <= FILE_SIZE
-        // // )
-        // .test(
-        //   "fileFormat",
-        //   "Unsupported Format",
-        //   value => value && SUPPORTED_FORMATS.includes(value.type)
-        // )
-    });
+	});
+	
+	const initialValues = {
+        name: createMode?'':item.name,
+        description: createMode?'':item.description,
+        category: createMode?'':item.category,
+		strain: createMode?'':item.strain,
+		description: createMode?'':item.description,
+	};
 
-    const getSlug = (text) => {
-        var lowerText = text.toLowerCase();
-        var slug = lowerText.replace(/[^a-zA-Z0-9]+/g,'-');
-        return slug;    
-    };
+	const clearFields = (fields) => {
+		fields.picture=pictures;
+		fields.strain = fields.strain._id
+		fields.category = fields.category._id
+		return fields
+	}
+	
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        setStatus();
-        fields.slug=getSlug(fields.name);
-      
-        productService.create(fields)
+		setStatus();
+		const clearedFields = clearFields(fields);
+		(createMode)?
+			create(clearedFields,setSubmitting,resetForm):
+			update(clearedFields,setSubmitting,resetForm)
+		
+	}
+	
+	function create(fields, setSubmitting,resetForm) {
+        menuproductService.create(fields)
             .then(() => {
-               resetForm({});
-                alertService.success('Request sent!', { keepAfterRouteChange: true });
-                history.push('/');
+				alertService.success('Item added!', { keepAfterRouteChange: true });
+				setPictures(picturesInitialState)
+				setSubmitting(false);
+				resetForm({});
             })
-            .catch(error => {
-                setSubmitting(false);
-                alertService.error(error);
+            .catch(() => {
+				setSubmitting(false);
+				setPictures(picturesInitialState)
+				resetForm({});
+                // alertService.error(error);
             });
     }
 
+    function update(fields, setSubmitting, resetForm) {
+		const id = item._id;
+        menuproductService.update(id, fields)
+            .then(() => {
+                alertService.success('Update successful', { keepAfterRouteChange: true });
+                history.push('.');
+            })
+            .catch(error => {
+                setSubmitting(false);
+				resetForm({});
+				setPictures(picturesInitialState)
+                // alertService.error(error);
+            });
+    }
+
+
+
     return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        {({ errors, touched, setFieldValue, handleReset, isSubmitting }) => (
-        <div className="row">
-        <div className="col-md-6">
-            <div className="card">
-              <div className="card-header">
-                <h3 className="card-title">Product inclussion request</h3>
-              </div>
-              <Form>
-              <div className="card-body">
-                  <div className="form-group mb-3 row">
-                    <label className="form-label col-3 col-form-label">Name</label>
-                    <div className="col">
-                       
-                        <Field name="name" type="text" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
-                        <ErrorMessage name="name" component="div" className="invalid-feedback" />
-                    </div>
-                  </div>
-                  <div className="form-group mb-3 row">
-
-                  <label className="form-label col-3 col-form-label">Category</label>
-                  <div className="col">
-                      <Field name="category" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.category && touched.category ? ' is-invalid' : '')} >
-                          <option value="">Select</option>
-                          {
-                            categories && categories.map(category => <option value={category._id}>{category.name}</option>)
-                          }
-                      </Field>
-                      <ErrorMessage name="category" component="div" className="invalid-feedback" />
-                      </div>
-                  </div>
-                  <div className="form-group mb-3 row">
-                    <label className="form-label col-3 col-form-label">Brand</label>
-                    <div className="col">
-                    <Field name="brand" className="form-label col-3 col-form-label" as="select" className={'form-control' + (errors.brand && touched.brand ? ' is-invalid' : '')} >
-                          <option value="">Select</option>
-
-                          {
-                            brands && brands.map(brand => <option value={brand._id}>{brand.name}</option>)
-                          }
-                      </Field>
-                      <ErrorMessage name="brand" component="div" className="invalid-feedback" />
-                    </div>
-                  </div>
-                  <div className="form-group mb-3 row">
-                    <label className="form-label col-3 col-form-label">Picture</label>
-           
-                    <div className="col">
-                          <div className="form-file">
-
-                          <input id="picture" name="picture" type="file" onChange={(event) => {
-                    setFieldValue("picture", event.currentTarget.files[0]);
-                  }} className="form-label col-3 col-form-label" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')}/>
-                  <ErrorMessage name="brand" component="div" className="invalid-feedback" />
-                         
-                             {/* <Field name="picture" accept="image/x-png,image/gif,image/jpeg" type="file" id="form-file-input" className={'form-control' + (errors.picture && touched.picture ? ' is-invalid' : '')} />
-                              <label className="form-file-label" for="customFile">
-                               <span className="form-file-text">Choose file...</span>
-                               <span className="form-file-button">Browse</span>
-                             </label> 
-                             <ErrorMessage name="picture" component="div" className="invalid-feedback" /> */}
-                          </div>
-                        </div>
-                  </div>
-                    <div className="form-group mb-3 row">
-                        <label className="form-label col-3 col-form-label">Description</label>
-                        <div className="col">
-                            
-                            <Field name="description" as="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", height: "53.9792px"}}></Field>
-                            <ErrorMessage name="description" component="div" className="invalid-feedback" />
-                        </div>
-                    </div>
-                    <small className="form-hint">A moderator will review your request as soon as possible. This may takes up to 24h. <br></br>By adding sending this form you agree to all Weedzly.com terms and services.</small>
-              </div>
-              
-
-
-              {/* <div className="card-footer text-right">
-                      <div className="d-flex">
-                        <a href="#" className="btn btn-link">Cancel</a>
-                        <button type="submit" className="btn btn-primary ml-auto">Send request</button>
-                      </div>
-                    </div> */}
-
-
-
-                    <div className="card-footer text-right">
-                              <div className="d-flex">
-                                <button type="button" onClick={handleReset} className="btn btn-link">Reset form</button>
-                                
-                                <button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
-                            {
-                            
-                            isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
-                            
-                            }
-                            Save
-                        </button>
-                              </div>
-                            </div>
-
-
-
-
-
-
-
-                </Form>
-            </div>
-        </div>
-      </div>
+        <Formik enableReinitialize  initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+        {({ errors, touched, setFieldValue, isSubmitting, setFieldTouched, values, handleChange, handleReset, formikProps }) => (
+        	<div className="row">
+				<div className="col-12">
+					<div className="card">
+        				<Form>
+							{console.log(item)}
+							<div className="card-header">
+							<h5 className="modal-title">{createMode?"New":"Update"} product</h5>
+              				</div>
+				  			<div className="card-body">
+				  				<div className="row">
+				  					<div className="col-lg-6">
+				  						<div className="row">
+            	      						<div className="col-lg-6">
+            	        						<div className="mb-3">
+													<SingleSelect
+      													value={values.category}
+      												  	onChange={setFieldValue}
+      												  	onBlur={setFieldTouched}
+														error={errors.category}
+														endPoint={categoryGetAll}
+														touched={touched.category}
+														name={"category"}
+														title={"Category"}
+      												/>
+            	        						</div>
+            	      						</div> 
+											<div className="col-lg-6">
+            	        						<div className="mb-3">
+													<SingleSelect
+      													value={values.strain}
+      												  	onChange={setFieldValue}
+														onBlur={setFieldTouched}
+														endPoint={strainGetAll}
+      												  	error={errors.strain}
+														touched={touched.strain}
+														name={"strain"}
+														title={"Strain"}
+      												/>
+            	        						</div>
+            	      						</div> 
+            	    					</div>
+            	    					<div className="mb-3">
+            	      						<label className="form-label">Name</label>
+            	      						<Field  name="name" type="text"  className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter product name"  />
+            	      						<ErrorMessage name="name" component="div" className="invalid-feedback" />
+            	   						</div>
+									<div class="row">
+										<label className="form-label">Product pictures</label>
+										{
+											pictures && pictures.map( picture =>
+												<div className="col-auto">
+													<span style={{position: "absolute",color: "red",zIndex: "1",borderRadius: "20px",margin: "-10px"}}>
+														<button onClick={()=>{removePicture(picture)}} type="button" style={{borderRadius:"20px", padding: "0",width:"30px", height:"30px"}} class="btn btn-danger">x</button>
+													</span>
+               								  		<a style={{width:"80px", border:"1px solid silver", height:"80px",backgroundSize:"cover",backgroundPositionX: "center", backgroundImage: `url(${picture})`}} className="avatar avatar-upload rounded">
+               								  		</a>
+               									</div> 
+											)
+										}
+            	    					<div className="col-auto">
+               								<a href="#" onClick={showWidget} style={{width:"80px", border:"1px solid silver", height:"80px",backgroundSize:"cover", backgroundImage: `url(${""})`}} className="avatar avatar-upload rounded">
+               									<svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+               									<span className="avatar-upload-text">Add</span>
+               							  	</a>
+               							</div> 
+									</div>
+            	    				</div>
+									<div className="col-lg-6">
+										<div className="row" style={{height:"100%"}}>
+            	        					<div>
+            	          						<label className="form-label">Description</label>
+            	            					<Field name="description" as="textarea" className={'form-control' + (errors.description && touched.description ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter description" style={{overflow: "hidden", overflowWrap: "break-word", height: "calc( 100% - 5em)"}}></Field>
+            	            					<ErrorMessage name="description" component="div" className="invalid-feedback" />
+            	        					</div>
+            	      					</div>
+									</div>
+								</div>
+            	  			</div>
+							<div className="card-footer text-right">
+								<div className="d-flex">
+									<button type="button" onClick={()=>{handleReset();setPictures(picturesInitialState)}} className="btn btn-link">Reset Form</button>
+            	    					<button type="submit" disabled={isSubmitting}  className="btn btn-primary ml-auto">
+            	                		{
+            	                			isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>
+            	                		}
+            	                			Save
+            	            			</button>
+								</div>
+            	  			</div>
+          				</Form>
+					</div>
+				</div>
+        	</div>
         )}
         </Formik>
         )
 }
 
 export { Create };
+

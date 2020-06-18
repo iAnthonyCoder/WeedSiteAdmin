@@ -86,7 +86,6 @@ function Create(props) {
 		brand: createMode?'':item.brand,
 		strain: createMode?'':item.strain,
 		description: createMode?'':item.description,
-		slug: createMode?'':item.slug,
 	};
 
 	const clearFields = (fields) => {
@@ -116,12 +115,15 @@ function Create(props) {
 				resetForm({});
             })
             .catch(() => {
-                setSubmitting(false);
+				setSubmitting(false);
+				resetForm({});
+				setPictures(picturesInitialState)
+				
                 // alertService.error(error);
             });
     }
 
-    function update(fields, setSubmitting) {
+    function update(fields, setSubmitting, resetForm) {
 		const id = item._id;
         productService.update(id, fields)
             .then(() => {
@@ -130,6 +132,8 @@ function Create(props) {
             })
             .catch(error => {
                 setSubmitting(false);
+				resetForm({});
+				setPictures(picturesInitialState)
                 // alertService.error(error);
             });
     }
@@ -196,33 +200,9 @@ function Create(props) {
             	    					</div>
             	    					<div className="mb-3">
             	      						<label className="form-label">Name</label>
-            	      						<Field  name="name"
-            	    							render={({ field, form }) => (
-            	      								<input  className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} 
-            	        								{...field}
-            	        								onChange={e => {
-            	          								handleChange(e)
-            	          								var lowerText = e.target.value.toLowerCase();
-            	          								var sluga = lowerText.replace(/[^a-zA-Z0-9]+/g,'-');
-            	          								setFieldValue('slug', sluga)
-            	        								}}
-            	      								/>
-            	    							)}
-            	      							type="text"  
-											/>
+            	      						<Field  name="name" type="text"  className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter product name"  />
             	      						<ErrorMessage name="name" component="div" className="invalid-feedback" />
             	   						</div>
-            	    					<div className="row">
-            	      						<div className="">
-            	        						<div className="mb-3">
-            	          							<label className="form-label">Product url</label>
-            	          							<div className="input-group input-group-flat">
-            	            							<span className="input-group-text">https://domain.name/products/</span>
-            	            							<Field type="text" name="slug" value={values.slug} className="form-control pl-0" />
-            	          							</div>
-            	        						</div>
-            	     			 			</div>
-            	    					</div>
 									<div class="row">
 										<label className="form-label">Product pictures</label>
 										{

@@ -7,7 +7,8 @@ const baseUrl = getPrivateApi+"security";
 
 export const securityService = {
     getAllActivity,
-    getAllSessions
+    getAllSessions,
+    getAddedRecords
 };
 
 function getAllActivity(query) {
@@ -23,3 +24,11 @@ function getAllSessions(query) {
     else{fetchParam=`${baseUrl}/sessions${query}`}
     return fetchWrapper.get(fetchParam);
 }
+
+function getAddedRecords(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}/activity/addedPerDay`}
+    else{fetchParam=`${baseUrl}/activity/addedPerDay${query}`}
+    return fetchWrapper.get(fetchParam);
+}
+
