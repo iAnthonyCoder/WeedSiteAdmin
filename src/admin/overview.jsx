@@ -64,8 +64,8 @@ function Overview({ match }) {
                             }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis tick={false} dataKey="day" tickFormatter={(label) => `${month} ${label}`}  />
-                            <YAxis tick={false} />
+                            <XAxis  dataKey="day" tickFormatter={(label) => `${month} ${label}`}  />
+                            <YAxis  />
                             <Tooltip />
                             <Area name="Added Items" type="monotone" dataKey="count" stroke="#7223b5" fill="#7a39b1"  />
                         </AreaChart>
@@ -108,7 +108,7 @@ function Overview({ match }) {
                     <div class="text-right text-green">  
                 </div>
                 <div class="h1 m-0">{totalCount}</div>
-                    <div class="text-muted mb-4">Added products</div>
+                    <div class="text-muted mb-4">Added items</div>
                 </div>
             </div>
             <div class="card">
@@ -119,7 +119,7 @@ function Overview({ match }) {
                       </div>
                     <div class="text-right text-green">  
                 </div>
-                <div class="h1 m-0">${totalRevenue}</div>
+                <div class="h1 m-0">${totalRevenue.toFixed(1)}</div>
                     <div class="text-muted mb-4">Total revenue</div>
                 </div>
             </div>

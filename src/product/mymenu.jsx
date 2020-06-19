@@ -20,7 +20,7 @@ function Mymenu({ match }) {
     },
     {
       Header: 'Category',
-      accessor: row => row.category.name
+      accessor: row => (row.category)?row.category.name:""
     },
     // {
     //   Header: 'Brand',
@@ -78,7 +78,7 @@ const details = (id) => {
         <Add product={scopedItem} />
         <PageHeader title="USER/MYLIST" link="mymenu/create" nameButton="Add product" subtitle="Products list"  />
         <div className="box">
-          <MainTable ref={callApiTrigger} details={details} title={"MY MENU"} endPoint={_thisService.getAll} columns={columns} scopeItem={scopeItem} deleteByID={deleteByID}/>
+          <MainTable ref={callApiTrigger} details={details} title={"MY MENU"} endPoint={_thisService.getMyList} columns={columns} scopeItem={scopeItem} deleteByID={deleteByID}/>
         </div>
       </>
     );

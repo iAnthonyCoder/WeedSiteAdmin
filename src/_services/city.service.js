@@ -10,9 +10,12 @@ export const cityService = {
 };
 
 
-function getAll() {
 
-    return fetchWrapper.get(baseUrl);
+function getAll(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}`}
+    else{fetchParam=`${baseUrl}${query}`}
+    return fetchWrapper.get(fetchParam);
 }
 
 

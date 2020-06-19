@@ -47,6 +47,8 @@ import { InputText, SingleSelect } from '../_components'
 
 
 function Create({ history }) {
+    const statesGetAll = stateService.getAll
+    const citiesGetAll = cityService.getAll
     const visaImg = "/static/payments/visa.svg"
     const atmImg = "/static/payments/atm.svg"
     const AEImg = "/static/payments/americanexpress.svg"
@@ -116,21 +118,11 @@ function Create({ history }) {
 
 
     
-    const fetchElements = async () => {
-        await stateService.getAll().then( states =>
-            setStates(states)
-        )
-
-    }
-    const fetchCities = (name, value) => {
-         cityService.getByState(value._id).then( cities =>
-             setCities(cities)
-         )
-    }
+    
 
 
     useEffect(() => {
-        fetchElements();
+       
         mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
         const initializeMap = ({ setMap, mapContainer }) => {
             const map = new mapboxgl.Map({
@@ -232,23 +224,27 @@ function Create({ history }) {
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Address *</label>
+                                                    
                                                     <SingleSelect
       										            value={values.states}
-      										            onChange={fetchCities}
+      										            onChange={setFieldValue}
       										            onBlur={setFieldTouched}
       										            error={errors.state}
 											        	touched={touched.state}
-											        	values={states}
+                                                        endPoint={statesGetAll}
+                                                        
 											        	name={"state"}
 											        	placeholder={"Select state"}
       										        />
-                                                      
-                                                   {cities.length>1?<SingleSelect
+                                                    
+                                                   {values.state?<SingleSelect
       										            value={values.cities}
       										            onChange={setFieldValue}
       										            onBlur={setFieldTouched}
-      										            error={errors.city}
-											        	touched={touched.city}
+                                                          error={errors.city}
+                                                          extraQuery={values.state}
+                                                        touched={touched.city}
+                                                        endPoint={citiesGetAll}
 											        	values={cities}
 											        	name={"city"}
                                                         placeholder={"Select city"}

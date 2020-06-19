@@ -15,7 +15,6 @@ class SingleSelect extends React.Component {
 	  };
 
 	  handleBlur = () => {
-		  console.log("object")
 	    this.props.onBlur(this.props.name, true);
 		};
 	
@@ -27,8 +26,16 @@ class SingleSelect extends React.Component {
 		if (!inputValue) {
 		  return callback([]);
 		}
-	
-		this.props.endPoint(`?page=0&size=10&search=${inputValue}`).then(data => {
+
+		var endPointQuery=`?page=0&size=10&search=${inputValue}`
+
+		if(this.props.extraQuery){
+			endPointQuery += `&state=${this.props.extraQuery._id}`;
+		}
+		
+		console.log(endPointQuery);
+
+		this.props.endPoint(endPointQuery).then(data => {
 			const results = data.totalData;
 			callback(this.mapOptionsToValues(results));
 		 
@@ -43,7 +50,7 @@ class SingleSelect extends React.Component {
 		  <AsyncSelect
 		  	getOptionLabel={values => values.name}
 			getOptionValue={values => values._id}
-			cacheOptions
+			cacheOptions={(this.props.extraQuery)?false:true}
 			value={this.props.value}
 			defaultOptions={defaultOptions}
 			loadOptions={this.getOptions}
