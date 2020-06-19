@@ -22,21 +22,24 @@ function Create(props) {
 	const [ loadingMatches, setLoadingMatches ] = useState(false)
 
 	const checkMatches =  (e, brand) => {
-		const fetchId = ++fetchIdRef.current
-		const { value, name } = e.target
-		setLoadingMatches(true)
-			setTimeout(() => {
-				if (fetchId === fetchIdRef.current && value && brand ) {
-					
-					productService.getAll(`?size=10&page=0&brand=${brand._id}&search=${value}`)
-					.then(res=>{
-						setMatchedNames(res.totalData);
-					})
-					.finally(()=>{setLoadingMatches(false)})
-				} else {
-					
-				}
-			}, 1000);
+		if(createMode){
+			const fetchId = ++fetchIdRef.current
+			const { value, name } = e.target
+			setLoadingMatches(true)
+				setTimeout(() => {
+					if (fetchId === fetchIdRef.current && value && brand ) {
+						
+						productService.getAll(`?size=10&page=0&brand=${brand._id}&search=${value}`)
+						.then(res=>{
+							setMatchedNames(res.totalData);
+						})
+						.finally(()=>{setLoadingMatches(false)})
+					} else {
+						
+					}
+				}, 1000);
+		}
+		
 		
 
 	}
@@ -285,6 +288,7 @@ function Create(props) {
           				</Form>
 					</div>
 				</div>
+				{createMode?
 				<div class="col-lg-4">
                		<div class="card">
                  		<div class="card-header">
@@ -308,7 +312,7 @@ function Create(props) {
  							}
 							</div>
                		</div>
-             	</div>
+             	</div>:""}
 
         	</div>
         )}

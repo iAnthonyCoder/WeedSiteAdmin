@@ -119,7 +119,7 @@ function Overview({ match }) {
                       </div>
                     <div class="text-right text-green">  
                 </div>
-                <div class="h1 m-0">${totalRevenue.toFixed(1)}</div>
+                <div class="h1 m-0">${Math.ceil(totalRevenue)}</div>
                     <div class="text-muted mb-4">Total revenue</div>
                 </div>
             </div>
