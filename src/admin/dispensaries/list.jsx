@@ -37,7 +37,7 @@ function List() {
 			<span style={{width:"100px"}} class="dropdown ml-1 position-static">
 			  <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
 				<div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
-				  <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+				  <button onClick={()=>{details(row.original.user._id)}} class="dropdown-item">
 					Details
 				  </button>
 				</div>

@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Formik, Field, Form, FieldArray, ErrorMessage, validationSchema  } from 'formik';
+import { Formik, Field, Form, ErrorMessage  } from 'formik';
 import $ from 'jquery'
 import * as Yup from 'yup';
 import { alertService, packageService } from '../_services';
 
-function Add(props) {
-  const [product, setProduct] = useState("")
-   
-  useEffect(() => {
-    setProduct(props.product)
-  }, [])
+function Create(props) {
 
     const initialValues = {
         value: '',
@@ -19,13 +14,12 @@ function Add(props) {
     }
 
     const validationSchema = Yup.object().shape({
-        value: Yup.number()
-            .required('Value is required'),
+        value: Yup.number(),
         price: Yup.number()
-            .required('Value is required'),
+            .required('Price is required'),
         description: Yup.string()
-			.required('Description is required'),
-			
+            .required('Description is required'),
+        stock: Yup.bool(),		
     });
 
     // const validationSchema = Yup.object().shape({
@@ -44,7 +38,7 @@ function Add(props) {
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-  
+        fields.menuProduct = props.menuProduct
         packageService.create(fields)
             .then((data) => {
                resetForm({});
@@ -54,7 +48,7 @@ function Add(props) {
             })
             .catch(error => {
                 setSubmitting(false);
-                alertService.error(error);
+                // alertService.error(error);
             });
     }
 
@@ -64,7 +58,7 @@ function Add(props) {
    
 
       <Formik initialValues={initialValues} validationSchema={validationSchema}  onSubmit={onSubmit}>
-        {({ errors, touched, setFieldValue, isSubmitting, handleReset }) => (
+        {({ errors, touched, isSubmitting, handleReset }) => (
         	<Form>
          		<div className="modal modal-blur fade" id="modal-create" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
@@ -77,10 +71,15 @@ function Add(props) {
            					</div>
            					<div className="modal-body">
                             <div className="mb-3">
-               					<label className="form-label">Weight</label>
-               					<Field name="name" type="text" placeholder="Enter name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
-               					<ErrorMessage name="name" component="div" className="invalid-feedback" />
-                                <small>Leave this field empty if the variant is sold per each</small>
+               					<label className="form-label">Weight (GR)</label>
+               					<Field name="value" type="text" placeholder="Enter value" className={'form-control' + (errors.value && touched.value ? ' is-invalid' : '')} />
+               					<ErrorMessage name="value" component="div" className="invalid-feedback" />
+                                <small>Leave this field with 0 value if it's sold per each</small>
+               			    </div>
+                            <div className="mb-3">
+               					<label className="form-label">Price</label>
+               					<Field name="price" type="text" placeholder="Enter price" className={'form-control' + (errors.price && touched.price ? ' is-invalid' : '')} />
+               					<ErrorMessage name="price" component="div" className="invalid-feedback" />
                			    </div>
              				<div className="mb-3">
             			 	    <label className="form-label">Description</label>
@@ -95,7 +94,7 @@ function Add(props) {
          					</div>
          					<div className="card-footer text-right">
    								<div className="d-flex">
-     								<a href="#" className="btn btn-link"  onClick={handleReset}>Cancel</a>
+     								<a href="#" className="btn btn-link"  onClick={handleReset}>Reset</a>
      								<button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
      								    {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
      								    Save
@@ -113,7 +112,7 @@ function Add(props) {
         )
 }
 
-export { Add };
+export { Create };
 
 
 

@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery'
-import { productService } from '../../_services';
-import { PageHeader, LoaderBounce } from '../../_components';
-import { RetailersTable } from './retailersTable'
+import { menuproductService } from '../_services';
+import { PageHeader, LoaderBounce } from '../_components';
 import ReactStars from 'react-rating-stars-component'
+import { PackagesTable } from './packagesTable'
 
 function Details(props) {
    
@@ -19,12 +19,12 @@ function Details(props) {
 
 
     const fetchItems = () => {
-      productService.getById(props.match.params.id).then((res) => {
-        setItem(res.product);
-        setRetailers(res.retailers);
-        setScopedPicture(res.product.picture[0])
+      menuproductService.getById(props.match.params.id).then((res) => {
+        setItem(res);
+        if(res.picture.length>0){
+            setScopedPicture(res.product.picture[0])
+        }
         setFetched(true)
-
       })
     }
 
@@ -81,14 +81,15 @@ function Details(props) {
                     </div>
                     <div className="card-tabs">
                         <ul className="nav nav-tabs">
-                          	<li className="nav-item"><a href="#tab-top-1" className="nav-link active" data-toggle="tab">Retailers</a></li>
+                          	<li className="nav-item"><a href="#tab-top-1" className="nav-link active" data-toggle="tab">Variants</a></li>
                           	<li className="nav-item"><a href="#tab-top-2" className="nav-link" data-toggle="tab">Reviews</a></li>
                         </ul>
                         <div className="tab-content">
                   			<div id="tab-top-1" className="card tab-pane show active">
-                    		
-                                    <RetailersTable itemId={item._id} itemName={item.name} />
-                    			
+                    			<div className="card-body" style={{padding: "0"}}>
+                                    <PackagesTable menuProductId={item._id} menuProductName={item.name} />
+                      				
+                    			</div>
                   			</div>
                   			<div id="tab-top-2" className="card tab-pane">
 								<div className="card-body">

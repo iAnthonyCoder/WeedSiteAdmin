@@ -2,27 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import $ from 'jquery';
+import { SingleSelect } from '../../_components'
 import { categoryService, parentcategoryService, alertService } from '../../_services';
 
 function Create(props) {
    
-	const [parentcategories, setParentcategories] = useState("")
 	
+	
+	const statesGetAll = parentcategoryService.getAll
+
     const initialValues = {
         name: '',
 		description: '',
 		parentcategory: '',
 	};
 
-	const fetchParentCategories = async () => {
-		parentcategoryService.getAll().then(result => {
-			setParentcategories(result)
-		})
-	}
-	
-	useEffect(() => {
-		fetchParentCategories();
-	}, [])
 
     const validationSchema = Yup.object().shape({
         name: Yup.string()
@@ -32,16 +26,9 @@ function Create(props) {
 			
     });
 
-    const getSlug = (text) => {
-        var lowerText = text.toLowerCase();
-        var slug = lowerText.replace(/[^a-zA-Z0-9]+/g,'-');
-        return slug;    
-    };
-
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-        fields.slug=getSlug(fields.name);
       
         categoryService.create(fields)
             .then((data) => {
@@ -58,7 +45,7 @@ function Create(props) {
 
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema}  onSubmit={onSubmit}>
-        {({ errors, touched, setFieldValue, isSubmitting, handleReset }) => (
+        {({ errors, touched, values, setFieldValue, setFieldTouched, isSubmitting, handleReset }) => (
         	<Form>
          		<div className="modal modal-blur fade" id="modal-create" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
@@ -72,15 +59,16 @@ function Create(props) {
            					<div className="modal-body">
 
 							   <label className="form-label">Parent category</label>
-							   	<Field name="parentcategory" as="select" className={'form-control' + (errors.parentcategories && touched.parentcategories ? ' is-invalid' : '')} >      
-								   <option value="">Select</option>
-									{
-										parentcategories && parentcategories.map( parentcategory => 
-											<option value={parentcategory._id}>{parentcategory.name}</option>
-										)
-									}  
-						  		</Field>
-								  <ErrorMessage name="parentcategories" component="div" className="invalid-feedback" />
+							   		<SingleSelect
+      									value={values.parentcategory}
+      									onChange={setFieldValue}
+      									onBlur={setFieldTouched}
+      									error={errors.parentcategory}
+										touched={touched.parentcategory}
+                                    	endPoint={statesGetAll}
+										name={"parentcategory"}
+										placeholder={"Select parent category"}
+      								/>
 								  <small className="form-hint"><strong>Leave this empty if this category doesn't have a parent category.</strong></small>
 
              					<div className="row mb-3 align-items-end">

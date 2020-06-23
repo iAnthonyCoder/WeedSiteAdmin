@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { menuproductService } from '../_services';
 import { PageHeader, TableCardHeader, MainTable, LoadingSpinner } from '../_components';
 import { alertService } from '../_services'
-import { Add } from '../packages/add'
+import { Create } from './createPackage'
 import { history } from "../_helpers";
 import $ from 'jquery';
 const _thisService = menuproductService;
@@ -21,6 +21,10 @@ function Mymenu({ match }) {
     {
       Header: 'Category',
       accessor: row => (row.category)?row.category.name:""
+    },
+    {
+      Header: 'Brand',
+      accessor: row => (row.brand)?row.brand.name:"NONE"
     },
     // {
     //   Header: 'Brand',
@@ -64,18 +68,18 @@ function deleteByID(id){
 }
 
 function scopeItem(object){
-  history.push(`mymenu/${object._id}`)
+  history.push(`mymenu/update/${object._id}`)
 }
 
 
 const details = (id) => {
-  // history.push(`products/${id}`)
+  history.push(`mymenu/${id}`)
 }
 
   
     return (
       <>
-        <Add product={scopedItem} />
+        <Create product={scopedItem} />
         <PageHeader title="USER/MYLIST" link="mymenu/create" nameButton="Add product" subtitle="Products list"  />
         <div className="box">
           <MainTable ref={callApiTrigger} details={details} title={"MY MENU"} endPoint={_thisService.getMyList} columns={columns} scopeItem={scopeItem} deleteByID={deleteByID}/>

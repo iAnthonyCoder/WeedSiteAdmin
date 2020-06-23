@@ -24,7 +24,6 @@ function getAll(query) {
     return fetchWrapper.get(fetchParam);
 }
 function getAllRequest(query) {
-    console.log(query)
     var fetchParam=""
     if(!query){fetchParam=`${baseUrl}/requests/list`}
     else{fetchParam=`${baseUrl}/requests/list${query}`}

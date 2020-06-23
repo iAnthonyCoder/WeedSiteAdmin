@@ -196,9 +196,12 @@ const MainTable = forwardRef((props, ref) => {
       if (fetchId === fetchIdRef.current) {
         const startRow = pageSize * pageIndex
         const endRow = startRow + pageSize
+        var endpoint = `?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}`
 
-
-        props.endPoint(`?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}`)
+        if(props.param){
+          endpoint = `${props.param}?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}`
+        }
+        props.endPoint(endpoint)
         .then(data => {
            
 			      setData(data.totalData)
@@ -236,8 +239,8 @@ const MainTable = forwardRef((props, ref) => {
         fetchData={fetchData}
         loading={loading}
         pageCount={pageCount}
-		totalData={totalData}
-		title={props.title}
+		    totalData={totalData}
+		    title={props.title}
       />
 
   )

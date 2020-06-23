@@ -42,7 +42,7 @@ function Pending({ match }) {
       },
       {
         Header: 'Status',
-        accessor: row => ( row.status=="ACEPTED"?<span className="badge badge-success">ACEPTED</span>:<span className="badge badge-danger">REJECTED</span>)
+        accessor: 'status',
       },
       {
       Header: 'Actions',

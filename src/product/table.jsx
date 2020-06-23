@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { menuproductService, productService, alertService } from '../_services';
 import {history} from '../_helpers'
 import { PageHeader, TableCardHeader, UserTable, LoadingSpinner, MainTable } from '../_components';
-import { Add } from '../packages/add'
+// import { Add } from '../packages/create'
 import $ from 'jquery';
 
 function Table({ match }) {
@@ -67,7 +67,7 @@ function Table({ match }) {
   
     return (
       <>
-        <Add product={scopedItem} />
+        {/* <Add product={scopedItem} /> */}
         <PageHeader title="Available products" 
         // link="/product/create" 
         // nameButton="Request a brand product inclussion" 

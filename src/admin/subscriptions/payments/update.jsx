@@ -98,8 +98,8 @@ function Update(props) {
              <div className="row mb-3 align-items-end">
                <div className="col">
                <label className="form-label">User</label>
-               
-               <Link target="_blank" to={`/admin/users/${props.object.user}`}>Click here to review profile</Link>
+             
+               <Link target="_blank" to={`/admin/users/${(props.object.user)?(props.object.user._id):""}`}>Click here to review profile</Link>
                </div>
              </div>
 

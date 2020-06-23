@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef }  from 'react';
 import mapboxgl from "mapbox-gl";
-import { accountService } from '../../_services';
-import { PageHeader, BasicInfoCard,ScheduleTableCard, NoDispensary, LoaderBounce } from '../../_components';
+import { accountService, menuproductService } from '../../_services';
+import { PageHeader, BasicInfoCard,ScheduleTableCard, NoDispensary, LoaderBounce, MainTable } from '../../_components';
 
 
 function Details(props) {
@@ -14,6 +14,39 @@ function Details(props) {
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
     const defaultAvatar = "./static/user.png";
+    const columns = [
+      {
+        Header: 'Name',
+        accessor: 'name'
+      },
+      {
+        Header: 'Category',
+        accessor: row => row.category.name
+      },
+      {
+        Header: 'Brand',
+        accessor: row => (row.brand)?(row.brand.name):"",
+      },
+      {
+        Header: 'Strain',
+        accessor: row => (row.strain)?(row.strain.name):(<p style={{color:"red"}}>MISSING</p>)
+      },
+      {
+      Header: 'Actions',
+      width:"100px",
+
+        Cell:({row})=>(
+          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+            <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+                  Details
+                </button>
+              </div>
+            </span>
+        )
+      }
+  ]
 
     const fetchUserDatails = async () => {
         await accountService.getById(props.match.params.id).then(async (res)=>{
@@ -76,7 +109,9 @@ function Details(props) {
         }
         return age_now;
       }
-
+      const details = (id) => {
+        // history.push(`../products/${id}`)
+      }
 
 
       if(!userDetails) return <LoaderBounce />
@@ -243,10 +278,19 @@ function Details(props) {
 
                     </div>
                     </div>
+                    { (userDetails && userDetails.dispensary==null)?
+
+"":<div className="col-lg-12">
+<div className="box">
+   <MainTable  details={details} param={userDetails.dispensary._id} title={"MENU"} columns={columns} endPoint={menuproductService.getMenu} /> 
+</div>
+</div> 
+
+}
                 </div>
 
             
-
+                  
 
             
            

@@ -65,11 +65,11 @@ function Overview({ match }) {
                               top: 10, right: 30, left: 0, bottom: 0,
                             }}
                         >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis  dataKey="day" tickFormatter={(label) => `${month} ${label}`}  />
-                            <YAxis  />
-                            <Tooltip />
-                            <Area name="Added Items" type="monotone" dataKey="count" stroke="#7223b5" fill="#7a39b1"  />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis  dataKey="day" tickFormatter={(label) => `${month} ${label}`}  />
+                        <YAxis  />
+                        <Tooltip />
+                        <Area name="Added Items" type="monotone" dataKey="count" stroke="#7223b5" fill="#7a39b1"  />
                         </AreaChart>
                     </ResponsiveContainer>
                     <br></br>

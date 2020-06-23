@@ -79,6 +79,8 @@ function getAll(query) {
     return fetchWrapper.get(fetchParam);
 }
 
+
+
 function getById(id) {
     return fetchWrapper.get(`${accountUrl}/${id}`);
 }

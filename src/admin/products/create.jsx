@@ -117,7 +117,10 @@ function Create(props) {
 
 	const clearFields = (fields) => {
 		fields.picture=pictures;
-		fields.strain = fields.strain._id
+		if(fields.strain){
+			fields.strain = fields.strain._id
+		}
+		
 		fields.category = fields.category._id
 		fields.brand = fields.brand._id
 		return fields

@@ -11,31 +11,25 @@ function Overview({ match }) {
     const [ componentMode, setComponentMode ] = useState("") //0 -> no subscription ---- //1-> subscribed
 
     const fetch = () => {
-        
         subscriptionService.getById(user._id).then(subscription => {
-            if(subscription){
+            if(subscription) {
                 setSubscription(subscription)
                 setComponentMode(1)
-            }else{
+            } else {
                 planService.getAll("?size=20&page=0").then(plans => {
                     setPlans(plans.totalData)
                     setComponentMode(0)
                 })
-            }
-            
+            }  
         })
-
-        
     }
-
 
     useEffect(() => {
         fetch();
     }, [])
 
-
     function getPlans(){
-        return<> <PageHeader title="Subscriptions" subtitle="Select a plan"/>
+        return <> <PageHeader title="Subscriptions" subtitle="Select a plan"/>
             <div className="row">
             {
                 plans && plans.map( plan => 

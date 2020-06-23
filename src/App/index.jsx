@@ -44,7 +44,7 @@ function App() {
                     render={(props) => <Admin {...props} a={"asd"} roles={[Role.Admin]} />}
                 />  */}
                 <PrivateRoute path="/dispensary" component={Dispensary} />
-                <PrivateRoute path="/packages" component={Packages} />
+                {/* <PrivateRoute path="/packages" component={Packages} /> */}
                 <PrivateRoute path="/subscription" component={Subscription} />
                 <Route path="/account" component={Account} />
                 <Redirect from="*" to="/" /> 

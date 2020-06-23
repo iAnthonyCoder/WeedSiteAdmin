@@ -12,6 +12,8 @@ export const menuproductService = {
     getAddList,
     deleteFromDispensary,
     delete: _delete,
+    getRetailers,
+    getMenu
 
 };
 
@@ -22,12 +24,28 @@ function getAll(query) {
     else{fetchParam=`${baseUrl}${query}`}
     return fetchWrapper.get(fetchParam);
 }
+
 function getMyList(query) {
     var fetchParam=""
     if(!query){fetchParam=`${baseUrl}/mylist`}
     else{fetchParam=`${baseUrl}/mylist${query}`}
     return fetchWrapper.get(fetchParam);
 }
+
+function getRetailers(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}/retailers`}
+    else{fetchParam=`${baseUrl}/retailers/${query}`}
+    return fetchWrapper.get(fetchParam);
+}
+
+function getMenu(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}/getmenu`}
+    else{fetchParam=`${baseUrl}/getmenu/${query}`}
+    return fetchWrapper.get(fetchParam);
+}
+
 function getAddList() {
     return fetchWrapper.get(baseUrl+"/addlist");
 }
@@ -58,3 +76,4 @@ function update(id, params) {
 function _delete(id) {
     return fetchWrapper.delete(`${baseUrl}/${id}`)
 }
+
