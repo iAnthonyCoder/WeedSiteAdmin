@@ -119,6 +119,8 @@ function Create(props) {
 		fields.picture=pictures;
 		if(fields.strain){
 			fields.strain = fields.strain._id
+		} else {
+			delete fields.strain
 		}
 		
 		fields.category = fields.category._id
