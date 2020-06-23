@@ -42,10 +42,13 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { accountService, alertService, dispensaryService, cityService } from '../_services';
+import { accountService, alertService, dispensaryService, cityService, stateService } from '../_services';
+import { SingleSelect } from '../_components'
 
 
 function Update({ history, match }) {
+    const statesGetAll = stateService.getAll
+    const citiesGetAll = cityService.getAll
     const visaImg = "/static/payments/visa.svg"
     const atmImg = "/static/payments/atm.svg"
     const AEImg = "/static/payments/americanexpress.svg"
@@ -67,6 +70,7 @@ function Update({ history, match }) {
       position: "relative",
       height:"500px"
     };
+
     const initialValues = {
         name: dispensary.name,
         address: dispensary.address, 
@@ -76,10 +80,17 @@ function Update({ history, match }) {
         isVisaAcepted: (dispensary.isVisaAcepted)?dispensary.isVisaAcepted:false, 
         isAtmAcepted: (dispensary.isAtmAcepted)?dispensary.isAtmAcepted:false, 
         phone: dispensary.phone,
+        website: dispensary.website,
         license: dispensary.license,
+        email: dispensary.email,
+        twitter: dispensary.twitter,
+        instagram: dispensary.instagram,
+        facebook: dispensary.facebook,
         licenseType: dispensary.licenseType,
-        city: (dispensary.city)?dispensary.city._id:"",
+        city: dispensary.city,
+        state: (dispensary.city)?(dispensary.city.state):"",
     };
+
     const mp = {
         lng: 5,
         lat: 34,
@@ -88,32 +99,40 @@ function Update({ history, match }) {
     const validationSchema = Yup.object().shape({
         name: Yup.string()
             .required('Name is required'),
+        // state: Yup.string()
+        //     .required('City is required'),
         city: Yup.string()
-            .required('City is required'),
+            .required('State and city is required'),
         address: Yup.string()
-            .required('Addres is required'),
+            .required('Address is required'),
+        addresszip: Yup.string()
+            .required('Zip code is required'),
         phone: Yup.string()
             .required('Phone number is required'),
-        // opens_at: Yup.number()
-        //     .required('Opens time is required'),
-        // closes_at: Yup.number()
-        //     .moreThan(Yup.ref('opens_at'), 'Closes at value should be higher than opens at value')
-        //     .required('Closes time is required'),
+        license: Yup.string()
+            .required('License is required'),
+        licenseType: Yup.string()
+            .required('License type is required'),
+        website: Yup.string(),
+        email: Yup.string(),
+        twitter: Yup.string(),
+        instagram: Yup.string(),
+        facebook: Yup.string(),
+        introduction: Yup.string(),
+        about: Yup.string(),
+        firstpatient: Yup.string(),
+        announcement: Yup.string(),
+        
     });
 
 
     
     const fetchElements = async () => {
-        await cityService.getAll().then( cities =>
-            setCities(cities)
-        )
-        await dispensaryService.getByUserId(user._id).then( dispensary =>
-            {setDispensary(dispensary)
-            addMap(dispensary.longitude,dispensary.latitude)}
-            
-        )
-        
-
+        await dispensaryService.getByUserId(user._id).then( dispensary => {
+            console.log(dispensary);
+            setDispensary(dispensary)
+            addMap(dispensary.longitude,dispensary.latitude)
+        })
     }
 
     useEffect(() => {
@@ -184,6 +203,8 @@ function Update({ history, match }) {
    
         fields.latitude=latitude;
         fields.longitude=longitude;
+        fields.city=fields.city._id;
+        delete fields.state
         if(!latitude){
             alert("Add a place in the map")
             setSubmitting(false);
@@ -218,11 +239,12 @@ function Update({ history, match }) {
 
     return (
         <Formik initialValues={initialValues}  enableReinitialize={true} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ errors, touched, isSubmitting }) => (
+            {({ errors, touched, isSubmitting, values, setFieldValue, setFieldTouched }) => (
                 <>
              
        
                 <div className="page-header">
+                    {console.log(values)}
                     <div className="row align-items-center">
                         <div className="col-auto">
                             <h2 className="page-title">
@@ -239,10 +261,11 @@ function Update({ history, match }) {
                             </div>
                             <div className="card-body">
                                 <div className="row">
-                                    <div className="col-xl-4">
+                                    <div className="col-xl-12">
                                         <div className="row">
-                                            <div className="col-md-6 col-xl-12">
-                               
+                                        <div className="col-xl-6 col-md-6">
+                                        <div className="row">
+                                            <div className="">
                                                 <div className="mb-3">
                                                     <label>Name *</label>
                                                     <Field name="name" type="text" placeholder="Input name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
@@ -250,13 +273,32 @@ function Update({ history, match }) {
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Address *</label>
-                                                    <Field name="city" as="select" className={'form-control' + (errors.city && touched.city ? ' is-invalid' : '')} >
-                                                        <option value="">Select city</option>
-                                                        {cities && cities.map( city => 
-                                                            <option value={city._id}>{city.name}</option>
-                                                        )}
-                                                    </Field>
-                                                    <ErrorMessage name="city" component="div" className="invalid-feedback" />
+                                                    {console.log(values)}
+                                                    <SingleSelect
+      										            value={values.state}
+      										            onChange={setFieldValue}
+      										            onBlur={setFieldTouched}
+      										            error={errors.state}
+											        	touched={touched.state}
+                                                        endPoint={statesGetAll}
+                                                        
+											        	name={"state"}
+											        	placeholder={"Select state"}
+      										        />
+                                                    
+                                                   {values.state?<SingleSelect
+      										            value={values.city}
+      										            onChange={setFieldValue}
+      										            onBlur={setFieldTouched}
+                                                          error={errors.city}
+                                                          extraQuery={values.state}
+                                                        touched={touched.city}
+                                                        endPoint={citiesGetAll}
+											        	values={cities}
+											        	name={"city"}
+                                                        placeholder={"Select city"}
+      										        />:""
+                                                   }
                                                 </div>
                                                 <div className="mb-3">
                                                     
@@ -268,15 +310,22 @@ function Update({ history, match }) {
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Phone number *</label>
-                                                    <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(+1) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
+                                                    <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(000) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="phone" component="div" className="invalid-feedback" />
 
                                                     
                                                 </div>
                                                 <div className="mb-3">
-                                                <label>License Type</label>
+                                                    <label>Dispensary email</label>
+                                                    <Field name="email" type="text" placeholder="info@example.com" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="email" component="div" className="invalid-feedback" />
+                                                </div>
+                                                
+                                               
+                                                <div className="mb-3">
+                                                <label>License</label>
                                                     <Field name="licenseType" as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-                                                        <option value="">Select</option>
+                                                        <option value="">Select Type</option>
                                                         <option value="Recreational Cultivation">Recreational Cultivation</option>
                                                         <option value="Recreational Mfg.">Recreational Mfg.</option>
                                                         <option value="Recreational Nonstorefront">Recreational Nonstorefront</option>
@@ -298,57 +347,97 @@ function Update({ history, match }) {
                                                     type="text" className={'form-control' + (errors.recreationallicense && touched.recreationallicense ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="recreationallicense" component="div" className="invalid-feedback" /> 
                                                 </div>
-                                                <div className="form-selectgroup">
-                                                <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
-                                                    <Field type="checkbox" name="form-payment" name="isVisaAcepted" class="form-selectgroup-input" />
-                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
-                                                      <div class="mr-3">
-                                                        <span class="form-selectgroup-check"></span>
-                                                      </div>
-                                                      <div>
-                                                        <img src={visaImg} style={{height:"2em"}}/>
-                                                        <strong>VISA ACCEPTED</strong> 
-                                                      </div>
-                                                    </div>
-                                                  </label>
-                                                  <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
-                                                    <Field type="checkbox" name="form-payment" name="isMastercardAcepted" class="form-selectgroup-input" />
-                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
-                                                      <div class="mr-3">
-                                                        <span class="form-selectgroup-check"></span>
-                                                      </div>
-                                                      <div>
-                                                          <img src={mastercardImg} style={{height:"2em"}}/>
-                                                          <strong>MASTERCARD ACCEPTED</strong> 
-                                                      </div>
-                                                    </div>
-                                                  </label>
-                                                  <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
-                                                    <Field type="checkbox" name="form-payment" name="isAmericanexpressAcepted" class="form-selectgroup-input" />
-                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
-                                                      <div class="mr-3">
-                                                        <span class="form-selectgroup-check"></span>
-                                                      </div>
-                                                      <div>
-                                                          <img src={AEImg} style={{height:"2em"}}/>
-                                                          <strong>AMERICAN E. ACCEPTED</strong> 
-                                                      </div>
-                                                    </div>
-                                                  </label>
-                                                  <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
-                                                    <Field type="checkbox" name="form-payment" name="isAtmAcepted" class="form-selectgroup-input" />
-                                                    <div class="form-selectgroup-label d-flex align-items-center p-3">
-                                                      <div class="mr-3">
-                                                        <span class="form-selectgroup-check"></span>
-                                                      </div>
-                                                      <div>
-                                                          <img src={atmImg} style={{height:"2em", width:"3.5em"}}/>
-                                                          <strong>ATM AVAILABLE</strong> 
-                                                      </div>
-                                                    </div>
-                                                  </label>
-                                                </div>
+                                                </div><div className="row">
                                             </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <div className="col-xl-6 col-md-6">
+
+                                    <div className="mb-3">
+                          <label >Select payment methods accepted in your dispensary</label>
+                          <div className="form-selectgroup">
+                          <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isVisaAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                  <img src={visaImg} style={{height:"2em"}}/>
+                                  <strong>VISA ACCEPTED</strong> 
+                                </div>
+                              </div>
+                            </label>
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isMastercardAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    <img src={mastercardImg} style={{height:"2em"}}/>
+                                    <strong>MASTERCARD ACCEPTED</strong> 
+                                </div>
+                              </div>
+                            </label>
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isAmericanexpressAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    <img src={AEImg} style={{height:"2em"}}/>
+                                    <strong>AMERICAN E. ACCEPTED</strong> 
+                                </div>
+                              </div>
+                            </label>
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isAtmAcepted" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    <img src={atmImg} style={{height:"2em", width:"3.5em"}}/>
+                                    <strong>ATM AVAILABLE</strong> 
+                                </div>
+                              </div>
+                            </label>
+                          </div>
+                          
+                        </div>
+                    
+                        <div className="mb-3">
+                            <label>Website url</label>
+                            <Field name="website" type="text" placeholder="https://example.com" className={'form-control' + (errors.website && touched.website ? ' is-invalid' : '')} />
+                            <ErrorMessage name="website" component="div" className="invalid-feedback" />
+                        </div>
+
+                        <div className="mb-3">
+                            <label>Facebook</label>
+                            <Field name="facebook" type="text" placeholder="https://www.facebook.com/example" className={'form-control' + (errors.facebook && touched.facebook ? ' is-invalid' : '')} />
+                            <ErrorMessage name="facebook" component="div" className="invalid-feedback" />
+                        </div>
+
+                        <div className="mb-3">
+                            <label>Twitter</label>
+                            <Field name="twitter" type="text" placeholder="https://twitter.com/example" className={'form-control' + (errors.twitter && touched.twitter ? ' is-invalid' : '')} />
+                            <ErrorMessage name="twitter" component="div" className="invalid-feedback" />
+                        </div>
+
+                        <div className="mb-3">
+                            <label>Instagram</label>
+                            <Field name="instagram" type="text" placeholder="https://www.instagram.com/example" className={'form-control' + (errors.instagram && touched.instagram ? ' is-invalid' : '')} />
+                            <ErrorMessage name="instagram" component="div" className="invalid-feedback" />
+                        </div>
+
+                        
+
+
+
+                    </div>
                                             <div className="col-md-6 col-xl-12">
                                             
                                             </div>

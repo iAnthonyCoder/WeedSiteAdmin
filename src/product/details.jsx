@@ -21,8 +21,8 @@ function Details(props) {
     const fetchItems = () => {
       menuproductService.getById(props.match.params.id).then((res) => {
         setItem(res);
-        if(res.picture.length>0){
-            setScopedPicture(res.product.picture[0])
+        if(res.picture){
+            setScopedPicture(res.picture[0])
         }
         setFetched(true)
       })

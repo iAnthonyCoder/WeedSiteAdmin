@@ -103,11 +103,13 @@ function Create(props) {
 	
 	function create(fields, setSubmitting,resetForm) {
         menuproductService.create(fields)
-            .then(() => {
+            .then((res) => {
+				
 				alertService.success('Item added!', { keepAfterRouteChange: true });
 				setPictures(picturesInitialState)
 				setSubmitting(false);
 				resetForm({});
+				history.push(`${res.payload._id}`)
             })
             .catch(() => {
 				setSubmitting(false);
