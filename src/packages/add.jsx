@@ -12,7 +12,7 @@ function Add(props) {
   }, [])
 
     const initialValues = {
-        value: '',
+        value: '0',
         price: '',
         stock: false,
         description: '',
@@ -24,9 +24,8 @@ function Add(props) {
         price: Yup.number()
             .required('Value is required'),
         description: Yup.string()
-			.required('Description is required'),
 			
-    });
+    });  
 
     // const validationSchema = Yup.object().shape({
     //     packags: Yup.array()
@@ -66,6 +65,7 @@ function Add(props) {
       <Formik initialValues={initialValues} validationSchema={validationSchema}  onSubmit={onSubmit}>
         {({ errors, touched, setFieldValue, isSubmitting, handleReset }) => (
         	<Form>
+                {alert("a")}
          		<div className="modal modal-blur fade" id="modal-create" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
          				<div className="modal-content">

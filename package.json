@@ -15,6 +15,8 @@
     "history": "^4.10.1",
     "jquery": "^3.5.1",
     "mapbox-gl": "^1.10.0",
+    "mathjs": "^7.0.1",
+    "odds-converter": "^1.0.4",
     "prop-types": "^15.7.2",
     "query-string": "^6.11.0",
     "react": "^16.8.6",

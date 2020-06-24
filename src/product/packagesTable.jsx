@@ -5,8 +5,8 @@ import { history } from '../_helpers/history'
 import { Create } from './createPackage';
 import { Update } from './updatePackage';
 import $ from 'jquery'
+import odds from 'odds-converter'
 const _thisService = packageService;
-
 
 function PackagesTable(props) {
     const callApiTrigger = useRef()
@@ -25,7 +25,7 @@ function PackagesTable(props) {
         },
         {
             Header: 'weight',
-            accessor: row => (row.value>=3.5)?(`${row.value} Gr (${row.value/3.5} Oz)`):(`${row.value} Gr`)
+            accessor: row => ((row.value === 0 || row.value === null || row.value === "")?"EACH":`${row.value*3.5} GR  ${(row.value===1)?"(1/8 OZ)":(row.value===2)?"(1/4 OZ)":(row.value===4)?"(1/2 OZ)":"("+(row.value*3.5/28)+" OZ)"}`)
         },
         {
           Header: 'stock',

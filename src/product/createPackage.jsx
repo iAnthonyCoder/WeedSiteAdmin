@@ -14,11 +14,10 @@ function Create(props) {
     }
 
     const validationSchema = Yup.object().shape({
-        value: Yup.number(),
+        value: Yup.string(),
         price: Yup.number()
             .required('Price is required'),
-        description: Yup.string()
-            .required('Description is required'),
+        description: Yup.string(),
         stock: Yup.bool(),		
     });
 
@@ -43,7 +42,7 @@ function Create(props) {
             .then((data) => {
                resetForm({});
                 alertService.success('Item added!', { keepAfterRouteChange: true });
-                $("#modal-new-package").modal("hide");
+                $("#modal-create").modal("hide");
                 props.addNew(data.payload);
             })
             .catch(error => {
@@ -71,8 +70,22 @@ function Create(props) {
            					</div>
            					<div className="modal-body">
                             <div className="mb-3">
-               					<label className="form-label">Weight (GR)</label>
-               					<Field name="value" type="text" placeholder="Enter value" className={'form-control' + (errors.value && touched.value ? ' is-invalid' : '')} />
+               					<label className="form-label">Weight (OZ)</label>
+                                <Field as="select" name="value" className="form-control" className={'form-control' + (errors.value && touched.value ? ' is-invalid' : '')}>
+															<option value="0">Each</option>
+															<option value="1">1/8</option>
+															<option value="2">1/4</option>
+															<option value="4">1/2</option>
+                                                            <option value="8">1</option>
+                                                            <option value="16">2</option>
+                                                            <option value="24">3</option>
+                                                            <option value="32">4</option>
+                                                            <option value="40">5</option>
+                                                            <option value="48">6</option>
+                                                            <option value="56">7</option>
+                                                            <option value="64">8</option>
+                                                            <option value="72">9</option>
+														</Field>
                					<ErrorMessage name="value" component="div" className="invalid-feedback" />
                                 <small>Leave this field with 0 value if it's sold per each</small>
                			    </div>
