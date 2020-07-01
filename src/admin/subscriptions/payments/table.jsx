@@ -38,7 +38,7 @@ function Table({ match }) {
       },
       {
         Header: 'Status',
-        accessor: row => ( row.status=="ACEPTED"?<span className="badge badge-success">ACEPTED</span>:<span className="badge badge-danger">REJECTED</span>)
+        accessor: row => ( row.status=="ACEPTED"?<span className="badge badge-success">ACEPTED</span>:row.status=="PENDING"?(<span className="badge badge-alertw">PENDING</span>):<span className="badge badge-danger">REJECTED</span>)
       },
       {
       Header: 'Actions',

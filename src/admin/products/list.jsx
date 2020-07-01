@@ -137,7 +137,7 @@ function List({ match }) {
 
     return (
         <>
-           <div className="container-xl">
+      
           <Create addNew={addNew}/>
           <Update updateOne={updateOne} object={scopedItem}/>
           <div className="page-header">
@@ -252,7 +252,7 @@ function List({ match }) {
               </div>
             </div>
           </div>
-        </div>
+        
       </>
        
 

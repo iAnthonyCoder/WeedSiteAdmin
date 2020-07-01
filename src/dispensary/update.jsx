@@ -85,10 +85,16 @@ function Update({ history, match }) {
         email: dispensary.email,
         twitter: dispensary.twitter,
         instagram: dispensary.instagram,
+        isPickupable: dispensary.isPickupable,
         facebook: dispensary.facebook,
         licenseType: dispensary.licenseType,
         city: dispensary.city,
+        taxes: dispensary.taxes,
         state: (dispensary.city)?(dispensary.city.state):"",
+        introduction: dispensary.introduction,
+        about: dispensary.about,
+        firstpatient: dispensary.firstpatient,
+        announcement: dispensary.announcement,
     };
 
     const mp = {
@@ -113,6 +119,9 @@ function Update({ history, match }) {
             .required('License is required'),
         licenseType: Yup.string()
             .required('License type is required'),
+        taxes: Yup.number()
+            .min(0)
+            .max(100),
         website: Yup.string(),
         email: Yup.string(),
         twitter: Yup.string(),
@@ -257,7 +266,7 @@ function Update({ history, match }) {
                     <div className="col-12">
                         <Form className="card">
                             <div className="card-header">
-                                <h4 className="card-title">New dispensary</h4>
+                                <h4 className="card-title">Update dispensary</h4>
                             </div>
                             <div className="card-body">
                                 <div className="row">
@@ -347,6 +356,11 @@ function Update({ history, match }) {
                                                     type="text" className={'form-control' + (errors.recreationallicense && touched.recreationallicense ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="recreationallicense" component="div" className="invalid-feedback" /> 
                                                 </div>
+                                                <div className="mb-3">
+                                                    <label>Dispensary Taxes %</label>
+                                                    <Field name="taxes" type="number" placeholder="Input taxes" className={'form-control' + (errors.taxes && touched.taxes ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="taxes" component="div" className="invalid-feedback" />
+                                                </div>
                                                 </div><div className="row">
                                             </div>
                                             
@@ -405,6 +419,18 @@ function Update({ history, match }) {
                                 </div>
                               </div>
                             </label>
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isPickupable" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    {/* <img src={atmImg} style={{height:"2em", width:"3.5em"}}/> */}
+                                    <strong>PICKUP SERVICE</strong> 
+                                </div>
+                              </div>
+                            </label>
                           </div>
                           
                         </div>
@@ -454,6 +480,49 @@ function Update({ history, match }) {
                                             
                                     </div>
                                 </div>
+                                            <hr></hr>
+
+                            <div className="row">
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>Introduction</label>
+                                        <Field name="introduction" as="textarea" className={'form-control' + (errors.introduction && touched.introduction ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter introduction" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="introduction" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>About us</label>
+                                        <Field name="about" as="textarea" className={'form-control' + (errors.about && touched.about ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter about us" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="about" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>First-Time Patients Deals</label>
+                                        <Field name="firstpatient" as="textarea" className={'form-control' + (errors.firstpatient && touched.firstpatient ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter first time patient deals" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="firstpatient" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-3">
+                                    <div className="mb-3">
+                                        <label>Announcement</label>
+                                        <Field name="announcement" as="textarea" className={'form-control' + (errors.announcement && touched.announcement ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter announcement" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <ErrorMessage name="announcement" component="div" className="invalid-feedback" />
+                                    </div>
+                                </div>
+                                </div>
+
+
+
+
+
+
+
+
                             </div>
                             <div className="card-footer text-right">
                               <div className="d-flex" style={{justifyContent:"space-between"}}>

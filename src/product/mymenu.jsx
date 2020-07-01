@@ -32,7 +32,7 @@ function Mymenu({ match }) {
     // },
     {
       Header: 'Strain',
-      accessor: row => (row.strain)?(row.strain.name):(<p style={{color:"red"}}>MISSING</p>)
+      accessor: row => (row.strain)?(row.strain.name):(<span style={{color:"red"}}>MISSING</span>)
     },
     {
     Header: 'Actions',

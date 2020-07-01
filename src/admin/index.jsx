@@ -34,8 +34,6 @@ function Admin({ match }) {
 
 
     return (
-            <div className="content">
-                <div className="container-xl">
                 <Switch>
                     <Route exact path={path} component={Overview} />
                     <Route path={`${path}/users`} component={Users} />
@@ -49,8 +47,8 @@ function Admin({ match }) {
                     <Route path={`${path}/subscriptions`} component={Subscriptions} />
                     <Route path={`${path}/strains`} component={Strains} />
                 </Switch>
-                </div>
-            </div>
+        
+
     );
 }
 

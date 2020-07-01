@@ -10,8 +10,7 @@ function Product({ match }) {
     const { path } = match;
 
     return (
-        <div className="content">
-            <div className="container-xl">
+
                 <Switch>
                     {/* <Route exact path={path} component={Table} /> */}
                     <Route path={`${path}/list`} component={Table} />
@@ -20,9 +19,7 @@ function Product({ match }) {
                     <Route path={`${path}/mymenu/:id`} component={Details} />
                     <Route path={`${path}/mymenu`} component={Mymenu} />
                 </Switch>
-            </div>
 
-        </div>
     );
 }
 

@@ -7,6 +7,7 @@ import { alertService, packageService } from '../_services';
 function Create(props) {
 
     const initialValues = {
+        type: '',
         value: '',
         price: '',
         stock: false,
@@ -14,7 +15,10 @@ function Create(props) {
     }
 
     const validationSchema = Yup.object().shape({
-        value: Yup.string(),
+        value: Yup.string()
+            .required(),
+        type: Yup.string()
+            .required(),
         price: Yup.number()
             .required('Price is required'),
         description: Yup.string(),
@@ -37,7 +41,9 @@ function Create(props) {
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
+        
         fields.menuProduct = props.menuProduct
+        if(fields.type=="each"){fields.value=1}
         packageService.create(fields)
             .then((data) => {
                resetForm({});
@@ -57,7 +63,7 @@ function Create(props) {
    
 
       <Formik initialValues={initialValues} validationSchema={validationSchema}  onSubmit={onSubmit}>
-        {({ errors, touched, isSubmitting, handleReset }) => (
+        {({ errors, touched, values, isSubmitting, setFieldValue, handleReset, handleChange }) => (
         	<Form>
          		<div className="modal modal-blur fade" id="modal-create" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        				<div className="modal-dialog modal-dialog-centered" role="document">
@@ -68,30 +74,88 @@ function Create(props) {
                						<svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
              					</button>
            					</div>
+
+
            					<div className="modal-body">
-                            <div className="mb-3">
-               					<label className="form-label">Weight (OZ)</label>
-                                <Field as="select" name="value" className="form-control" className={'form-control' + (errors.value && touched.value ? ' is-invalid' : '')}>
-															<option value="0">Each</option>
-															<option value="1">1/8</option>
-															<option value="2">1/4</option>
-															<option value="4">1/2</option>
-                                                            <option value="8">1</option>
-                                                            <option value="16">2</option>
-                                                            <option value="24">3</option>
-                                                            <option value="32">4</option>
-                                                            <option value="40">5</option>
-                                                            <option value="48">6</option>
-                                                            <option value="56">7</option>
-                                                            <option value="64">8</option>
-                                                            <option value="72">9</option>
-														</Field>
-               					<ErrorMessage name="value" component="div" className="invalid-feedback" />
-                                <small>Leave this field with 0 value if it's sold per each</small>
+                               <div className="mb-3">
+               					<label className="form-label">Type</label>
+
+
+                                {/* <Field as="select" name="type" onChange={(e)=>{
+
+                                            handleChange(e)
+                                           
+                                            console.log(e);
+                                            if(values=="each"){setFieldValue("value",1)}
+
+                                }} className="form-control" className={'form-control' + (errors.type && touched.type ? ' is-invalid' : '')}>
+                                                            <option value="">Select</option>
+                                                            <option value="each">Each</option>
+                                                            <option value="oz">ounce</option>
+															<option value="g">gram</option>
+														</Field> */}
+
+                                <Field  name="type"
+                                    render={({ field, form }) => (
+                                        <select  className={'form-control' + (errors.value && touched.value ? ' is-invalid' : '')} 
+                                            {...field}
+                                            onChange={e => {
+                                                handleChange(e)
+                                                    if(e.target.value=="each"){
+                                                        form.setFieldValue('value', 1)
+                                                    }else{
+                                                        form.setFieldValue('value', 0)
+                                                    }
+                                             }}
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="each">Each</option>
+                                            <option value="oz">ounce</option>
+					            			<option value="g">gram</option>
+                                            </select>
+                                    )}
+                                as="select"  /> 
+               		            <ErrorMessage name="type" component="div" className="invalid-feedback" />
                			    </div>
+                            {
+                                values.type==="oz" 
+                                ? (
+                                    <div className="mb-3">
+               					        <label className="form-label">Weight</label>
+                                        <Field as="select" name="value" className="form-control" className={'form-control' + (errors.value && touched.value ? ' is-invalid' : '')}>
+                                                            <option value="">Select</option>
+                                                            <option value="1">1/8 OZ</option>
+							    							<option value="2">1/4 OZ</option>
+							    							<option value="4">1/2 OZ</option>
+                                                            <option value="8">1 OZ</option>
+							    		</Field>
+               				    	    <ErrorMessage name="value" component="div" className="invalid-feedback" />
+               			            </div>
+                                )
+                                : values.type==="g"
+                                ? (
+                                    <div className="mb-3">
+               					        <label className="form-label">Weight</label>
+                                        <Field as="select" name="value" className="form-control" className={'form-control' + (errors.value && touched.value ? ' is-invalid' : '')}>
+                                                            <option value="">Select</option>
+                                                            <option value="0.5">0.5g</option>
+							    							<option value="1">1g</option>
+							    							<option value="2">2g</option>
+							    		</Field>
+               				    	    <ErrorMessage name="value" component="div" className="invalid-feedback" />
+               			            </div>
+                                )
+                                : ""
+                                // values.type==="each"
+                                // ? 
+                                //    (()=>setFieldValue("value",1))
+                                
+                                // :""
+                            }
+                            {console.log(values)}
                             <div className="mb-3">
                					<label className="form-label">Price</label>
-               					<Field name="price" type="text" placeholder="Enter price" className={'form-control' + (errors.price && touched.price ? ' is-invalid' : '')} />
+               					<Field name="price" type="number" placeholder="Enter price" className={'form-control' + (errors.price && touched.price ? ' is-invalid' : '')} />
                					<ErrorMessage name="price" component="div" className="invalid-feedback" />
                			    </div>
              				<div className="mb-3">

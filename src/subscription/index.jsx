@@ -8,14 +8,12 @@ function Subscription({ match }) {
     const { path } = match;
 
     return (
-        <div className="content">
-            <div className="container-xl">
+
                 <Switch>
                     <Route exact path={path} component={Overview} />
                     <Route path={`${path}/purchase`} component={Purchase} />
                 </Switch>
-            </div>
-        </div>
+       
     );
 }
 export { Subscription };

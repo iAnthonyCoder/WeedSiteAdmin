@@ -28,14 +28,13 @@ function Update(props) {
 
 
     const handleStatus = (newStatus) => {
-    
+      
       var item = {"status":newStatus}
          purchaseService.update(props.object._id,item)
              .then((res) => {
-     
-              props.updateOne(res.payload._id,res.payload);
+
+              $("#modal-update-purchase").modal("hide");
                  alertService.success('Updated!', { keepAfterRouteChange: true });
-                 $("#modal-update").modal("hide");
                  
              })
              .catch(error => {
@@ -47,7 +46,7 @@ function Update(props) {
     return (
       
     
-         <div className="modal modal-blur fade" id="modal-update" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
+         <div className="modal modal-blur fade" id="modal-update-purchase" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
        <div className="modal-dialog modal-dialog-centered" role="document">
          <div className="modal-content">
            <div className="modal-header">

@@ -9,15 +9,12 @@ function Dispensary({ match }) {
     const { path } = match;
     
     return (
-        <div className="content">
-            <div className="container-xl">
                 <Switch>
                     <Route exact path={path} component={Details} />
                     <Route path={`${path}/update/:id`} component={Update} />
                     <Route path={`${path}/create`} component={Create} />
                 </Switch>
-            </div>
-        </div>
+
     );
 }
 

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Route, Link } from 'react-router-dom';
-
+import socketIOClient from "socket.io-client";
 import { Role } from '../_helpers';
 import { accountService } from '../_services';
+import { Notifications } from './'
 import { history } from  '../_helpers'
+import { getPublicApi } from './../_helpers/config'
+const socket = socketIOClient(getPublicApi.substr(0,getPublicApi.indexOf("api")));
 
 function Nav() {
 
@@ -18,10 +21,24 @@ function Nav() {
     const [active, setActive] = useState(userInitialValue);
     const [userActive, setUserActive] = useState(userInitialValue);
     const userDetails = accountService.userValue;
-    const defaultAvatar = "/static/user.png";
+	const defaultAvatar = "/static/user.png";
+	
+
 
     useEffect(() => {
-        const subscription = accountService.user.subscribe(x => setUser(x));
+		
+
+		const subscription = accountService.user.subscribe(x => {
+			setUser(x)
+		});
+
+		// socket.on("privateNotification", ({ id, response }) => {
+		// 	console.log(response);
+		//   });
+		
+		// socket.on("pushNotification", data => {
+		// 	console.log(data);
+		// });
         changeActiveClass();
         changeUserActiveClass();
         // var dataLocations = ["/admin/users", "/admin/dispensaries","/admin/products","/admin/categories","/admin/brands"];
@@ -54,11 +71,13 @@ function Nav() {
         {setActive("")};
       }
         
-    }
+	}
+
 
     const changeUserActiveClass = () => {
       var productLocations = ["/product"];
-      var subscriptionLocations = ["/subscription"];
+	  var subscriptionLocations = ["/subscription"];
+	  var ordersLocations = ["/orders"];
 
       if(window.location.pathname.includes(productLocations)){
         setUserActive("product")
@@ -66,6 +85,10 @@ function Nav() {
       else if(window.location.pathname.includes(subscriptionLocations))
       {
         {setUserActive("subscription")};
+	  }
+	  else if(window.location.pathname.includes(ordersLocations))
+      {
+        {setUserActive("orders")};
       }
       else{
         {setUserActive("")};
@@ -77,8 +100,8 @@ function Nav() {
       const subscription = history.listen((location, action)=>{
         changeActiveClass();
         changeUserActiveClass();
-      });
-  
+	  });
+	
       return subscription.unsubscribe;
   }, []);
 
@@ -98,6 +121,7 @@ function Nav() {
               			<img src="/static/logo-white.svg" alt="Tabler" className="navbar-brand-image" />
             		</NavLink>
             		<div className="navbar-nav flex-row order-md-last">
+						<Notifications user={user}/>
               			{/* <div className="nav-item dropdown d-none d-md-flex mr-3">
               			  <a href="#" className="nav-link px-0" data-toggle="dropdown" tabIndex="-1">
               			    <svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
@@ -217,7 +241,7 @@ function Nav() {
                     					</li>
                     				</ul>
                   				</li>
-                  				<li className={(active=="requests")?"nav-item dropdown active":"nav-item dropdown"}>
+                  				{/* <li className={(active=="requests")?"nav-item dropdown active":"nav-item dropdown"}>
                     				<a className="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false">
                     				  	<span className="nav-link-title">
                     				  		<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-md" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><circle cx="6" cy="18" r="2"></circle><circle cx="6" cy="6" r="2"></circle><circle cx="18" cy="18" r="2"></circle><line x1="6" y1="8" x2="6" y2="16"></line><path d="M11 6h5a2 2 0 0 1 2 2v8"></path><polyline points="14 9 11 6 14 3"></polyline></svg>&nbsp;Requests
@@ -230,20 +254,8 @@ function Nav() {
                     					    	&nbsp;Review products
                     					  	</NavLink>
                     					</li>
-                    					{/* <li>
-                    					  	<NavLink activeClassName="active" className="dropdown-item" to={'/admin/features'}>
-                    					    	<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-md" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><polyline points="7 8 3 12 7 16"></polyline><polyline points="17 8 21 12 17 16"></polyline><line x1="14" y1="4" x2="10" y2="20"></line></svg>
-                    					    	&nbsp;&nbsp;Features
-                    					  	</NavLink>
-                    					</li>
-                    					<li>
-                    					  	<NavLink activeClassName="active" className="dropdown-item" to={'/admin/bugfix'}>
-                    					    	<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-md" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 9v-1a3 3 0 0 1 6 0v1"></path><path d="M8 9h8a6 6 0 0 1 1 3v3a5 5 0 0 1 -10 0v-3a6 6 0 0 1 1 -3"></path><line x1="3" y1="13" x2="7" y2="13"></line><line x1="17" y1="13" x2="21" y2="13"></line><line x1="12" y1="20" x2="12" y2="14"></line><line x1="4" y1="19" x2="7.35" y2="17"></line><line x1="20" y1="19" x2="16.65" y2="17"></line><line x1="4" y1="7" x2="7.75" y2="9.4"></line><line x1="20" y1="7" x2="16.25" y2="9.4"></line></svg>
-                    					    	&nbsp;&nbsp;Bug fix
-                    					  	</NavLink>
-                    					</li> */}
                     				</ul>
-                  				</li>
+                  				</li> */}
                   				<li className={(active=="security")?"nav-item dropdown active":"nav-item dropdown"}>
                     				<a className="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false">
                     				  	<span className="nav-link-title">
@@ -302,15 +314,7 @@ function Nav() {
               			<img src="/static/logo.svg" alt="Tabler" className="navbar-brand-image" />
             		</NavLink>
             		<div className="navbar-nav flex-row order-md-last">
-              			{/* <div className="nav-item dropdown d-none d-md-flex mr-3">
-              			  	<a href="#" className="nav-link px-0" data-toggle="dropdown" tabIndex="-1">
-              			    	<svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
-              			    	<span className="badge bg-red"></span>
-              			  	</a>
-              			  	<div className="dropdown-menu dropdown-menu-right dropdown-menu-card">
-              			    	<a className="dropdown-item d-flex bg-light"><span className="avatar mr-3 align-self-center" style={{backgroundImage: "url(&quot;demo/faces/female/1.jpg&quot;)"}}></span><div><strong>Alice</strong> started new task: Tabler UI design.<div className="small">1 hour ago</div></div></a>
-              			  	</div>
-              			</div> */}
+              			<Notifications user={user}/>
               			<div className="nav-item dropdown">
                 			<a href="#" className="nav-link d-flex lh-1 text-reset p-0" data-toggle="dropdown">
                   				<span className="avatar" style={{backgroundImage: `url("${(userDetails && userDetails.picture)?userDetails.picture:defaultAvatar}")`}}></span>
@@ -350,19 +354,27 @@ function Nav() {
                       					  	  	My product list
                       					  	</NavLink>
                       					</li>
-										<li>
+										{/* <li>
 											<NavLink activeClassName="active" className="dropdown-item" 
 											to={`/product/list`}
 											>
                         	  					Add product into my menu
                         					</NavLink>
-                      					</li>
+                      					</li> */}
                       					<li>
                         					<NavLink activeClassName="active" className="dropdown-item" to={`/product/list`}>
                         	  					Add product from brands
                         					</NavLink>
                       					</li>
                     				</ul>
+                  				</li>
+								<li className={(userActive=="orders")?"nav-item active":"nav-item"}>
+                    				<NavLink className="nav-link" to={`/orders`}>
+                    				  	<svg xmlns="http://www.w3.org/2000/svg" className="icon icon-md" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><rect x="7" y="9" width="14" height="10" rx="2"></rect><circle cx="14" cy="14" r="2"></circle><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"></path></svg>
+                    				  	<span className="nav-link-title">
+                    				   	 	&nbsp;Orders
+                    				  	</span>
+                    				</NavLink>
                   				</li>
                   				<li className={(userActive=="subscription")?"nav-item active":"nav-item"}>
                     				<NavLink className="nav-link" to={`/subscription`}>

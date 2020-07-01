@@ -81,6 +81,7 @@ function Create({ history }) {
         twitter:'',
         instagram:'',
         facebook:'',
+        isPickupable:''
     };
     const mp = {
         lng: 5,
@@ -104,6 +105,9 @@ function Create({ history }) {
             .required('License is required'),
         licenseType: Yup.string()
             .required('License type is required'),
+        taxes: Yup.number()
+            .min(0)
+            .max(100),
         website: Yup.string(),
         email: Yup.string(),
         twitter: Yup.string(),
@@ -298,6 +302,11 @@ function Create({ history }) {
                                                     type="text" className={'form-control' + (errors.recreationallicense && touched.recreationallicense ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="recreationallicense" component="div" className="invalid-feedback" /> 
                                                 </div>
+                                                <div className="mb-3">
+                                                    <label>Dispensary Taxes</label>
+                                                    <Field name="taxes" type="number" placeholder="Input taxes" className={'form-control' + (errors.taxes && touched.taxes ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="taxes" component="div" className="invalid-feedback" />
+                                                </div>
                                                 </div><div className="row">
                                             </div>
                                             
@@ -353,6 +362,18 @@ function Create({ history }) {
                                 <div>
                                     <img src={atmImg} style={{height:"2em", width:"3.5em"}}/>
                                     <strong>ATM AVAILABLE</strong> 
+                                </div>
+                              </div>
+                            </label>
+                            <label class="form-selectgroup-item flex-fill" style={{width: "100%"}}>
+                              <Field type="checkbox" name="form-payment" name="isPickupable" class="form-selectgroup-input" />
+                              <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                <div class="mr-3">
+                                  <span class="form-selectgroup-check"></span>
+                                </div>
+                                <div>
+                                    {/* <img src={atmImg} style={{height:"2em", width:"3.5em"}}/> */}
+                                    <strong>PICKUP SERVICE</strong> 
                                 </div>
                               </div>
                             </label>
@@ -526,8 +547,8 @@ function Create({ history }) {
 
                                 <div className="col-md-3">
                                     <div className="mb-3">
-                                        <label>First-Time Patients</label>
-                                        <Field name="firstpatient" as="textarea" className={'form-control' + (errors.firstpatient && touched.firstpatient ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter first time patient details" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
+                                        <label>First-Time Patients Deals</label>
+                                        <Field name="firstpatient" as="textarea" className={'form-control' + (errors.firstpatient && touched.firstpatient ? ' is-invalid' : '')} data-toggle="autosize" placeholder="Enter first time patient deals" style={{overflow: "hidden", overflowWrap: "break-word", height: "100.9792px"}}></Field>
                                         <ErrorMessage name="firstpatient" component="div" className="invalid-feedback" />
                                     </div>
                                 </div>

@@ -5,6 +5,7 @@ import mapboxgl from "mapbox-gl";
 import { BasicInfoCard,ScheduleTableCard, PageHeader, LoaderBounce } from '../_components';
 import { history } from '../_helpers';
 
+
 function Home() {
 
   const DispensaryStatus = {
@@ -39,10 +40,12 @@ function Home() {
       checkIsAdmin();
       fetchDispensary();
 
+      
+
     }, [])
     
     async function fetchDispensary() {
-      const res = await dispensaryService.getByUserId(user._id)
+      await dispensaryService.getByUserId(user._id)
       .then(async (res) => {
         if(res!=null){
           
@@ -217,13 +220,9 @@ function Home() {
     
     
     return (
-      
-        <div className="content">
-          
-        <div className="container-xl d-flex flex-column justify-content-center">
+      <>
           {getBody()}
-        </div>
-      </div>
+          </>
     );
 }
 

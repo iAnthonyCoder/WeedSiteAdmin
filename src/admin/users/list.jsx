@@ -134,7 +134,7 @@ function List() {
     // }
 
     const details = (id) => {
-
+ 
       history.push(`users/${id}`)
     }
     

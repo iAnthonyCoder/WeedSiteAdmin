@@ -98,7 +98,7 @@ function Pending({ match }) {
 
     function scopeItem(object){
       setScopedItem(object);
-      $("#modal-update").modal("show");
+      $("#modal-update-purchase").modal("show");
     }
 
 

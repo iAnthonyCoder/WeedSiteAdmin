@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { securityService, alertService } from '../_services';
-import { PageHeader } from '../_components'
+import { PageHeader, LoaderBounce } from '../_components'
 import {
     LineChart, Line, XAxis, AreaChart, ResponsiveContainer, Pie, Area, YAxis, CartesianGrid, Tooltip, Legend,
   } from 'recharts';
@@ -17,6 +17,7 @@ function Overview({ match }) {
     const [tableData, setTableData] = useState(addedRecordsInitialState)
     const [totalRevenue, setTotalRevenue] = useState(monthInitialState)
     const [totalCount, setTotalCount] = useState(monthInitialState)
+    const [fetched, setFetched] = useState(false)
 
     const fetch = () => {
         securityService.getAddedRecords()
@@ -38,6 +39,7 @@ function Overview({ match }) {
                     setTableData(res.tableData)
                     setTotalCount(res.totalDataCount[0].count)
                     setTotalRevenue(res.totalRevenue)
+                    setFetched(true)
                 }
             })
             .catch()
@@ -48,7 +50,7 @@ function Overview({ match }) {
         fetch();
     }, [])
 
-
+    if(!fetched) return <LoaderBounce />
     return (
         <div>
             <PageHeader title="Admin/Overview" link="admin/products/create" nameButton="Add product" subtitle="Dashboard" />

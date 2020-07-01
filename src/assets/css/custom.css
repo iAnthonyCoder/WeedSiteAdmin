@@ -11,12 +11,54 @@
     font-weight: bold;
     }
      
+    #admin-notifications > div.notification-list > div > div > a:not(:first-child) {
+      border-top: 1px solid rgba(110,117,130,.2);
+    }
+    #admin-notifications > div.notification-list > div > div
+     {
+      max-height: 400px !important;
+    }
+
+    .notification-list a{
+      cursor: pointer
+    }
+
+    .notification-list{
+      /* max-height: 300px;
+      overflow-y: hiden; */
+    }
+
+
+    .notification-list a:hover{
+      background-color: #e3e6ec!important;;
+    }
+
+    #admin-notifications .dropdown-divider{
+      margin-top: 0 !important;
+    }
+
+
+
+
+    .dropdown-menu-arrow{
+      padding-bottom: .5rem;
+    }
+
+    .dropdown-menu-arrow > a{
+      cursor: pointer;
+      padding: .25rem 1.5rem;
+    }
+    
     .mapContainer {
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
     bottom: 0;
+    }
+
+    .infinite-scroll-component {
+      max-height: 400px;
     }
 
     .badge-success{

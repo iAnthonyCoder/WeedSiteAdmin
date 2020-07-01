@@ -16,6 +16,7 @@
     "jquery": "^3.5.1",
     "mapbox-gl": "^1.10.0",
     "mathjs": "^7.0.1",
+    "moment": "^2.27.0",
     "odds-converter": "^1.0.4",
     "prop-types": "^15.7.2",
     "query-string": "^6.11.0",
@@ -27,6 +28,7 @@
     "react-contexify": "^4.1.1",
     "react-contextify": "^0.1.0",
     "react-dom": "^16.8.6",
+    "react-infinite-scroll-component": "^5.0.5",
     "react-js-pagination": "^3.0.3",
     "react-loadable": "^5.5.0",
     "react-rating-stars-component": "^1.0.3",
@@ -37,6 +39,7 @@
     "react-table": "^7.2.0",
     "recharts": "^1.8.5",
     "rxjs": "^6.5.5",
+    "socket.io-client": "^2.3.0",
     "yup": "^0.28.5"
   },
   "scripts": {

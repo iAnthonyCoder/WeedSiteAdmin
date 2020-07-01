@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef }  from 'react';
 import mapboxgl from "mapbox-gl";
 import { accountService, menuproductService } from '../../_services';
+import { history } from '../../_helpers'
 import { PageHeader, BasicInfoCard,ScheduleTableCard, NoDispensary, LoaderBounce, MainTable } from '../../_components';
 
 
@@ -110,7 +111,7 @@ function Details(props) {
         return age_now;
       }
       const details = (id) => {
-        // history.push(`../products/${id}`)
+        history.push(`${props.match.params.id}/menu/${id}`)
       }
 
 

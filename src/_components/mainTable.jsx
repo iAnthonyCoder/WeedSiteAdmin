@@ -4,7 +4,7 @@ import { useTable, usePagination } from 'react-table'
 import { productService, categoryService, brandService, alertService } from '../_services';
 import { LoaderBounce, NoResults } from '../_components'
 
-function Table({columns, title, data,fetchData,loading,pageCount: controlledPageCount, totalData,
+function Table({columns, filterParams, title, data,fetchData,loading,pageCount: controlledPageCount, totalData,
 }) {
   const {
     getTableProps,
@@ -26,6 +26,7 @@ function Table({columns, title, data,fetchData,loading,pageCount: controlledPage
   } = useTable(
     {
       columns,
+      filterParams,
       data,
       initialState: { pageIndex: 0 }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
@@ -40,18 +41,38 @@ function Table({columns, title, data,fetchData,loading,pageCount: controlledPage
   // Listen for changes in pagination and use the state to fetch our new data
     const searchQueryInitialState = ""
     const [searchQuery, setSearchQuery] = React.useState(searchQueryInitialState)
+    const filterQueryInitialState = ""
+    const [filterQuery, setFilterQuery] = React.useState(filterQueryInitialState)
 
   React.useEffect(() => {
-	fetchData({ pageIndex, pageSize, searchQuery })
-  }, [fetchData, pageIndex, pageSize, searchQuery])
+    console.log(filterParams);
+	fetchData({ pageIndex, pageSize, searchQuery, filterQuery })
+  }, [fetchData, pageIndex, pageSize, searchQuery, filterQuery])
 
   // Render the UI for your table
   return (
     <>
           <div class="card">
-            <div class="card-header">
+            {(title)?<div class="card-header">
               <h3 class="card-title">{title}</h3>
-            </div>
+              &nbsp;&nbsp;
+              {
+                (filterParams)
+                ?(
+                  <select onChange={e => {setFilterQuery(e.target.value)}} className="form-select" style={{width:"200px"}}>
+                    {
+                      filterParams.map(x=>
+                        <option value={x.value}>{x.label}</option>
+                      )
+                    }
+                  </select>
+                )
+                :""
+              }
+            </div>:""}
+
+
+            
             <div class="card-body border-bottom py-3">
               <div class="d-flex">
                 <div class="text-muted">
@@ -178,8 +199,8 @@ const MainTable = forwardRef((props, ref) => {
   const [totalData, setTotalData] = React.useState(0)
   const fetchIdRef = React.useRef(0)
 
-  const fetchData = React.useCallback(({ pageSize, pageIndex, searchQuery }) => {
-	setCurrentQuery({ pageSize, pageIndex, searchQuery })
+  const fetchData = React.useCallback(({ pageSize, pageIndex, searchQuery, filterQuery }) => {
+	setCurrentQuery({ pageSize, pageIndex, searchQuery, filterQuery })
     // This will get called when the table needs new data
     // You could fetch your data from literally anywhere,
     // even a server. But for this example, we'll just fake it.
@@ -196,10 +217,10 @@ const MainTable = forwardRef((props, ref) => {
       if (fetchId === fetchIdRef.current) {
         const startRow = pageSize * pageIndex
         const endRow = startRow + pageSize
-        var endpoint = `?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}`
+        var endpoint = `?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}${filterQuery?filterQuery:""}`
 
         if(props.param){
-          endpoint = `${props.param}?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}`
+          endpoint = `${props.param}?page=${pageIndex}&size=${pageSize}${searchQuery?`&search=${searchQuery}`:""}${filterQuery?filterQuery:""}`
         }
         props.endPoint(endpoint)
         .then(data => {
@@ -240,7 +261,8 @@ const MainTable = forwardRef((props, ref) => {
         loading={loading}
         pageCount={pageCount}
 		    totalData={totalData}
-		    title={props.title}
+        title={props.title}
+        filterParams={props.filterParams}
       />
 
   )

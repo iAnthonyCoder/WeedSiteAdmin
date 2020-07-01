@@ -103,7 +103,6 @@ function Create(props) {
 		strain: Yup.string(),
      	    // .required('Strain is required'),
         description: Yup.string()
-            .required('Description is required'),
 	});
 	
 	const initialValues = {

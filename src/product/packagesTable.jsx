@@ -16,45 +16,40 @@ function PackagesTable(props) {
 
     const columns =  [
         {
-          Header: 'Type',
-          accessor: 'type'
-        },
-        {
-          Header: 'price',
-          accessor: row => "$"+row.price
-        },
-        {
             Header: 'weight',
-            accessor: row => ((row.value === 0 || row.value === null || row.value === "")?"EACH":`${row.value*3.5} GR  ${(row.value===1)?"(1/8 OZ)":(row.value===2)?"(1/4 OZ)":(row.value===4)?"(1/2 OZ)":"("+(row.value*3.5/28)+" OZ)"}`)
+            accessor: row => ((row.type==="g")?(row.value+"g"):(row.type==="oz")?((row.value==1)?("1/8 oz"):(row.value==2)?("1/4 oz"):(row.value==4)?("1/2 oz"):(row.value==8)?("1 oz"):""):"EACH")
         },
         {
-          Header: 'stock',
-          accessor: row => (row.stock)?"ENABLED":"DISABLED"
+            Header: 'price',
+            accessor: row => "$"+row.price
         },
         {
-          Header: 'description',
-          accessor: 'description',
+            Header: 'stock',
+            accessor: row => (row.stock)?"ENABLED":"DISABLED"
         },
         {
-        Header: 'Actions',
-        width:"100px",
-  
-          Cell:({row})=>(
-            <span style={{width:"100px"}} class="dropdown ml-1 position-static">
-              <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
-                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
-                  {/* <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
-                    Details
-                  </button> */}
-                  <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
-                    Edit
-                  </button>
-                  <button onClick={()=>{deleteByID(row.original._id)}} class="dropdown-item">
-                    Delete
-                  </button>
-                </div>
-              </span>
-          )
+            Header: 'description',
+            accessor: 'description',
+        },
+        {
+            Header: 'Actions',
+            width:"100px",
+            Cell:({row})=>(
+              <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+                <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
+                  <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
+                    {/* <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
+                      Details
+                    </button> */}
+                    <button onClick={()=>{scopeItem(row.original)}} class="dropdown-item">
+                      Edit
+                    </button>
+                    <button onClick={()=>{deleteByID(row.original._id)}} class="dropdown-item">
+                      Delete
+                    </button>
+                  </div>
+                </span>
+            )
         }
     ]
 
