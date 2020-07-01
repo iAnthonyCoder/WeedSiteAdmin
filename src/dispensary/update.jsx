@@ -257,7 +257,7 @@ function Update({ history, match }) {
                     <div className="row align-items-center">
                         <div className="col-auto">
                             <h2 className="page-title">
-                                Dyspensary
+                                Dispensary
                             </h2>
                         </div>
                     </div>

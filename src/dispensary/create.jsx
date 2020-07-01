@@ -456,9 +456,11 @@ function Create({ history }) {
                                     <div className=" ">
                                     
                                     <h2>Set the location in the map</h2>
-                         
-                        <input name="latitude" placeholder="Latitude" className='form-control' value={latitude} onChange={handleInputChange}></input>
-                        <input name="longitude" placeholder="Longitude" className='form-control' onChange={handleInputChange}></input>
+                                    <label>
+                                        Latitude</label>
+                        <input name="latitude" placeholder="Latitude" type="number" className='form-control' value={latitude} onChange={handleInputChange}></input>
+                        <label>Longitude</label>
+                        <input name="longitude" placeholder="Longitude" type="number" className='form-control' value={longitude} onChange={handleInputChange}></input><br></br>
                                          
                                           <div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
                                           <small className="form-hint"><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small>
