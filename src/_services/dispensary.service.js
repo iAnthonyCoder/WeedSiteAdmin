@@ -37,7 +37,10 @@ function getByUserId(id) {
 })}
 
 function create(params) {
-    console.log(params)
+    delete params.opens_ata
+    delete params.closes_ata
+    delete params.opens_ata_type
+    delete params.closes_ata_type
     return fetchWrapper.post(baseUrl, params);
 }
 

@@ -192,22 +192,19 @@ function Create({ history }) {
         } else {
           setStatus();
           fields.user=user._id;
-          delete fields.opens_ata
-            delete fields.closes_ata
-            delete fields.opens_ata_type
-            delete fields.closes_ata_type
-          setSubmitting(false);
          
-             dispensaryService.create(fields)
-               .then(() => {
-                   resetForm({});
-                   alertService.success('Dispensary created', { keepAfterRouteChange: true });
-                   history.push('../../home');
-               })
-               .catch(error => {
-                   setSubmitting(false);
-                   alertService.error(error);
-               });
+          setSubmitting(false);
+         console.log(fields);
+            dispensaryService.create(fields)
+              .then(() => {
+                  resetForm({});
+                  alertService.success('Dispensary created', { keepAfterRouteChange: true });
+                  history.push('../../home');
+              })
+              .catch(error => {
+                  setSubmitting(false);
+                  alertService.error(error);
+              });
         }
         
     }
