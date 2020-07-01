@@ -83,10 +83,10 @@ function Create({ history }) {
         instagram:'',
         facebook:'',
         taxes:0,
-        opens_at:[],
-        closes_at:[],
-        opens_at_type:[],
-        closes_at_type:[]
+        opens_at:{},
+        closes_at:{},
+        opens_at_type:{},
+        closes_at_type:{}
     };
     const mp = {
         lng: 5,
@@ -162,6 +162,9 @@ function Create({ history }) {
 
     }, [map]);
 
+
+
+
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         fields.latitude=latitude;
         fields.longitude=longitude;
@@ -181,18 +184,18 @@ function Create({ history }) {
             fields.opens_at_type=fields.opens_ata_type
             fields.closes_at_type=fields.closes_ata_type
         }
-        delete fields.opens_ata
-        delete fields.closes_ata
-        delete fields.opens_ata_type
-        delete fields.closes_ata_type
         if(!latitude){
             alert("Add a place in the map")
             setSubmitting(false);
         } else {
           setStatus();
           fields.user=user._id;
+          delete fields.opens_ata
+            delete fields.closes_ata
+            delete fields.opens_ata_type
+            delete fields.closes_ata_type
           setSubmitting(false);
-          console.log(fields);
+         
             dispensaryService.create(fields)
               .then(() => {
                   resetForm({});
@@ -207,6 +210,15 @@ function Create({ history }) {
         
     }
 
+    const handleInputChange = e => {
+        const { value, name } = e.target
+        if(name=="latitude"){
+            setLatitude(value)
+        }
+        if(name=="longitude"){
+            setLongitude(value)
+        }
+    }
 
 
     const [isDeleting, setIsDeleting] = useState(false);
@@ -227,7 +239,7 @@ function Create({ history }) {
                     <div className="row align-items-center">
                         <div className="col-auto">
                             <h2 className="page-title">
-                                Dyspensary
+                                Dispensary
                             </h2>
                         </div>
                     </div>
@@ -445,6 +457,8 @@ function Create({ history }) {
                                     
                                     <h2>Set the location in the map</h2>
                          
+                        <input name="latitude" placeholder="Latitude" className='form-control' value={latitude} onChange={handleInputChange}></input>
+                        <input name="longitude" placeholder="Longitude" className='form-control' onChange={handleInputChange}></input>
                                          
                                           <div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
                                           <small className="form-hint"><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small>

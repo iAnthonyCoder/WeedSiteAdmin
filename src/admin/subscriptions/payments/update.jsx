@@ -121,7 +121,7 @@ function Update(props) {
    <div className="d-flex">
      {/* <a href="#" className="btn btn-link">Cancel</a> */}
      <button type="submit" onClick={(()=>handleStatus("REJECTED"))}  className="btn btn-danger ">Decline</button>
-     <button type="submit" onClick={(()=>handleStatus("ACEPTED"))}  className="btn btn-primary ml-auto">
+     <button type="submit" onClick={(()=>handleStatus("ACCEPTED"))}  className="btn btn-primary ml-auto">
          
          Approve
      </button>
