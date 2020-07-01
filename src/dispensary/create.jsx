@@ -184,6 +184,8 @@ function Create({ history }) {
             fields.opens_at_type=fields.opens_ata_type
             fields.closes_at_type=fields.closes_ata_type
         }
+
+        console.log(fields);
         if(!latitude){
             alert("Add a place in the map")
             setSubmitting(false);
@@ -196,16 +198,16 @@ function Create({ history }) {
             delete fields.closes_ata_type
           setSubmitting(false);
          
-            dispensaryService.create(fields)
-              .then(() => {
-                  resetForm({});
-                  alertService.success('Dispensary created', { keepAfterRouteChange: true });
-                  history.push('../../home');
-              })
-              .catch(error => {
-                  setSubmitting(false);
-                  alertService.error(error);
-              });
+             dispensaryService.create(fields)
+               .then(() => {
+                   resetForm({});
+                   alertService.success('Dispensary created', { keepAfterRouteChange: true });
+                   history.push('../../home');
+               })
+               .catch(error => {
+                   setSubmitting(false);
+                   alertService.error(error);
+               });
         }
         
     }
@@ -629,7 +631,7 @@ function Create({ history }) {
                                     
                                   <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-3 col-xl-3">
                                                             <label>Closes at</label>
-                                                            <Field name={`closes_at[${name}]`} as="select" className={'form-control' + (errors.closes_at && touched.closes_at ? ' is-invalid' : '')} >
+                                                            <Field name={`closes_ata[${name}]`} as="select" className={'form-control' + (errors.closes_ata && touched.closes_ata ? ' is-invalid' : '')} >
                                                             <option value="">Select</option>
                                                             <option value="12">12:00</option>
                                                                 <option value="1">1:00</option>
@@ -645,17 +647,17 @@ function Create({ history }) {
                                                                 <option value="11">11:00</option>
                                                                 
                                                             </Field>
-                                                            <ErrorMessage name="closes_at" component="div" className="invalid-feedback" />
+                                                            <ErrorMessage name="closes_ata" component="div" className="invalid-feedback" />
                                                         </div>
                                                         <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-2 col-xl-2">
                                                         <label></label>
-                                                        <Field  name={`closes_at_type[${name}]`} as="select" className={'form-control' + (errors.closes_at_type && touched.closes_at_type ? ' is-invalid' : '')} >
+                                                        <Field  name={`closes_ata_type[${name}]`} as="select" className={'form-control' + (errors.closes_ata_type && touched.closes_ata_type ? ' is-invalid' : '')} >
                                                         <option value="">Select</option>
                                                                 <option value="AM">AM</option>
                                                                 <option value="PM">PM</option>
                                                                 
                                                             </Field>
-                                                            <ErrorMessage name="closes_at_type" component="div" className="invalid-feedback" />
+                                                            <ErrorMessage name="closes_ata_type" component="div" className="invalid-feedback" />
                                                       </div>
 
                                   </div>
