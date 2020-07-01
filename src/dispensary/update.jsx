@@ -115,10 +115,8 @@ function Update({ history, match }) {
             .required('Zip code is required'),
         phone: Yup.string()
             .required('Phone number is required'),
-        license: Yup.string()
-            .required('License is required'),
-        licenseType: Yup.string()
-            .required('License type is required'),
+        license: Yup.string(),
+        licenseType: Yup.string(),
         taxes: Yup.number()
             .min(0)
             .max(100),
