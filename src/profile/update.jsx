@@ -144,7 +144,7 @@ function Update({ history }) {
                                            (user.isVerified)?(""):<div className="col-md-4 col-sm-12"> <div className="row">
                                                 <div className="">
                                                     <a href="#" onClick={()=>{resendToken(initialValues.email)}} className="btn btn-primary btn-block">
-                                                        Resend verification mail
+                                                        Resend verification email
                                                     </a>
                                                 </div>
                                             </div>
