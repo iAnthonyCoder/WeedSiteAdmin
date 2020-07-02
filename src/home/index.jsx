@@ -155,7 +155,7 @@ function Home() {
               <div className="col-md-6 col-lg-8">
               {
                 dispensary && dispensary.schedule ?
-                            <ScheduleTableCard edit schedule={dispensary.schedule}/>   
+                            <ScheduleTableCard edit dispensaryId={dispensary._id}/>   
                           : " "
               }
             </div>

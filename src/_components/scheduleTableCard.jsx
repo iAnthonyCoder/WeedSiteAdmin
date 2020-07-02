@@ -10,7 +10,8 @@ function ScheduleTableCard(props) {
     const [openNow, setOpenNow] = useState(false)
     const [componentMode, setComponentMode] = useState(0); //0-> table - 1-> edit
     const [scopedItem, setScopedItem] = useState("")
-    const [schedule, setSchedule] = useState("");
+	const [schedule, setSchedule] = useState("");
+	const [isFetch, setIsFetch] = useState(false)
 
     const initialValues = {
 		opens_at: (scopedItem.opens_at)?scopedItem.opens_at:'',
@@ -25,41 +26,7 @@ function ScheduleTableCard(props) {
           	.required('Closes hour is required'),
   	});
 
-    // const setTodayInfo = async (schedul) => {
-	// 	schedul.map( (days) => 
-	// 	{
-    //     	var daysa = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-    //     	var d = new Date();
-    //     	d.getHours(); 
-    //     	var currentDay = daysa[d.getDay()];
-    //     	var currentHour = d.getHours();
-    //     	if(days.day===currentDay){
-	// 			if(days.opens_at_type=="AM"){
-	// 				var opens_at_check = parseInt(days.opens_at, 10)
-	// 				if(days.opens_at==12){opens_at_check=0}
-	// 			}
-	// 			else{
-	// 				if(days.opens_at!=12)
-	// 				{var opens_at_check = parseInt(days.opens_at, 10)+12}
-	// 				else{var opens_at_check = parseInt(days.opens_at, 10)}
-	// 			};
-	// 			if(days.closes_at_type=="AM"){
-	// 				var closes_at_check = parseInt(days.closes_at, 10)
-	// 				if(days.closes_at==12){closes_at_check=0}
-	// 			}
-	// 			else{
-	// 				if(days.closes_at!=12)
-	// 				{var closes_at_check = parseInt(days.closes_at, 10)+12}
-	// 				else{var closes_at_check = parseInt(days.closes_at, 10)}
-	// 			};
-	// 			var hoursPerDay = closes_at_check-opens_at_check;
-	// 			var hoursAfterOpens = currentHour - opens_at_check;
-	// 			if((currentHour-opens_at_check>=0)&&(hoursPerDay>hoursAfterOpens)){
-	// 				setOpenNow(true)
-	// 			}
-    //     	} 
-    //   	})  
-    // }
+    
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
     	setStatus();
@@ -67,7 +34,9 @@ function ScheduleTableCard(props) {
         	alertService.success('Item saved successfully', { keepAfterRouteChange: true });
             setComponentMode(0);
             setSchedule(schedule.map(item => (item._id === data.payload._id ? data.payload : item)))
-            resetForm({});
+			resetForm({});
+			setIsFetch(false)
+			fetch()
           })
           .catch(error => {
               setSubmitting(false);
@@ -94,7 +63,6 @@ function ScheduleTableCard(props) {
 		var format = 'HH:mm'
 		var time = Moment().format(format);
 		var this_day = Moment().format('dddd').toUpperCase()
-
 		schl.map(x => {
 			if(x.day === this_day){
 				if (Moment(time, format).isBetween(Moment(x.opens_at, format), Moment(x.closes_at, format), null, '[]')){
@@ -104,10 +72,17 @@ function ScheduleTableCard(props) {
 		})
 	}
 
+	const fetch = () => {
+		scheduleService.getAll()
+			.then(res => {
+				setSchedule(sortDays(res));
+				setTodayInfoa(res);
+				setIsFetch(true)
+			})
+	}
 
     useEffect(() => {
-		setSchedule(sortDays(props.schedule))
-    	setTodayInfoa(props.schedule);
+		fetch()
     }, [])
 
     function getBody(){
@@ -230,7 +205,7 @@ function ScheduleTableCard(props) {
 
 
 
-	if(!schedule) return <LoadingSpinner />
+	if(!isFetch) return <LoadingSpinner />
     return(
     	<>
         {
