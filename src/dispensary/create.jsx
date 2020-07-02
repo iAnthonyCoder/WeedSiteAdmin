@@ -56,12 +56,16 @@ function Create({ history }) {
     const user = accountService.userValue;
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
-    const latitudeInitialValue=false; 
+    const longitudeInitialValue=-118.05853227075772; 
+    const latitudeInitialValue=33.93064846016682;
     const [latitude, setLatitude] = useState(latitudeInitialValue)
-    const [longitude, setLongitude] = useState(latitudeInitialValue)
+    const [longitude, setLongitude] = useState(longitudeInitialValue)
     const [enableCustomSchedule, setEnableCustomSchedule] = useState(false)
     const [cities, setCities] = useState("")
     const [states, setStates] = useState("")
+    const [isMapActive, setIsMapActive] = useState(false)
+    const [showMapImg, setShowMapImg] = useState(false)
+    const [useInteractiveMap, setUseInteractiveMap] = useState(false)
     const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY','SUNDAY'];
 
     const styles = {
@@ -125,42 +129,88 @@ function Create({ history }) {
 
 
     
-    
+    const enableStaticImageMap = ( _longitude, _latitude) => {
+        setShowMapImg(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s-commercial+285A98(${_longitude},${_latitude})/${_longitude},${_latitude},13,0/600x300@2x?access_token=pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg`);
+        setUseInteractiveMap(false)
+    }
 
 
-    useEffect(() => {
+    // useEffect(() => {
        
+    //     mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
+    //     const initializeMap = ({ setMap, mapContainer }) => {
+    //         const map = new mapboxgl.Map({
+    //             container: mapContainer.current,
+    //             style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
+    //             center: [-118.05853227075772, 33.93064846016682],
+    //             zoom: 8
+    //         });
+
+    //         var marker = new mapboxgl.Marker({
+    //             draggable: true
+    //         })
+
+    //         map.on('click', addMarker);
+
+    //         function addMarker(e){
+    //             marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
+    //             var lngLat = marker.getLngLat();
+    //             setLatitude(lngLat.lat);
+    //             setLongitude(lngLat.lng);
+    //         }
+
+    //         map.on("load", () => {
+    //             setMap(map);
+    //             map.resize();
+    //         });
+    //     };
+
+    //     if (!map) initializeMap({ setMap, mapContainer });
+
+    // }, [map]);
+
+    const showInteractiveMap = () => {
         mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
         const initializeMap = ({ setMap, mapContainer }) => {
-            const map = new mapboxgl.Map({
+            var map = new mapboxgl.Map({
                 container: mapContainer.current,
                 style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-                center: [-118.05853227075772, 33.93064846016682],
-                zoom: 8
+                center: [longitude, latitude],
+                zoom: 15
             });
-
+        
             var marker = new mapboxgl.Marker({
                 draggable: true
             })
 
             map.on('click', addMarker);
 
+            function initializeMarker(e){
+                var lng = longitude;
+                var lat =  latitude;
+                marker.setLngLat([lng, lat]).addTo(map)
+                var lngLat = marker.getLngLat();
+            }
+
             function addMarker(e){
-                marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
+                var lng = e.lngLat.wrap().lng;
+                var lat =  e.lngLat.wrap().lat;
+                marker.setLngLat([lng, lat]).addTo(map)
                 var lngLat = marker.getLngLat();
                 setLatitude(lngLat.lat);
                 setLongitude(lngLat.lng);
             }
 
+
             map.on("load", () => {
+                initializeMarker();
                 setMap(map);
                 map.resize();
             });
         };
+        initializeMap({ setMap, mapContainer });
+    }
 
-        if (!map) initializeMap({ setMap, mapContainer });
-
-    }, [map]);
 
 
 
@@ -454,23 +504,60 @@ function Create({ history }) {
 
                                     <div className=" ">
                                     
-                                    <h2>Set the location in the map</h2>
-                                    <label>
-                                        Latitude</label>
-                        <input name="latitude" placeholder="Latitude" type="number" className='form-control' value={latitude} onChange={handleInputChange}></input>
-                        <label>Longitude</label>
-                        <input name="longitude" placeholder="Longitude" type="number" className='form-control' value={longitude} onChange={handleInputChange}></input><br></br>
-                                         
-                                          <div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
-                                          <small className="form-hint"><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small>
+
+
+
+
+
+
+
+
+
+
+                                    <div className="card-title">Set the location in the map</div>
+                                    <div className="row">
+                                        <div className="col xl-6">
+                                        <label>Latitude</label>
+                                    <input name="latitude" placeholder="Latitude" type="number" className='form-control' value={latitude} onChange={handleInputChange}></input>
+                                    
+                                        </div>
+                                        <div className="col xl-6">
+                                        <label>Longitude</label>
+                                    <input name="longitude" placeholder="Longitude" type="number" className='form-control' value={longitude} onChange={handleInputChange}></input><br></br>
+                                       
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                                   <div className="col-12" style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
+                                                   <button type="button" onClick={()=>{enableStaticImageMap(longitude, latitude)}} className="btn btn-primary">Check coordinates</button>&nbsp; OR  &nbsp;
+                                    <button type="button" onClick={()=>{showInteractiveMap();setUseInteractiveMap(true)}} className="btn btn-primary">Use our interactive map</button>
+                                    
+
+                                                   </div>
+                                    </div>
+                                    <br></br>
+                                    {useInteractiveMap?"":<img src={showMapImg} styles={{width:"100%", height:"300px", marginTop:"2em !important"}}></img>}
+                                    
+                                           
+                                          <div className={useInteractiveMap?"show":"hide"}><div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
+                                          <small className={useInteractiveMap?"form-hint":"hide"} ><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small></div>
                                         
-                                          {/* <Field id="latitude" onChange={e => Form.setFieldValue('latitude', e)}  name="latitude" type="text" className={'form-control' }/>
-                                          
-                                            <Field id="longitude" name="longitude" type="text" className={'form-control' }/> */}
                                             
+
+
+
+
                                     </div>
                                 </div>
                             </div>
+
+
+
+
+
+
+
+                            
 
                             
                             <div className="col-md-6 col-xl-4 ">

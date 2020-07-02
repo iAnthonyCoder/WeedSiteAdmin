@@ -22,24 +22,30 @@ function Overview({ match }) {
     const fetch = () => {
         securityService.getAddedRecords()
             .then(res => {
+                console.log(res);
                 if(res.totalRevenue>0){
-                    const chartData = res.chartData[0].data
-                    const data = chartData.sort(function (a, b) {
-                        if (a.day > b.day) {
-                          return 1;
-                        }
-                        if (a.day < b.day) {
-                          return -1;
-                        }
-                        // a must be equal to b
-                        return 0;
-                    });
-                    setAddedRecords(data)
-                    setMonth(res.chartData[0]._id)
-                    setTableData(res.tableData)
-                    setTotalCount(res.totalDataCount[0].count)
-                    setTotalRevenue(res.totalRevenue)
+                    if(res.chartData[0])
+                    {
+                        const chartData = res.chartData[0].data
+                        const data = chartData.sort(function (a, b) {
+                            if (a.day > b.day) {
+                              return 1;
+                            }
+                            if (a.day < b.day) {
+                              return -1;
+                            }
+                            // a must be equal to b
+                            return 0;
+                        });
+                        setAddedRecords(data)
+                        setMonth(res.chartData[0]._id)
+                        setTableData(res.tableData)
+                        setTotalCount(res.totalDataCount[0].count)
+                        setTotalRevenue(res.totalRevenue)
+                        
+                    }
                     setFetched(true)
+                    
                 }
             })
             .catch()
@@ -59,6 +65,7 @@ function Overview({ match }) {
                     <div className="card-body">
                         <h3 class="card-title">Lastest added products</h3>
                     </div>
+                   
                     <ResponsiveContainer width='100%' height={300}>
                         <AreaChart
                             data={addedRecords}

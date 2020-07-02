@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PageHeader, PricingCard } from "../_components"
 import { planService, subscriptionService, accountService } from "../_services"
+import { of } from 'rxjs';
 
 function Overview({ match }) {
     const { path } = match;
@@ -18,11 +19,49 @@ function Overview({ match }) {
             } else {
                 planService.getAll("?size=20&page=0").then(plans => {
                     setPlans(plans.totalData)
+                    if(plans.totalData){
+                    
+                        plans.totalData.map(x => {
+                            var descArray = [];
+                            var fakeDesc = x.description
+                            var amount =(fakeDesc.match(/,/g) || []).length;
+                            if(amount>0)
+                            {
+
+                            
+                                    var i;
+                                    // while(hasDot===true){
+                                    for(i=0; i<=amount; i++){
+                                     
+                                        var itemDesc = fakeDesc.substr(0, fakeDesc.indexOf(","))
+                                        if(itemDesc.length==0){
+                                            itemDesc = fakeDesc.substr(0, fakeDesc.length)
+                                        };
+                                        descArray.push(itemDesc.trim())
+                                    
+                                        fakeDesc = fakeDesc.substr(fakeDesc.indexOf(",")+1, fakeDesc.length)
+                                        
+                                    }
+
+                                    x.description = descArray
+                                    
+                            }
+                            else{
+                                x.description = [x.description]
+                            }
+                            return x.description  
+                                  
+                        })
+                      
+                    }
                     setComponentMode(0)
                 })
             }  
         })
     }
+
+
+
 
     useEffect(() => {
         fetch();

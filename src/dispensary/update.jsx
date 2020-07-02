@@ -1,40 +1,4 @@
-// import React, { useEffect, useRef, useState } from "react";
-// import mapboxgl from "mapbox-gl";
-// import "mapbox-gl/dist/mapbox-gl.css";
 
-// const styles = {
-//   width: "100vw",
-//   height: "calc(100vh - 80px)",
-//   position: "absolute"
-// };
-
-// function Create() {
-//   const [map, setMap] = useState(null);
-//   const mapContainer = useRef(null);
-
-//   useEffect(() => {
-//     mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
-//     const initializeMap = ({ setMap, mapContainer }) => {
-//       const map = new mapboxgl.Map({
-//         container: mapContainer.current,
-//         style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-//         center: [0, 0],
-//         zoom: 5
-//       });
-
-//       map.on("load", () => {
-//         setMap(map);
-//         map.resize();
-//       });
-//     };
-
-//     if (!map) initializeMap({ setMap, mapContainer });
-//   }, [map]);
-
-//   return <div ref={el => (mapContainer.current = el)} style={styles} />;
-// };
-
-// export { Create };
 
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -44,6 +8,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { accountService, alertService, dispensaryService, cityService, stateService } from '../_services';
 import { SingleSelect } from '../_components'
+import { styles } from 'react-contexify/lib/utils/styles';
 
 
 function Update({ history, match }) {
@@ -56,22 +21,28 @@ function Update({ history, match }) {
     const user = accountService.userValue;
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
-    const latitudeInitialValue=false; 
+    const latitudeInitialValue=0; 
     const hoursInitialValue="";
     const [latitude, setLatitude] = useState(latitudeInitialValue)
     const [longitude, setLongitude] = useState(latitudeInitialValue)
     const [cities, setCities] = useState("")
     const [dispensary, setDispensary] = useState("")
+    const [isMapActive, setIsMapActive] = useState(false)
+    const [showMapImg, setShowMapImg] = useState(false)
+    const [useInteractiveMap, setUseInteractiveMap] = useState(false)
     const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY','SUNDAY'];
  
 
-    const styles = {
-      width: "100%",
-      position: "relative",
-      height:"500px"
-    };
+    const styles= {
+        width: "100%",
+        position: "relative",
+        height:"500px"
+    }
 
+    
     const initialValues = {
+        latitude: dispensary.latitude,
+        longitude: dispensary.longitude,
         name: dispensary.name,
         address: dispensary.address, 
         addresszip: dispensary.addresszip, 
@@ -136,9 +107,10 @@ function Update({ history, match }) {
     
     const fetchElements = async () => {
         await dispensaryService.getByUserId(user._id).then( dispensary => {
-            console.log(dispensary);
             setDispensary(dispensary)
-            addMap(dispensary.longitude,dispensary.latitude)
+            setLatitude(dispensary.latitude)
+            setLongitude(dispensary.longitude)
+            // addMap(dispensary.longitude,dispensary.latitude)
         })
     }
 
@@ -146,64 +118,59 @@ function Update({ history, match }) {
         fetchElements();
     }, [])
 
-       
+    const handleInputChange = e => {
+        const { value, name } = e.target
+        if(name=="latitude"){
+            setLatitude(value)
+        }
+        if(name=="longitude"){
+            setLongitude(value)
+        }
+    }
+   
 
 
-
-    function addMap(longitude, latitude){
-
-      
-      mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
-      const initializeMap = ({ setMap, mapContainer }) => {
-        var map = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-          
-          center: [longitude, latitude],
-          zoom: 15
-        });
+    const showInteractiveMap = () => {
+        mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
+        const initializeMap = ({ setMap, mapContainer }) => {
+            var map = new mapboxgl.Map({
+                container: mapContainer.current,
+                style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
+                center: [longitude, latitude],
+                zoom: 15
+            });
         
-        var marker = new mapboxgl.Marker({
-            draggable: true
+            var marker = new mapboxgl.Marker({
+                draggable: true
             })
-        map.on('click', addMarker);
 
-        function initializeMarker(e){
-         
-            var lng = longitude;
-            var lat =  latitude;
-            setLongitude(longitude);
-            setLatitude(latitude);
-            marker.setLngLat([lng, lat]).addTo(map)
-            var lngLat = marker.getLngLat();
-            
-        }
+            map.on('click', addMarker);
 
-        function addMarker(e){
-         
-            var lng = e.lngLat.wrap().lng;
-            var lat =  e.lngLat.wrap().lat;
-            marker.setLngLat([lng, lat]).addTo(map)
-            var lngLat = marker.getLngLat();
+            function initializeMarker(e){
+                var lng = longitude;
+                var lat =  latitude;
+                marker.setLngLat([lng, lat]).addTo(map)
+                var lngLat = marker.getLngLat();
+            }
 
-
-            setLatitude(lngLat.lat);
-            setLongitude(lngLat.lng);
-        }
+            function addMarker(e){
+                var lng = e.lngLat.wrap().lng;
+                var lat =  e.lngLat.wrap().lat;
+                marker.setLngLat([lng, lat]).addTo(map)
+                var lngLat = marker.getLngLat();
+                setLatitude(lngLat.lat);
+                setLongitude(lngLat.lng);
+            }
 
 
-        map.on("load", () => {
-            initializeMarker();
-          setMap(map);
-          map.resize();
-        });
-      };
-      if (!map) initializeMap({ setMap, mapContainer });
-    };
-
-
-
-
+            map.on("load", () => {
+                initializeMarker();
+                setMap(map);
+                map.resize();
+            });
+        };
+        initializeMap({ setMap, mapContainer });
+    }
 
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
@@ -216,23 +183,24 @@ function Update({ history, match }) {
             alert("Add a place in the map")
             setSubmitting(false);
         }else{
-          setStatus();
-          dispensaryService.update(dispensary._id,fields)
-          
-            .then(() => {
-                resetForm({});
-                alertService.success('Dispensary updated', { keepAfterRouteChange: true });
-                history.push('../../home');
-            })
-            .catch(error => {
-                setSubmitting(false);
-                alertService.error(error);
-            });
+            setStatus();
+            dispensaryService.update(dispensary._id,fields)
+                .then(() => {
+                    resetForm({});
+                    alertService.success('Dispensary updated', { keepAfterRouteChange: true });
+                    history.push('../../home');
+                })
+                .catch(error => {
+                    setSubmitting(false);
+                    alertService.error(error);
+                });
         }
-        
     }
 
-
+    const enableStaticImageMap = ( _longitude, _latitude) => {
+        setShowMapImg(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s-commercial+285A98(${_longitude},${_latitude})/${_longitude},${_latitude},13,0/600x300@2x?access_token=pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg`);
+        setUseInteractiveMap(false)
+    }
 
     const [isDeleting, setIsDeleting] = useState(false);
     function onDelete() {
@@ -249,9 +217,9 @@ function Update({ history, match }) {
             {({ errors, touched, isSubmitting, values, setFieldValue, setFieldTouched }) => (
                 <>
              
-       
+               
                 <div className="page-header">
-                    {console.log(values)}
+                  
                     <div className="row align-items-center">
                         <div className="col-auto">
                             <h2 className="page-title">
@@ -468,9 +436,37 @@ function Update({ history, match }) {
                                         </div>
                                     </div>
                                     <div className="col xl-8">
+
+
+
+                                        
                                     <div className="card-title">Set the location in the map</div>
-                                          <div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
-                                          <small className="form-hint"><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small>
+                                    <div className="row">
+                                        <div className="col xl-6">
+                                        <label>Latitude</label>
+                                    <input name="latitude" placeholder="Latitude" type="number" className='form-control' value={latitude} onChange={handleInputChange}></input>
+                                    
+                                        </div>
+                                        <div className="col xl-6">
+                                        <label>Longitude</label>
+                                    <input name="longitude" placeholder="Longitude" type="number" className='form-control' value={longitude} onChange={handleInputChange}></input><br></br>
+                                       
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                                   <div className="col-12" style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
+                                                   <button type="button" onClick={()=>{enableStaticImageMap(longitude, latitude)}} className="btn btn-primary">Check coordinates</button>&nbsp; OR  &nbsp;
+                                    <button type="button" onClick={()=>{showInteractiveMap();setUseInteractiveMap(true)}} className="btn btn-primary">Use our interactive map</button>
+                                    
+
+                                                   </div>
+                                    </div>
+                                    <br></br>
+                                    {useInteractiveMap?"":<img src={showMapImg} styles={{width:"100%", height:"300px", marginTop:"2em !important"}}></img>}
+                                    
+                                           
+                                          <div className={useInteractiveMap?"show":"hide"}><div ref={el => (mapContainer.current = el)} style={styles} /><br></br>
+                                          <small className={useInteractiveMap?"form-hint":"hide"} ><strong>Navigate around the map, search the location of your dispensary, then do LEFT CLICK to mark it.</strong></small></div>
                                         
                                           {/* <Field id="latitude" onChange={e => Form.setFieldValue('latitude', e)}  name="latitude" type="text" className={'form-control' }/>
                                           

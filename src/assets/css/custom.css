@@ -19,6 +19,8 @@
       max-height: 400px !important;
     }
 
+   
+
     .notification-list a{
       cursor: pointer
     }
@@ -37,8 +39,13 @@
       margin-top: 0 !important;
     }
 
+    .show{
+      display: block;
+    }
 
-
+    .hide{
+      display: none;
+    }
 
     .dropdown-menu-arrow{
       padding-bottom: .5rem;
