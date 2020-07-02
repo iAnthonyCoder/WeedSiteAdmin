@@ -60,6 +60,7 @@ function ScheduleTableCard(props) {
 	   }
 
 	const setTodayInfoa = (schl) => {
+		setOpenNow(false)
 		var format = 'HH:mm'
 		var time = Moment().format(format);
 		var this_day = Moment().format('dddd').toUpperCase()
@@ -67,6 +68,7 @@ function ScheduleTableCard(props) {
 			if(x.day === this_day){
 				if (Moment(time, format).isBetween(Moment(x.opens_at, format), Moment(x.closes_at, format), null, '[]')){
 					setOpenNow(true)
+					console.log("actualizando si esta abierto");
 				}
 			}
 		})

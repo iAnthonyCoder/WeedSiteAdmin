@@ -104,8 +104,8 @@ function Home() {
         {(!dispensary.subscribed)?(<div className="col-lg-12">
             <div className="alert alert-danger" style={{width:"100%"}} role="alert">
               <a className="alert-link" href="https://tabler.github.io/tabler-react/documentation">
-                </a><strong>Your dispensary is inactive and it's not longer available in our map service, &nbsp;</strong>
-              To activate it and let it be displayed in the maps of our website please add credits</div>
+                </a><strong>Your dispensary is inactive. &nbsp;</strong>
+                To activate it please choose a subscription.</div>
             </div>
           
         ):""}
