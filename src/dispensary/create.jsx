@@ -89,8 +89,6 @@ function Create({ history }) {
         taxes:0,
         opens_at:{},
         closes_at:{},
-        opens_at_type:{},
-        closes_at_type:{}
     };
     const mp = {
         lng: 5,
@@ -224,15 +222,11 @@ function Create({ history }) {
                     console.log(name);
                     fields.opens_at[name]=fields.opens_ata
                     fields.closes_at[name]=fields.closes_ata
-                    fields.opens_at_type[name]=fields.opens_ata_type
-                    fields.closes_at_type[name]=fields.closes_ata_type
                 }
             )
         } else {
             fields.opens_at=fields.opens_ata
             fields.closes_at=fields.closes_ata
-            fields.opens_at_type=fields.opens_ata_type
-            fields.closes_at_type=fields.closes_ata_type
         }
 
         console.log(fields);
@@ -245,16 +239,16 @@ function Create({ history }) {
          
           setSubmitting(false);
          console.log(fields);
-            dispensaryService.create(fields)
-              .then(() => {
-                  resetForm({});
-                  alertService.success('Dispensary created', { keepAfterRouteChange: true });
-                  history.push('../../home');
-              })
-              .catch(error => {
-                  setSubmitting(false);
-                  alertService.error(error);
-              });
+           dispensaryService.create(fields)
+             .then(() => {
+                 resetForm({});
+                 alertService.success('Dispensary created', { keepAfterRouteChange: true });
+                 history.push('../../home');
+             })
+             .catch(error => {
+                 setSubmitting(false);
+                 alertService.error(error);
+             });
         }
         
     }
@@ -561,196 +555,59 @@ function Create({ history }) {
 
                             
                             <div className="col-md-6 col-xl-4 ">
-                            <fieldset class="form-fieldset" style={{padding:"1em"}}>
-                                <h3 className="">Hours of operation:</h3>   
-                                <small>By filling the fields bellow all days of the week will be filling with the introduced information</small>    
-
-                                           {
-                                          !enableCustomSchedule?(  
-
-                                <div className=" row align-items-center p-3">
-                               
-                              
-                                 
-                                  <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-3 col-xl-3">
-                                                            <label>Opens at</label>
-                                                            <Field name={`opens_ata`} as="select" className={'form-control' + (errors.opens_ata && touched.opens_ata ? ' is-invalid' : '')} >
-                                                            <option value="">Select</option>
-                                                            <option value="12">12:00</option>
-                                                                <option value="1">1:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="opens_ata" component="div" className="invalid-feedback" />
-                                                            
-                                                        </div>
-
-                                                        <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-2 col-xl-2">
-                                                        <label></label>
-                                                        <Field  name={`opens_ata_type`} as="select" className={'form-control' + (errors.opens_ata_type && touched.opens_ata_type ? ' is-invalid' : '')} >
-                                                        <option value="">Select</option>
-                                                                <option value="AM">AM</option>
-                                                                <option value="PM">PM</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="opens_ata_type" component="div" className="invalid-feedback" />
-                                                      </div>
-                                                            
-                                                    
-                                                      
-                                                      <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-md-2 col-xl-2"></div>
-
-                             
-                              
-                                  <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-3 col-xl-3">
-                                                            <label>Closes at</label>
-                                                            <Field name={`closes_ata`} as="select" className={'form-control' + (errors.closes_ata && touched.closes_ata ? ' is-invalid' : '')} >
-                                                            <option value="">Select</option>
-                                                            <option value="12">12:00</option>
-                                                                <option value="1">1:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="closes_ata" component="div" className="invalid-feedback" />
-                                                        </div>
-                                                        <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-2 col-xl-2">
-                                                        <label></label>
-                                                        <Field  name={`closes_ata_type`} as="select" className={'form-control' + (errors.closes_ata_type && touched.closes_ata_type ? ' is-invalid' : '')} >
-                                                        <option value="">Select</option>
-                                                                <option value="AM">AM</option>
-                                                                <option value="PM">PM</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="closes_ata_type" component="div" className="invalid-feedback" />
-                                                      </div>
-
-                                  </div>
+                                <fieldset class="form-fieldset" style={{padding:"1em"}}>
+                                    <h3 className="">Hours of operation:</h3>   
+                                    <small>By filling the fields bellow all days of the week will be filling with the introduced information</small>    
+                                    {
+                                        !enableCustomSchedule
+                                        ?(  
+                                            <div className=" row align-items-center p-3">
+                                                <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-6 col-xl-6">
+                                                    <label>Opens at</label>
+                                                    <Field name={`opens_ata`} type="time" className={'form-control' + (errors.opens_ata && touched.opens_ata ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="opens_ata" component="div" className="invalid-feedback" />    
+                                                </div>
+                                                <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-6 col-xl-6">
+                                                    <label>Closes at</label>
+                                                    <Field name={`closes_ata`} type="time" className={'form-control' + (errors.closes_ata && touched.closes_ata ? ' is-invalid' : '')} />
+                                                    <ErrorMessage name="closes_ata" component="div" className="invalid-feedback" />
+                                                </div>
+                                            </div>
             
-                                            ):""} 
-
-
-
-
-
-
-                                  <br></br>
-                                  <div style={{display:"flex", alignItems:"center", justifyContent:"center",marginBottom:"2em",marginTop:"1em"}}>
-                                            <button type="button" onClick={()=>{setEnableCustomSchedule(!enableCustomSchedule)}} class="btn btn-primary">{enableCustomSchedule?"Disable":"Enable"} custom schedule</button></div>
-                                
-                                
-                                   
-                                    
-                                
-                                {
-                                      enableCustomSchedule?(
-
-                                    
-                                    days.map( (name, index) => (
-                               
-                            //     <label className="form-selectgroup-item flex-fill">
-                            //   <span>{name}: </span>
-                              <div style={{borderTop: "1px solid rgba(110,117,130,.2)"}} className=" row align-items-center p-3">
-                               
-                                <h4>{name}: </h4> 
-                                {/* <div style={{justifyContent:"flex-end",width:"100%"}} className="form-selectgroup-label-content d-flex align-items-center"> */}
-                             
-                                    
-                                  <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-3 col-xl-3">
-                                                            <label>Opens at</label>
-                                                            <Field name={`opens_ata[${name}]`} as="select" className={'form-control' + (errors.opens_ata && touched.opens_ata ? ' is-invalid' : '')} >
-                                                            <option value="">Select</option>
-                                                            <option value="12">12:00</option>
-                                                                <option value="1">1:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="opens_ata" component="div" className="invalid-feedback" />
-                                                            
-                                                        </div>
-
-                                                        <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-2 col-xl-2">
-                                                        <label></label>
-                                                        <Field  name={`opens_ata_type[${name}]`} as="select" className={'form-control' + (errors.opens_ata_type && touched.opens_ata_type ? ' is-invalid' : '')} >
-                                                        <option value="">Select</option>
-                                                                <option value="AM">AM</option>
-                                                                <option value="PM">PM</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="opens_ata_type" component="div" className="invalid-feedback" />
-                                                      </div>
-                                                            
-                                                    
-                                                      
-                                                      <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-md-2 col-xl-2"></div>
-
-                             
-                                  {/* <div style={{width:"12em"}} className="lh-sm"> */}
-                                    
-                                  <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-3 col-xl-3">
-                                                            <label>Closes at</label>
-                                                            <Field name={`closes_ata[${name}]`} as="select" className={'form-control' + (errors.closes_ata && touched.closes_ata ? ' is-invalid' : '')} >
-                                                            <option value="">Select</option>
-                                                            <option value="12">12:00</option>
-                                                                <option value="1">1:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="closes_ata" component="div" className="invalid-feedback" />
-                                                        </div>
-                                                        <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-2 col-xl-2">
-                                                        <label></label>
-                                                        <Field  name={`closes_ata_type[${name}]`} as="select" className={'form-control' + (errors.closes_ata_type && touched.closes_ata_type ? ' is-invalid' : '')} >
-                                                        <option value="">Select</option>
-                                                                <option value="AM">AM</option>
-                                                                <option value="PM">PM</option>
-                                                                
-                                                            </Field>
-                                                            <ErrorMessage name="closes_ata_type" component="div" className="invalid-feedback" />
-                                                      </div>
-
-                                  </div>
-                       
-                              ) )
-                             ):("")
-                            }</fieldset>
-
+                                        )
+                                        :""
+                                    } 
+                                    <br></br>
+                                    <div style={{display:"flex", alignItems:"center", justifyContent:"center",marginBottom:"2em",marginTop:"1em"}}>
+                                        <button type="button" onClick={()=>{setEnableCustomSchedule(!enableCustomSchedule)}} class="btn btn-primary">{enableCustomSchedule?"Disable":"Enable"} 
+                                            custom schedule
+                                        </button>
+                                    </div>
+                                                     
+                                    {
+                                        enableCustomSchedule
+                                        ?(
+                                            days.map( (name, index) => (
+                                                <div style={{borderTop: "1px solid rgba(110,117,130,.2)"}} className=" row align-items-center p-3">
+                                                    <h4>{name}: </h4> 
+                                                    <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-6 col-xl-6">
+                                                        <label>Opens at</label>
+                                                        <Field name={`opens_ata[${name}]`} type="time" className={'form-control' + (errors.opens_ata && touched.opens_ata ? ' is-invalid' : '')} />
+                                                        <ErrorMessage name="opens_ata" component="div" className="invalid-feedback" />
+                                                    </div>
+                                                    <div style={{paddingRight:"0em", paddingLeft:"0em"}} className="col-sm-6 col-md-6 col-xl-6">
+                                                        <label>Closes at</label>
+                                                        <Field name={`closes_ata[${name}]`} type="time" className={'form-control' + (errors.closes_ata && touched.closes_ata ? ' is-invalid' : '')} />
+                                                        <ErrorMessage name="closes_ata" component="div" className="invalid-feedback" />
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ):("")
+                                    }
+                                </fieldset>
                              </div>
+
+
 
                             <hr></hr>
 

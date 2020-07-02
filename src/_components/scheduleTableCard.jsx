@@ -3,6 +3,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { scheduleService, alertService } from '../_services';
 import { LoadingSpinner } from './loadingSpinner'
+const Moment = require('moment');
 
 function ScheduleTableCard(props) {
 
@@ -14,8 +15,6 @@ function ScheduleTableCard(props) {
     const initialValues = {
 		opens_at: (scopedItem.opens_at)?scopedItem.opens_at:'',
 		closes_at: (scopedItem.closes_at)?scopedItem.closes_at:'',
-		opens_at_type: (scopedItem.opens_at_type)?scopedItem.opens_at_type:'',
-		closes_at_type: (scopedItem.closes_at_type)?scopedItem.closes_at_type:'',
 		isEnabled:(scopedItem.isEnabled)?scopedItem.isEnabled:'',
     };
 
@@ -26,47 +25,41 @@ function ScheduleTableCard(props) {
           	.required('Closes hour is required'),
   	});
 
-    const setTodayInfo = async (schedul) => {
-		schedul.map( (days) => 
-		{
-			
-        	var daysa = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-        	var d = new Date();
-        	d.getHours(); 
-        	var currentDay = daysa[d.getDay()];
-        	var currentHour = d.getHours();
-        	
-        	if(days.day===currentDay){
-		
-				if(days.opens_at_type=="AM"){
-					var opens_at_check = parseInt(days.opens_at, 10)
-					if(days.opens_at==12){opens_at_check=0}
-				}
-				else{
-					if(days.opens_at!=12)
-					{var opens_at_check = parseInt(days.opens_at, 10)+12}
-					else{var opens_at_check = parseInt(days.opens_at, 10)}
-				};
-				if(days.closes_at_type=="AM"){
-					var closes_at_check = parseInt(days.closes_at, 10)
-					if(days.closes_at==12){closes_at_check=0}
-				}
-				else{
-					if(days.closes_at!=12)
-					{var closes_at_check = parseInt(days.closes_at, 10)+12}
-					else{var closes_at_check = parseInt(days.closes_at, 10)}
-				};
-
-				var hoursPerDay = closes_at_check-opens_at_check;
-				var hoursAfterOpens = currentHour - opens_at_check;
-
-			
-				if((currentHour-opens_at_check>=0)&&(hoursPerDay>hoursAfterOpens)){
-					setOpenNow(true)
-				}
-        	} 
-      	})  
-    }
+    // const setTodayInfo = async (schedul) => {
+	// 	schedul.map( (days) => 
+	// 	{
+    //     	var daysa = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+    //     	var d = new Date();
+    //     	d.getHours(); 
+    //     	var currentDay = daysa[d.getDay()];
+    //     	var currentHour = d.getHours();
+    //     	if(days.day===currentDay){
+	// 			if(days.opens_at_type=="AM"){
+	// 				var opens_at_check = parseInt(days.opens_at, 10)
+	// 				if(days.opens_at==12){opens_at_check=0}
+	// 			}
+	// 			else{
+	// 				if(days.opens_at!=12)
+	// 				{var opens_at_check = parseInt(days.opens_at, 10)+12}
+	// 				else{var opens_at_check = parseInt(days.opens_at, 10)}
+	// 			};
+	// 			if(days.closes_at_type=="AM"){
+	// 				var closes_at_check = parseInt(days.closes_at, 10)
+	// 				if(days.closes_at==12){closes_at_check=0}
+	// 			}
+	// 			else{
+	// 				if(days.closes_at!=12)
+	// 				{var closes_at_check = parseInt(days.closes_at, 10)+12}
+	// 				else{var closes_at_check = parseInt(days.closes_at, 10)}
+	// 			};
+	// 			var hoursPerDay = closes_at_check-opens_at_check;
+	// 			var hoursAfterOpens = currentHour - opens_at_check;
+	// 			if((currentHour-opens_at_check>=0)&&(hoursPerDay>hoursAfterOpens)){
+	// 				setOpenNow(true)
+	// 			}
+    //     	} 
+    //   	})  
+    // }
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
     	setStatus();
@@ -97,10 +90,24 @@ function ScheduleTableCard(props) {
 			return sorted;
 	   }
 
+	const setTodayInfoa = (schl) => {
+		var format = 'HH:mm'
+		var time = Moment().format(format);
+		var this_day = Moment().format('dddd').toUpperCase()
+
+		schl.map(x => {
+			if(x.day === this_day){
+				if (Moment(time, format).isBetween(Moment(x.opens_at, format), Moment(x.closes_at, format), null, '[]')){
+					setOpenNow(true)
+				}
+			}
+		})
+	}
+
 
     useEffect(() => {
 		setSchedule(sortDays(props.schedule))
-    	setTodayInfo(props.schedule);
+    	setTodayInfoa(props.schedule);
     }, [])
 
     function getBody(){
@@ -131,64 +138,22 @@ function ScheduleTableCard(props) {
              				<div className="row mb-3 align-items-end">
                					<div className="col-6">
                						<label className="form-label">Opens at</label>
-               						<Field name={`opens_at`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-									   <option value="">Select</option>
-                                                            <option value="12">12:00</option>
-                                                                <option value="1">1:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
+               						<Field name={`opens_at`} type="time" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
                                                                 
                                     </Field>
                                     <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
 								</div>
-								<div className="col-6">
-									<Field  name={`opens_at_type`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-									<option value="">Select</option>
-                                           <option value="AM">AM</option>
-                                           <option value="PM">PM</option>
-                                           
-                                       </Field>
-                                       <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
-               					</div>
+								
              				</div>
              				<div className="row mb-3 align-items-end">
                					<div className="col-6">
                						<label className="form-label">Closes at</label>
-               						<Field name={`closes_at`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-									   <option value="">Select</option>
-                                                            <option value="12">12:00</option>
-                                                                <option value="1">1:00</option>
-                                                                <option value="2">2:00</option>
-                                                                <option value="3">3:00</option>
-                                                                <option value="4">4:00</option>
-                                                                <option value="5">5:00</option>
-                                                                <option value="6">6:00</option>
-                                                                <option value="7">7:00</option>
-                                                                <option value="8">8:00</option>
-                                                                <option value="9">9:00</option>
-                                                                <option value="10">10:00</option>
-                                                                <option value="11">11:00</option>
-                                                                
+               						<Field name={`closes_at`} type="time" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
+									  
                                                             </Field>
                                                             <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
 															</div>
-								<div className="col-6">
-									<Field  name={`closes_at_type`} as="select" className={'form-control' + (errors.opens_at && touched.opens_at ? ' is-invalid' : '')} >
-									<option value="">Select</option>
-                                           <option value="AM">AM</option>
-                                           <option value="PM">PM</option>
-                                           
-                                       </Field>
-                                       <ErrorMessage name="opens_at" component="div" className="invalid-feedback" />
-               					</div>
+							
              				</div>
              				<div className="row mb-3 align-items-end">
                					<div className="col">
@@ -244,8 +209,8 @@ function ScheduleTableCard(props) {
                     	(
 							<tr key={index}>
                       			<td><strong>{day.day}</strong></td>
-								<td>{day.opens_at}:00 {day.opens_at_type}</td>
-                      			<td>{day.closes_at}:00 {day.closes_at_type}</td>
+								<td>{Moment(day.opens_at,'HH:mm').format('hh:mm A')}</td>
+								<td>{Moment(day.closes_at,'HH:mm').format('hh:mm A')}</td>
                       			<td>{(day.isEnabled)?<span className="badge badge-success">Enabled</span>:<span className="badge badge-danger">Disabled</span>}</td>
                       			{
                         			(props.edit)?<td><a onClick={()=>{handleComponentMode(1, day)}} href="#0">
