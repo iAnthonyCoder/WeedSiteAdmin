@@ -56,8 +56,8 @@ function Create({ history }) {
     const user = accountService.userValue;
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
-    const longitudeInitialValue=-118.05853227075772; 
-    const latitudeInitialValue=33.93064846016682;
+    const longitudeInitialValue=0; 
+    const latitudeInitialValue=0;
     const [latitude, setLatitude] = useState(latitudeInitialValue)
     const [longitude, setLongitude] = useState(longitudeInitialValue)
     const [enableCustomSchedule, setEnableCustomSchedule] = useState(false)
