@@ -12,11 +12,12 @@ function ScheduleTableCard(props) {
     const [scopedItem, setScopedItem] = useState("")
 	const [schedule, setSchedule] = useState("");
 	const [isFetch, setIsFetch] = useState(false)
-
+	const [formMulti, setFormMulti] = useState(false)
+	
     const initialValues = {
 		opens_at: (scopedItem.opens_at)?scopedItem.opens_at:'',
 		closes_at: (scopedItem.closes_at)?scopedItem.closes_at:'',
-		isEnabled:(scopedItem.isEnabled)?scopedItem.isEnabled:'',
+		isEnabled:(scopedItem.isEnabled)?scopedItem.isEnabled:false,
     };
 
     const validationSchema = Yup.object().shape({
@@ -29,19 +30,45 @@ function ScheduleTableCard(props) {
     
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-    	setStatus();
-      	scheduleService.update(scopedItem._id,fields).then(data => {
-        	alertService.success('Item saved successfully', { keepAfterRouteChange: true });
-            setComponentMode(0);
-            setSchedule(schedule.map(item => (item._id === data.payload._id ? data.payload : item)))
-			resetForm({});
-			setIsFetch(false)
-			fetch()
-          })
-          .catch(error => {
-              setSubmitting(false);
-          });
-	   }
+		setStatus();
+		if(formMulti==0){
+			scheduleService.update(scopedItem._id,fields).then(data => {
+				alertService.success('Item saved successfully', { keepAfterRouteChange: true });
+				setComponentMode(0);
+				resetForm({});
+				setIsFetch(false)
+				fetch()
+			  })
+			  .catch(error => {
+				  setSubmitting(false);
+			  });
+		}
+		if(formMulti==1){
+			var id;
+			const newObj = schedule.map(x => {
+				x.opens_at=fields.opens_at
+				x.closes_at=fields.closes_at
+				x.isEnabled=fields.isEnabled
+				delete x.__v
+				id=x._id
+				console.log(x);
+				return x
+			})
+			
+			scheduleService.updateMany(id,newObj).then(data => {
+				alertService.success('Item saved successfully', { keepAfterRouteChange: true });
+				setComponentMode(0);
+				resetForm({});
+				setIsFetch(false)
+				fetch()
+			  })
+			  .catch(error => {
+				  setSubmitting(false);
+			  });
+			
+		}
+      	
+	}
 	   
 	   	const sortDays = (data) => {
 			const sorter = {
@@ -93,9 +120,17 @@ function ScheduleTableCard(props) {
     	if(componentMode===1){return getForm()}
     }
 
-    const handleComponentMode = (value, item) => {
-    	setScopedItem(item)
-    	setComponentMode(value);
+    const handleComponentMode = (type, value, item) => {
+		setFormMulti(type)
+		
+		if(type==0){
+			setScopedItem(item)
+    		setComponentMode(value);
+		}
+		else{
+			setScopedItem(false)
+			setComponentMode(value);
+		}
     }
 
 
@@ -105,6 +140,7 @@ function ScheduleTableCard(props) {
         		{({ errors, touched, setFieldValue, isSubmitting, handleReset }) => (
           			<Form className="modal-content">
 						 
+						 {console.log(scopedItem)}
            				<div className="modal-header">
             				<h5 className="modal-title">Edit {scopedItem.day}</h5>
              				<button type="button" className="close" onClick={()=>{setComponentMode(0)}} aria-label="Close">
@@ -165,8 +201,8 @@ function ScheduleTableCard(props) {
 			<div className="card">
 				
             	<div className="card-header" style={{justifyContent:"space-between"}}>
-                	<h4 className="card-title">Hours of operation</h4>
-                  	{
+                	<div style={{alignItems:"center", display:"flex"}}><h4 className="card-title" style={{paddingRight:"1em"}}>Hours of operation</h4><button type="button" onClick={()=>{handleComponentMode( 1 ,1)}} className="btn btn-primary">Edit All<svg xmlns="http://www.w3.org/2000/svg" class="icon ml-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg></button>
+                  </div>	{
                   	  	(openNow)?<h4 className="card-title" style={{color: "green"}}>OPEN NOW</h4>:<h4 className="card-title" style={{color: "red"}}>CLOSED</h4>
                   	}
                 </div>
@@ -190,7 +226,7 @@ function ScheduleTableCard(props) {
 								<td>{Moment(day.closes_at,'HH:mm').format('hh:mm A')}</td>
                       			<td>{(day.isEnabled)?<span className="badge badge-success">Enabled</span>:<span className="badge badge-danger">Disabled</span>}</td>
                       			{
-                        			(props.edit)?<td><a onClick={()=>{handleComponentMode(1, day)}} href="#0">
+                        			(props.edit)?<td><a onClick={()=>{handleComponentMode(0,1, day)}} href="#0">
                         			Edit<svg xmlns="http://www.w3.org/2000/svg"  className="icon ml-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3"></path><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3"></path><line x1="16" y1="5" x2="19" y2="8"></line></svg>
                       				</a></td>:""
                       			}     

@@ -10,6 +10,7 @@ export const scheduleService = {
     create,
     update,
     getByUserId,
+    updateMany,
     delete: _delete,
 };
 
@@ -38,6 +39,11 @@ function update(id, params) {
 
     return fetchWrapper.put(`${baseUrl}/${id}`, params);
 }
+
+function updateMany(id, params) {
+    return fetchWrapper.put(`${baseUrl}/many/${id}`, params);
+}
+
 
 function _delete(id) {
     return fetchWrapper.delete(`${baseUrl}/${id}`)
