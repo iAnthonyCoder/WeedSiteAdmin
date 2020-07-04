@@ -50,8 +50,9 @@ function ScheduleTableCard(props) {
 				x.closes_at=fields.closes_at
 				x.isEnabled=fields.isEnabled
 				delete x.__v
+				delete x.opens_at_type
+				delete x.closes_at_type
 				id=x._id
-				console.log(x);
 				return x
 			})
 			

@@ -10,6 +10,7 @@ export const dispensaryService = {
     create,
     update,
     getByUserId,
+    createByAdmin,
     delete: _delete,
     dispensary: dispensarySubject.asObservable(),
     get dispensaryValue () { return dispensarySubject.value }
@@ -42,6 +43,14 @@ function create(params) {
     delete params.opens_ata_type
     delete params.closes_ata_type
     return fetchWrapper.post(baseUrl, params);
+}
+
+function createByAdmin(params) {
+    delete params.opens_ata
+    delete params.closes_ata
+    delete params.opens_ata_type
+    delete params.closes_ata_type
+    return fetchWrapper.post(`${baseUrl}/createbyadmin`, params);
 }
 
 function update(id, params) {

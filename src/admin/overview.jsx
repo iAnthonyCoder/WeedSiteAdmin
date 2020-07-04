@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { securityService, alertService } from '../_services';
+import { securityService, alertService, accountService } from '../_services';
 import { PageHeader, LoaderBounce } from '../_components'
 import {
     LineChart, Line, XAxis, AreaChart, ResponsiveContainer, Pie, Area, YAxis, CartesianGrid, Tooltip, Legend,
@@ -9,7 +9,7 @@ import {
   
 function Overview({ match }) {
     const { path } = match;
-
+    const userDetails = accountService.userValue;
     const addedRecordsInitialState = []
     const monthInitialState = ""
     const [addedRecords, setAddedRecords] = useState(addedRecordsInitialState)
@@ -60,6 +60,7 @@ function Overview({ match }) {
     return (
         <div>
             <PageHeader title="Admin/Overview" link="admin/products/create" nameButton="Add product" subtitle="Dashboard" />
+            <PageHeader link="admin/dispensaries/create" nameButton="Add dispensary"  />
             <div class="row"><div class="col-lg-9">
                 <div class="card">
                     <div className="card-body">

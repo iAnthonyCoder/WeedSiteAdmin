@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { List } from './list';
-
+import { Create } from './create';
 
 function Dispensaries({ match }) {
     const { path } = match;
@@ -10,7 +10,7 @@ function Dispensaries({ match }) {
     return (
         <Switch>
             <Route exact path={path} component={List} />
-            {/* <Route path={`${path}/:id`} component={Details} /> */}
+            <Route path={`${path}/create`} component={Create} />
             {/* <Route path={`${path}/edit/:id`} component={AddEdit} /> */}
         </Switch>
     );

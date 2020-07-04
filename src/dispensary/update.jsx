@@ -5,7 +5,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import mapboxgl from "mapbox-gl";
+import MaskedInput from 'react-text-mask'
 import "mapbox-gl/dist/mapbox-gl.css";
+import InputMask from 'react-input-mask';
 import { accountService, alertService, dispensaryService, cityService, stateService } from '../_services';
 import { SingleSelect } from '../_components'
 import { styles } from 'react-contexify/lib/utils/styles';
@@ -39,7 +41,10 @@ function Update({ history, match }) {
         height:"500px"
     }
 
-    
+    const CustomInput = props => (
+        <InputMask {...props}>{inputProps => <input></input>}</InputMask>
+      );
+      
     const initialValues = {
         latitude: dispensary.latitude,
         longitude: dispensary.longitude,
@@ -214,7 +219,7 @@ function Update({ history, match }) {
 
     return (
         <Formik initialValues={initialValues}  enableReinitialize={true} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ errors, touched, isSubmitting, values, setFieldValue, setFieldTouched }) => (
+            {({ errors, touched, isSubmitting, handleChange, values, setFieldValue, setFieldTouched }) => (
                 <>
              
                
@@ -260,7 +265,9 @@ function Update({ history, match }) {
 											        	name={"state"}
 											        	placeholder={"Select state"}
       										        />
-                                                    
+                                                      <div className="mb-3">
+							
+										</div>
                                                    {values.state?<SingleSelect
       										            value={values.city}
       										            onChange={setFieldValue}
@@ -284,10 +291,28 @@ function Update({ history, match }) {
                                                     <ErrorMessage name="addresszip" component="div" className="invalid-feedback" />
                                                 </div>
                                                 <div className="mb-3">
-                                                    <label>Phone number *</label>
-                                                    <Field name="phone" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(000) 0000-0000" type="text" className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} />
-                                                    <ErrorMessage name="phone" component="div" className="invalid-feedback" />
+                                                <label>Phone number</label>
+                                                    <Field  name="phone"
+											        	render={({ field, form }) => (
+                                                            
+											        		<MaskedInput
+                                                              mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+                                                              className={'form-control' + (errors.phone && touched.phone ? ' is-invalid' : '')} 
+                                                              {...field}
+                                                              guide={true}
+                                                            
+                                                              onBlur={() => {}}
+                                                              onChange={(e) => {
+                                                                handleChange(e)
+                                                                const value = e.target.value || '';
+                                                                setFieldValue('phone', value);
+                                                              }}
+                                                            />
+											        	)}
+											        	type="text"  
+											        />
 
+                                                    <ErrorMessage name="phone" component="div" className="invalid-feedback" />
                                                     
                                                 </div>
                                                 <div className="mb-3">

@@ -43,8 +43,8 @@ import * as Yup from 'yup';
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MaskedInput from 'react-text-mask'
-import { accountService, alertService, dispensaryService, cityService, stateService } from '../_services';
-import { InputText, SingleSelect } from '../_components'
+import { accountService, alertService, dispensaryService, cityService, stateService } from '../../_services';
+import { InputText, SingleSelect } from '../../_components'
 
 
 function Create({ history }) {
@@ -240,11 +240,10 @@ function Create({ history }) {
          
           setSubmitting(false);
          console.log(fields);
-           dispensaryService.create(fields)
+           dispensaryService.createByAdmin(fields)
              .then(() => {
                  resetForm({});
                  alertService.success('Dispensary created', { keepAfterRouteChange: true });
-                 history.push('../../home');
              })
              .catch(error => {
                  setSubmitting(false);
