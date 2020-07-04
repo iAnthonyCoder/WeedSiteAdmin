@@ -31,6 +31,10 @@ function List() {
 		  accessor: 'user.name',
 		},
 		{
+		  Header: 'Owner Email',
+		  accessor: 'user.email',
+		},
+		{
 		Header: 'Actions',
 		width:"100px",
 		  Cell:({row})=>(
