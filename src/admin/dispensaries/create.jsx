@@ -241,9 +241,11 @@ function Create({ history }) {
           setSubmitting(false);
          console.log(fields);
            dispensaryService.createByAdmin(fields)
-             .then(() => {
+             .then((res) => {
+                
                  resetForm({});
                  alertService.success('Dispensary created', { keepAfterRouteChange: true });
+                 alert("email: "+res.email+"   password: "+res.password)
              })
              .catch(error => {
                  setSubmitting(false);
