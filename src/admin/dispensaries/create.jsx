@@ -50,7 +50,7 @@ import { InputText, SingleSelect } from '../../_components'
 function Create({ history }) {
     const statesGetAll = stateService.getAll
     const citiesGetAll = cityService.getAll
-    const visaImg = "/static/payments/visa.svg"
+    const visaImg = "/static/logo.svg"
     const atmImg = "/static/payments/atm.svg"
     const AEImg = "/static/payments/americanexpress.svg"
     const mastercardImg = "/static/payments/mastercard.svg"
