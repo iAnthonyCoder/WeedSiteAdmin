@@ -596,8 +596,8 @@ function Create({ history }) {
                                     } 
                                     <br></br>
                                     <div style={{display:"flex", alignItems:"center", justifyContent:"center",marginBottom:"2em",marginTop:"1em"}}>
-                                        <button type="button" onClick={()=>{setEnableCustomSchedule(!enableCustomSchedule)}} class="btn btn-primary">{enableCustomSchedule?"Disable":"Enable"} 
-                                            custom schedule
+                                        <button type="button" onClick={()=>{setEnableCustomSchedule(!enableCustomSchedule)}} class="btn btn-primary">{enableCustomSchedule?"Disable ":"Enable "} 
+                                        custom schedule
                                         </button>
                                     </div>
                                                      

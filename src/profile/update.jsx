@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { PageHeader } from '../_components'
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -10,12 +10,18 @@ const Moment = require('moment');
 
 
 function Update({ history }) {
-    const user = accountService.userValue;
+
+    const [user, setUser] = useState(accountService.userValue)
+
+    const setUserValue = () => {
+        setUser(accountService.userValue)
+    }
+
 
   
     const widget = window.cloudinary.createUploadWidget({
         cloudName: 'timj111',
-        multiple: true, 
+        multiple: false, 
         croppingAspectRatio: 1,
         cropping: true,
         showSkipCropButton:false,
@@ -28,6 +34,7 @@ function Update({ history }) {
                 accountService.updateOwn(user._id, {picture:result.info.url})
                 .then(() => {
                     alertService.success('Update successful', { keepAfterRouteChange: true });
+                    setUserValue()
                 })
                 .catch(error => {
                     alertService.error(error);
@@ -43,19 +50,18 @@ function Update({ history }) {
 
     const widget2 = window.cloudinary.createUploadWidget({
         cloudName: 'timj111',
-        multiple: true, 
-        croppingAspectRatio: 1,
+        multiple: false, 
         cropping: true,
-        showSkipCropButton:false,
+        showSkipCropButton:true,
         uploadPreset: 's9zss5g9'}, 
         (error, result) => { 
             if (!error && result && result.event === "success") { 
 
-                setPicture(result.info.url)
 
                 accountService.updateOwn(user._id, {picture_id:result.info.url})
                 .then(() => {
                     alertService.success('Update successful', { keepAfterRouteChange: true });
+                    setUserValue()
                 })
                 .catch(error => {
                     alertService.error(error);
@@ -77,6 +83,7 @@ function Update({ history }) {
         picture: user.picture,
         picture_id: user.picture_id,
     };
+
     const formTitleInitialState = {name:"", type:"" }
     const [picture, setPicture] = useState(user.picture)
     const [formTitle, setFormTitle] = useState(formTitleInitialState)
@@ -105,6 +112,7 @@ function Update({ history }) {
                 alertService.success('Update successful', { keepAfterRouteChange: true });
                 // history.push('/');
                 $("#modal-update-profile").modal("hide");
+                setUserValue()
                 
             })
             .catch(error => {
@@ -143,7 +151,7 @@ function Update({ history }) {
                 <Form >
                     <PageHeader title="User/Profile" subtitle="Profile details"  />
 	    	
-
+                {console.log(user)}
 
 
                     <div className="modal modal-blur fade" id="modal-update-profile" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">

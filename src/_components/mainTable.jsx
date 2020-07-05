@@ -86,7 +86,7 @@ function Table({columns, filterParams, title, data,fetchData,loading,pageCount: 
             setPageSize(Number(e.target.value))
           }}
         >
-          {[5,10,15].map(pageSize => (
+          {[5,10,15,25,50,100].map(pageSize => (
             <option key={pageSize} value={pageSize}>{pageSize}</option>
           ))}
         </select></div>
