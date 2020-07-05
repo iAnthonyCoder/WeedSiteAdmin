@@ -122,6 +122,7 @@ function Create({ history }) {
         
     });
 
+    
 
     
     const enableStaticImageMap = ( _longitude, _latitude) => {
