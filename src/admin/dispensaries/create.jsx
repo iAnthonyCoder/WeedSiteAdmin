@@ -50,10 +50,6 @@ import { InputText, SingleSelect } from '../../_components'
 function Create({ history }) {
     const statesGetAll = stateService.getAll
     const citiesGetAll = cityService.getAll
-    const visaImg = "/static/logo.svg"
-    const atmImg = "/static/payments/atm.svg"
-    const AEImg = "/static/payments/americanexpress.svg"
-    const mastercardImg = "/static/payments/mastercard.svg"
     const user = accountService.userValue;
     const [map, setMap] = useState(null);
     const mapContainer = useRef(null);
@@ -424,7 +420,7 @@ function Create({ history }) {
                                   <span class="form-selectgroup-check"></span>
                                 </div>
                                 <div>
-                                  <img src={visaImg} style={{height:"2em"}}/>
+                                  <img src="/static/visa.svg" style={{height:"2em"}}/>
                                   <strong>VISA ACCEPTED</strong> 
                                 </div>
                               </div>
@@ -436,7 +432,7 @@ function Create({ history }) {
                                   <span class="form-selectgroup-check"></span>
                                 </div>
                                 <div>
-                                    <img src={mastercardImg} style={{height:"2em"}}/>
+                                    <img src="/static/mastercard.svg" style={{height:"2em"}}/>
                                     <strong>MASTERCARD ACCEPTED</strong> 
                                 </div>
                               </div>
@@ -448,7 +444,7 @@ function Create({ history }) {
                                   <span class="form-selectgroup-check"></span>
                                 </div>
                                 <div>
-                                    <img src={AEImg} style={{height:"2em"}}/>
+                                    <img src="/static/americanexpress.svg" style={{height:"2em"}}/>
                                     <strong>AMERICAN E. ACCEPTED</strong> 
                                 </div>
                               </div>
@@ -460,7 +456,7 @@ function Create({ history }) {
                                   <span class="form-selectgroup-check"></span>
                                 </div>
                                 <div>
-                                    <img src={atmImg} style={{height:"2em", width:"3.5em"}}/>
+                                    <img src="/static/atm.svg" style={{height:"2em", width:"3.5em"}}/>
                                     <strong>ATM AVAILABLE</strong> 
                                 </div>
                               </div>
