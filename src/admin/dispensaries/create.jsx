@@ -122,7 +122,6 @@ function Create({ history }) {
         
     });
 
-    
 
     
     const enableStaticImageMap = ( _longitude, _latitude) => {
@@ -421,7 +420,7 @@ function Create({ history }) {
                                   <span class="form-selectgroup-check"></span>
                                 </div>
                                 <div>
-                                  <img src="/static/visa.svg" style={{height:"2em"}}/>
+                                  <img src="/static/visaicon.svg" style={{height:"2em"}}/>
                                   <strong>VISA ACCEPTED</strong> 
                                 </div>
                               </div>
@@ -433,7 +432,7 @@ function Create({ history }) {
                                   <span class="form-selectgroup-check"></span>
                                 </div>
                                 <div>
-                                    <img src="/static/mastercard.svg" style={{height:"2em"}}/>
+                                    <img src="/static/mastercardicon.svg" style={{height:"2em"}}/>
                                     <strong>MASTERCARD ACCEPTED</strong> 
                                 </div>
                               </div>
@@ -457,7 +456,7 @@ function Create({ history }) {
                                   <span class="form-selectgroup-check"></span>
                                 </div>
                                 <div>
-                                    <img src="/static/atm.svg" style={{height:"2em", width:"3.5em"}}/>
+                                    <img src="/static/atmicon.svg" style={{height:"2em", width:"3.5em"}}/>
                                     <strong>ATM AVAILABLE</strong> 
                                 </div>
                               </div>
