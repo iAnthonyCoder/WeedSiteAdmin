@@ -17,9 +17,9 @@ export const scheduleService = {
 
 
 
-function getAll() {
+function getAll(dispensaryId) {
 
-    return fetchWrapper.get(baseUrl);
+    return fetchWrapper.get(baseUrl+"/"+dispensaryId);
 }
 
 function getById(id) {
