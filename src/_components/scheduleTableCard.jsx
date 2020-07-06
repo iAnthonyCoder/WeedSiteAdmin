@@ -112,6 +112,7 @@ function ScheduleTableCard(props) {
 	}
 
     useEffect(() => {
+		
 		fetch()
     }, [])
 

@@ -11,7 +11,8 @@ function Update(props) {
 
     const initialValues = {
 		discount: 0,
-		status: "CONFIRMED"
+		note: "",
+		status: ""
     };
     
     const validationSchema = Yup.object().shape({
@@ -20,22 +21,17 @@ function Update(props) {
     });
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        setStatus();
-        orderService.update(props.item._id, fields)
-            .then((data) => {
-            	resetForm({});
-            	alertService.success('Item updated successfully', { keepAfterRouteChange: true });
-            	$("#modal-update-order").modal("hide");
-            })
-            .catch(error => {
-				setSubmitting(false);
-				$("#modal-update-order").modal("hide");
-                // alertService.error(error);
-            });
-    }
+		(props.confirm)?(fields.status="ACCEPTED"):(fields.status="REJECTED")
+		setStatus();
+		props.handleProductOrderStatus(fields.status, fields.discount, fields.note)
+		resetForm({})
+		setSubmitting(false)
+		$("#modal-update-order").modal("hide");   
+	}
+	
 
-    return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize >
+	const acceptedPurchase = () => {
+		return <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize >
         {({ errors, touched, setFieldValue, isSubmitting }) => (
         	<Form>
          		<div className="modal modal-blur fade" id="modal-update-order" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
@@ -71,7 +67,62 @@ function Update(props) {
      			</div>
 			</Form>
         )}
-    </Formik>
+    	</Formik>
+	}
+
+	const rejectedPurchase = () => {
+		return <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize >
+        {({ errors, touched, setFieldValue, isSubmitting }) => (
+        	<Form>
+         		<div className="modal modal-blur fade" id="modal-update-order" tabIndex="-1" role="dialog" style={{display: "none"}} aria-hidden="true">
+       				<div className="modal-dialog modal-dialog-centered" role="document">
+         				<div className="modal-content">
+           					<div className="modal-header">
+             					<h5 className="modal-title">Reason</h5>
+            					<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+            					   <svg xmlns="http://www.w3.org/2000/svg" className="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"></path><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            					</button>
+           					</div>
+           					<div className="modal-body">
+             					<div className="row mb-3 align-items-end">
+               						<div className="col">
+               							<label className="form-label">Reason</label>
+               							<Field name="note" type="text" className={'form-control' + (errors.note && touched.note ? ' is-invalid' : '')} />
+            							<ErrorMessage name="note" component="div" className="invalid-feedback" />
+               						</div>
+									   <small>You can not change this after sent.</small>
+             					</div> 
+         					</div>
+         					<div className="card-footer text-right">
+   								<div className="d-flex">
+     								<a href="#" className="btn btn-link">Cancel</a>
+     								<button type="submit" disabled={isSubmitting} className="btn btn-primary ml-auto">
+     								    {   isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span> }
+     								    Update
+     								</button>
+   								</div>
+ 							</div>
+       					</div>
+     				</div>
+     			</div>
+			</Form>
+        )}
+    	</Formik>
+	}
+
+
+    return (
+		<>
+        {
+			
+			(props.confirm==true)?(
+				acceptedPurchase()
+			) : (
+				rejectedPurchase()
+			)
+			
+		}
+		</>
 	)
 }
 

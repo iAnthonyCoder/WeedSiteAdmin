@@ -21,8 +21,7 @@ function Update(props) {
             .required(),
         price: Yup.number()
             .required('Price is required'),
-        description: Yup.string()
-            .required('Description is required'),
+        description: Yup.string(),
         stock: Yup.bool(),		
     });
 

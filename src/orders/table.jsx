@@ -17,9 +17,11 @@ function Table({ match }) {
         Header: 'Status',
         Cell:({row})=>(
           (row.original.status=="PENDING")?<span class="badge badge-info">{row.original.status}</span>:
-          (row.original.status=="CONFIRMED")?<span class="badge badge-success">{row.original.status}</span>:
+          (row.original.status=="ACCEPTED")?<span class="badge badge-success">{row.original.status}</span>:
           (row.original.status=="REJECTED")?<span class="badge badge-danger">{row.original.status}</span>:
-          (row.original.status=="FULLFILLED")?<span class="badge badge-success">{row.original.status}</span>:""
+          (row.original.status=="READY")?<span class="badge badge-success">{row.original.status}</span>:
+          (row.original.status=="COMPLETED")?<span class="badge badge-success">{row.original.status}</span>:
+          ""
         )
       },
       {
@@ -51,7 +53,7 @@ function Table({ match }) {
       width:"100px",
 
         Cell:({row})=>(
-          <span style={{width:"100px"}} class="dropdown ml-1 position-static">
+          <span style={{width:"100px"}} class="dropdown position-static">
             <button class="btn btn-white btn-sm dropdown-toggle align-text-top show" data-boundary="viewport" data-toggle="dropdown" aria-expanded="true">Actions</button>
               <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style={{position: "absolute", willChange: "transform", top: "0px", left: "0px", transform: "translate3d(852px, 181px, 0px)"}}>
                 {/* <button onClick={()=>{details(row.original._id)}} class="dropdown-item">
@@ -82,16 +84,20 @@ function Table({ match }) {
           label:"PENDING",
         },
         {
-          value:"&status=CONFIRMED",
-          label:"CONFIRMED",
-        },
-        {
-          value:"&status=FULLFILLED",
-          label:"FULLFILLED",
+          value:"&status=ACCEPTED",
+          label:"ACCEPTED",
         },
         {
           value:"&status=REJECTED",
           label:"REJECTED",
+        },
+        {
+          value:"&status=READY",
+          label:"READY",
+        },
+        {
+          value:"&status=COMPLETED",
+          label:"COMPLETED",
         }
       ]
   

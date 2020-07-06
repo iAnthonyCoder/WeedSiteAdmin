@@ -9,10 +9,12 @@ import { orderService, alertService } from '../_services';;
 function Details(props) {
 
 	const location = useLocation();
+	const acceptedModalModeInitialValue = ""
+	const [ acceptedModalMode, setAcceptedModalMode ] = useState(acceptedModalModeInitialValue)
 
 	React.useEffect(() => {
-		const id = props.match.params.id
-		fetchItems(id);
+		
+		fetchItems();
 	}, [location]);
    
     const fetchedInitialState = false;
@@ -23,8 +25,8 @@ function Details(props) {
     // const [scopedPicture, setScopedPicture] = useState(scopedPictureInitialState)
 
 
-    const fetchItems = (id) => {
-		
+    const fetchItems = () => {
+		const id = props.match.params.id
     	orderService.getById(id).then((res) => {
     	    setItem(res);
     	    setFetched(true)
@@ -38,37 +40,81 @@ function Details(props) {
 		orderService.update(props.match.params.id, newItem)
 	}
 
-	const rejectPurchase = () => {
+
+	const handleProductOrderStatus = (status, discount, note) => {
 		const newItem = {
-			status:"REJECTED"
+			status: status,
+			discount: discount,
+			note:note
 		}
 		orderService.update(props.match.params.id, newItem)
+			.then((res) => {
+            	fetchItems()
+            	alertService.success('Item updated successfully', { keepAfterRouteChange: true });
+            })
+            .catch(error => {
+                // alertService.error(error);
+            });
+			
+		
 	}
 
-	const markAsFullfilled = () => {
-		const newItem = {
-			status:"FULLFILLED"
-		}
-		orderService.update(props.match.params.id, newItem)
-	}
+
 
 	const showDiscountModal = () => {
-		console.log("object");
+		setAcceptedModalMode(true)
 		$("#modal-update-order").modal("show");
 	}
 
-
-    
+	const showNoteModal = () => {
+		setAcceptedModalMode(false)
+		$("#modal-update-order").modal("show");
+	}
 
     if(!fetched) return <LoaderBounce />
     return (<>
-		<Update item={item} update={update}/>
+		<Update item={item} handleProductOrderStatus={handleProductOrderStatus} confirm={acceptedModalMode}/>
         <PageHeader title="dispensary/orders" subtitle={`Order #${item.number} details`} />
         <div class="card">
             <div class="card-header d-print-none">
-				<h3 class="card-title">STATUS: {item.status}</h3>
+				<h3 class="card-title">STATUS:{
+					(item.status=="PENDING")?(<>&nbsp;&nbsp;<span className="badge badge-info">{item.status}</span></>):
+					(item.status=="ACCEPTED")?(<>&nbsp;&nbsp;<span className="badge badge-success">{item.status}</span></>):
+					(item.status=="REJECTED")?(<>&nbsp;&nbsp;<span className="badge badge-danger">{item.status}</span></>):
+					(item.status=="READY")?(<>&nbsp;&nbsp;<span className="badge badge-success">{item.status}</span></>):
+					(item.status=="COMPLETED")?(<>&nbsp;&nbsp;<span className="badge badge-success">{item.status}</span></>):""
+				}</h3>
                 <div class="card-options">
-					{item.status==="CONFIRMED"||item.status!="FULLFILLED"?
+					{
+						item.status==="PENDING" && <>&nbsp;
+							<button type="button" class="btn btn-success" onClick={()=>{showDiscountModal()}}>Confirm</button>&nbsp;
+							<button type="button" class="btn btn-danger"  onClick={()=>{showNoteModal()}}>Reject</button>
+						</>
+					}
+					{
+						item.status==="ACCEPTED" && <>&nbsp;
+							<button type="button" class="btn btn-primary"  onClick={()=>{handleProductOrderStatus("READY")}}>Ready for pickup</button>
+						</>
+					}
+					{
+						item.status==="REJECTED" && <>&nbsp;
+							{/* <button type="button" class="btn btn-primary"  onClick={()=>{handleProductOrderStatus("READY")}}>Ready for pickup</button> */}
+						</>
+					}
+					{
+						item.status==="READY" && <>&nbsp;
+							<button type="button" class="btn btn-primary"  onClick={()=>{handleProductOrderStatus("COMPLETED")}}>Mark as fullfilled</button>
+							&nbsp;&nbsp;<button type="button" class="btn btn-success" onClick={()=>{window.print()}}><i class="si si-printer"></i>Print Invoice</button>
+						</>
+					}
+					{
+						item.status==="COMPLETED" && <>&nbsp;
+							<button type="button" class="btn btn-success" onClick={()=>{window.print()}}><i class="si si-printer"></i>Print Invoice</button>
+						</>
+					}
+			
+
+					{/* {item.status==="CONFIRMED"||item.status!="FULLFILLED"?
 						<>&nbsp;
 							<button type="button" class="btn btn-primary"  onClick={()=>{markAsFullfilled()}}>MARK AS FULLFILLED</button>&nbsp;
 							<button type="button" class="btn btn-success" onClick={()=>{window.print()}}><i class="si si-printer"></i> Print Invoice</button>
@@ -78,7 +124,7 @@ function Details(props) {
                     </button>&nbsp;
 					<button type="button" class="btn btn-danger"  onClick={()=>{rejectPurchase()}}> Reject
 					</button></>:(item.status=="FULLFILLED")?<button type="button" class="btn btn-success" onClick={()=>{window.print()}}><i class="si si-printer"></i> Print Invoice</button>:<span className="badge badge-danger">REJECTED</span>
-					}
+					} */}
                     
                 </div>
             </div>
@@ -146,7 +192,7 @@ function Details(props) {
                   			</tr> 
                   			<tr>
                   			  	<td colspan="4" class="font-weight-bold text-uppercase text-right">Total</td>
-                  			  	<td class="font-weight-bold text-right">${item.total}</td>
+                  			  	<td class="font-weight-bold text-right">${item.total.toFixed(2)}</td>
                   			</tr>
                 		</tbody>
 					</table>
