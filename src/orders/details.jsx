@@ -169,8 +169,8 @@ function Details(props) {
 							<tr>
                     			<td class="text-center">1</td>
                     			<td>
-                      				<p class="strong mb-1">{item.package.menuProduct.name||item.package.menuProduct.product.name}</p>
-                      				<div class="text-muted">{item.package.value+item.package.type}</div>
+                      				<p class="strong mb-1">{item.productName}</p>
+                      				<div class="text-muted">{item.packageWeight+item.packageType}</div>
                     			</td>
                     			<td class="text-center">
                       				{item.quantity}

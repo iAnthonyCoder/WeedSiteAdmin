@@ -30,11 +30,11 @@ function Table({ match }) {
       },
       {
         Header: 'Product',
-        accessor: row => row.package.menuProduct.name || row.package.menuProduct.product.name
+        accessor: 'productName'
       },
       {
         Header: 'Variant',
-        accessor: row => row.package.value+row.package.type
+        accessor: row => row.packageWeight+row.packageType
       },
       {
         Header: 'Quantity',

@@ -21,7 +21,13 @@ function Update(props) {
     });
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-		(props.confirm)?(fields.status="ACCEPTED"):(fields.status="REJECTED")
+		if(props.confirm){
+			fields.status="ACCEPTED"
+			delete fields.note
+		}else{
+			fields.status="REJECTED"
+			delete fields.discount
+		}
 		setStatus();
 		props.handleProductOrderStatus(fields.status, fields.discount, fields.note)
 		resetForm({})

@@ -38,7 +38,7 @@ function BasicInfoCard(props) {
 
 							{(props.dispensary.website)?(
 								<>
-    	    	      		    	<dt className="col-5">WEbsite:</dt>
+    	    	      		    	<dt className="col-5">Website:</dt>
     	    	      		    	<dd className="col-7">{props.dispensary.website}</dd>
 								</>
     	    	      		):("")}
