@@ -14,7 +14,6 @@ function Create(props) {
     const initialValues = {
         name: '',
 		description: '',
-		parentcategory: '',
 	};
 
 
@@ -23,19 +22,19 @@ function Create(props) {
             .required('Name is required'),
         description: Yup.string()
 			.required('Description is required'),
-			
+		parentcategory: Yup.string()
     });
 
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-      
+		fields.parentcategory = fields.parentcategory._id
         categoryService.create(fields)
             .then((data) => {
               	resetForm({});
                 alertService.success('Item saved successfully', { keepAfterRouteChange: true });
                 $("#modal-create").modal("hide");
-                props.addNew(data.payload);
+                props.updateTable();
             })
             .catch(error => {
                 setSubmitting(false);

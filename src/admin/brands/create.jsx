@@ -38,15 +38,9 @@ function Create(props) {
             .required('Description is required'),
     });
 
-    const getSlug = (text) => {
-        var lowerText = text.toLowerCase();
-        var slug = lowerText.replace(/[^a-zA-Z0-9]+/g,'-');
-        return slug;    
-    };
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-		fields.slug=getSlug(fields.name);
 		fields.picture=picture;
 		
         brandService.create(fields)

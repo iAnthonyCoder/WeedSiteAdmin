@@ -26,7 +26,7 @@ function post(url, body) {
 }
 
 function put(url, body) {
-
+    delete body._id
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...authHeader(url) },

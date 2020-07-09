@@ -36,21 +36,16 @@ function Update(props) {
             .required('Description is required'),
     });
 
-    const getSlug = (text) => {
-        var lowerText = text.toLowerCase();
-        var slug = lowerText.replace(/[^a-zA-Z0-9]+/g,'-');
-        return slug;    
-    };
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-        fields.slug=getSlug(fields.name);
+        fields.parentcategory = fields.parentcategory._id
         categoryService.update(fields._id,fields)
             .then((res) => {
             	resetForm({});
             	alertService.success('Item updated successfully', { keepAfterRouteChange: true });
 				$("#modal-update").modal("hide");
-            	props.updateOne(res.payload._id, res.payload);
+            	props.updateTable();
             })
             .catch(error => {
                 setSubmitting(false);

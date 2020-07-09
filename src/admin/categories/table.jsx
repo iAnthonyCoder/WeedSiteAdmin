@@ -53,12 +53,8 @@ function Table({ match }) {
       }
   ]
 
-    
-    function addNew(){
-      callApiTrigger.current.fetchData();
-	}
-	
-    function updateOne(_id, newItem){
+  
+    function updateTable(){
       	callApiTrigger.current.fetchData();
     }
 
@@ -84,8 +80,8 @@ function Table({ match }) {
 
 	return (
 		<>
-	    	<Create addNew={addNew}/>
-	    	<Update updateOne={updateOne} object={scopedItem}/>
+	    	<Create updateTable={updateTable}/>
+	    	<Update updateTable={updateTable} object={scopedItem}/>
 	    	<PageHeader title="Admin/Categories" link="create" nameButton="Add category" subtitle="Categories list" toggle="modal" target="#modal-create" />
 	    	<div className="box">
 	    	  <MainTable ref={callApiTrigger} title={"CATEGORIES"} endPoint={categoryService.getAll} columns={columns} scopeItem={scopeItem} deleteByID={deleteByID}/>
