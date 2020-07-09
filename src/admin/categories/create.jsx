@@ -14,6 +14,7 @@ function Create(props) {
     const initialValues = {
         name: '',
 		description: '',
+		parentcategory: '',
 	};
 
 
@@ -27,8 +28,13 @@ function Create(props) {
 
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        setStatus();
-		fields.parentcategory = fields.parentcategory._id
+		setStatus();
+		if(fields.parentcategory==""){
+			delete fields.parentcategory
+		} else {
+			fields.parentcategory = fields.parentcategory._id
+		}
+		
         categoryService.create(fields)
             .then((data) => {
               	resetForm({});
