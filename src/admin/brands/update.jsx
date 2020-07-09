@@ -34,20 +34,13 @@ function Update(props) {
     const validationSchema = Yup.object().shape({
         name: Yup.string()
             .required('Name is required'),
-        description: Yup.string()
-            .required('Description is required'), 
+        description: Yup.string() 
     });
 
-    const getSlug = (text) => {
-        var lowerText = text.toLowerCase();
-        var slug = lowerText.replace(/[^a-zA-Z0-9]+/g,'-');
-        return slug;    
-    };
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
 		fields.picture=picture;
         setStatus();
-        fields.slug=getSlug(fields.name);
         brandService.update(fields._id,fields)
             .then((res) => {
             	resetForm({});

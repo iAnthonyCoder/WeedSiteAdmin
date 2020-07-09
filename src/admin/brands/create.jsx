@@ -6,12 +6,11 @@ import { brandService, alertService } from '../../_services';
 
 function Create(props) {
    
-	const pictureInitialState=''
+	const pictureInitialState=false
 	const [picture, setPicture] = useState(pictureInitialState)
 	
     const initialValues = {
         name: '',
-		description: '',
 	};
 	
 	const widget = window.cloudinary.createUploadWidget({
@@ -35,13 +34,13 @@ function Create(props) {
         name: Yup.string()
             .required('Name is required'),
         description: Yup.string()
-            .required('Description is required'),
     });
 
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        setStatus();
-		fields.picture=picture;
+		setStatus();
+		
+		if(picture){fields.picture=picture;}
 		
         brandService.create(fields)
             .then((data) => {

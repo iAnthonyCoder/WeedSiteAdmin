@@ -33,13 +33,17 @@ function Update(props) {
         name: Yup.string()
             .required('Name is required'),
         description: Yup.string()
-            .required('Description is required'),
     });
 
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-        fields.parentcategory = fields.parentcategory._id
+        if(fields.parentcategory==""){
+			delete fields.parentcategory
+		} else {
+			fields.parentcategory = fields.parentcategory._id
+		}
+		
         categoryService.update(fields._id,fields)
             .then((res) => {
             	resetForm({});
