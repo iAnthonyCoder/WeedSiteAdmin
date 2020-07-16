@@ -28,6 +28,7 @@ function Details(props) {
     const fetchItems = () => {
 		const id = props.match.params.id
     	orderService.getById(id).then((res) => {
+			console.log(res);
     	    setItem(res);
     	    setFetched(true)
     	})
@@ -76,6 +77,7 @@ function Details(props) {
 		<Update item={item} handleProductOrderStatus={handleProductOrderStatus} confirm={acceptedModalMode}/>
         <PageHeader title="dispensary/orders" subtitle={`Order #${item.number} details`} />
         <div class="card">
+			{console.log(item)}
             <div class="card-header d-print-none">
 				<h3 class="card-title">STATUS:{
 					(item.status=="PENDING")?(<>&nbsp;&nbsp;<span className="badge badge-info">{item.status}</span></>):
@@ -133,10 +135,10 @@ function Details(props) {
                 	<div class="col-6">
                   		<p class="h3">Company</p>
                   		<address>
-                    		{item.package.menuProduct.dispensary.name}<br></br>
-                    		{item.package.menuProduct.dispensary.city.state.name}, {item.package.menuProduct.dispensary.city.name}<br></br>
-                    		{item.package.menuProduct.dispensary.addresszip}<br></br>
-                    		{item.package.menuProduct.dispensary.email}
+                    		{item.dispensary.name}<br></br>
+                    		{item.dispensary.city.state.name}, {item.dispensary.city.name}<br></br>
+                    		{item.dispensary.addresszip}<br></br>
+                    		{item.dispensary.email}
                   		</address>
                 	</div>
                 	<div class="col-6 text-right">
@@ -165,36 +167,43 @@ function Details(props) {
                       			<th class="text-right" style={{width: "1%"}}>Amount</th>
                     		</tr>
                   		</thead>
-                  		<tbody>
-							<tr>
+						<tbody>
+						{
+							item.productorders.map(x=>
+								
+								<tr>
                     			<td class="text-center">1</td>
                     			<td>
-                      				<p class="strong mb-1">{item.productName}</p>
-                      				<div class="text-muted">{item.packageWeight+item.packageType}</div>
+                      				<p class="strong mb-1">{x.productName}</p>
+                      				<div class="text-muted">{x.packageWeight+x.packageType}</div>
                     			</td>
                     			<td class="text-center">
-                      				{item.quantity}
+                      				{x.quantity}
                     			</td>
-                    			<td class="text-right">${item.package.price}</td>
-                    			<td class="text-right">${item.quantity*item.package.price}</td>
+                    			<td class="text-right">${x.price}</td>
+                    			<td class="text-right">${x.quantity*x.price}</td>
                   			</tr>
+							  )
+						}
                   			<tr>
                     			<td colspan="4" class="strong text-right">Subtotal</td>
                     			<td class="text-right">${item.subtotal}</td>
                   			</tr>
                   			<tr>
                   			  	<td colspan="4" class="strong text-right">Tax</td>
-                  			  	<td class="text-right">{item.taxes}%</td>
+                  			  	<td class="text-right">{item.tax}%</td>
                   			</tr>
                   			<tr>
                   			  	<td colspan="4" class="strong text-right">Discount</td>
-                  			  	<td class="text-right">{item.discount}%</td>
+                  			  	<td class="text-right">{item.discount||0}%</td>
                   			</tr> 
                   			<tr>
                   			  	<td colspan="4" class="font-weight-bold text-uppercase text-right">Total</td>
-                  			  	<td class="font-weight-bold text-right">${item.total.toFixed(2)}</td>
+                  			  	<td class="font-weight-bold text-right">${item.subtotal+(item.subtotal*(item.tax*0.01)-(item.discount||0*(item.discount||0*0.01)))}</td> 
                   			</tr>
-                		</tbody>
+
+							
+						</tbody>
 					</table>
               	</div>
               	<p class="text-muted text-center">Thank you very much for doing business with us. We look forward to working with

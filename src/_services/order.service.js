@@ -1,7 +1,7 @@
 import { fetchWrapper, history } from '../_helpers';
 import { getPrivateApi } from '../_helpers/config';
 
-const baseUrl = getPrivateApi+"productorders";
+const baseUrl = getPrivateApi+"orders";
 
 
 export const orderService = {

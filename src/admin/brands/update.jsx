@@ -46,7 +46,7 @@ function Update(props) {
             	resetForm({});
             	alertService.success('Updated Sucessfully', { keepAfterRouteChange: true });
             	$("#modal-update").modal("hide");
-            	props.updateOne(res.payload._id, res.payload);
+            	props.updateOne();
             })
             .catch(error => {
                 setSubmitting(false);

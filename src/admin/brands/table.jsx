@@ -61,7 +61,7 @@ function Table({ match }) {
       callApiTrigger.current.fetchData();
 	}
 	
-    function updateOne(_id, newItem){
+    function updateOne(){
       	callApiTrigger.current.fetchData();
     }
 

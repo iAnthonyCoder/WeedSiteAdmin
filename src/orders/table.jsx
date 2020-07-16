@@ -29,16 +29,12 @@ function Table({ match }) {
         accessor: 'number'
       },
       {
-        Header: 'Product',
-        accessor: 'productName'
+        Header: 'Date',
+        accessor: row => row.createdAt.substr(0, row.createdAt.indexOf("T"))
       },
       {
-        Header: 'Variant',
-        accessor: row => row.packageWeight+row.packageType
-      },
-      {
-        Header: 'Quantity',
-        accessor: row => row.quantity
+        Header: 'Mode',
+        accessor: 'mode'
       },
       {
         Header: 'Subtotal',
