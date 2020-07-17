@@ -26,6 +26,7 @@ function Details(props) {
 
 
     const fetchItems = () => {
+		
 		const id = props.match.params.id
     	orderService.getById(id).then((res) => {
 			console.log(res);
@@ -148,7 +149,11 @@ function Details(props) {
                   		  State, City<br></br>
                   		  Region, Postal Code<br></br> */}
 							{item.user.name}<br></br>
-                  		  {item.user.email}
+                  		    {item.user.email}<br></br>
+							{item.address_line_1}<br></br>
+							{item.address_line_2}<br></br>
+							{item.address_line_3}<br></br>
+							{item.mobile}
                   		</address>
                 	</div>
                 	{/* <div class="col-12 my-5">

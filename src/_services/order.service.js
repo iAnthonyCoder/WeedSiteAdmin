@@ -15,6 +15,7 @@ export const orderService = {
 
 
 function getAll(query) {
+   
     var fetchParam=""
     if(!query){fetchParam=`${baseUrl}`}
     else{fetchParam=`${baseUrl}${query}`}
@@ -22,6 +23,7 @@ function getAll(query) {
 }
 
 function getById(id) {
+    
     return fetchWrapper.get(`${baseUrl}/${id}`);
 }
 
