@@ -6,6 +6,7 @@ import { Create } from './create';
 import $ from "jquery"
 import { Update } from './update'
 import { history } from '../../_helpers'
+import { NavLink, Route, Link } from 'react-router-dom';
 
 
 function Table({ match }) {
@@ -28,6 +29,10 @@ function Table({ match }) {
         {
           Header: 'Strain',
           accessor: row => (row.strain)?(row.strain.name):(<p style={{color:"red"}}>MISSING</p>)
+        },
+        {
+          Header: 'NEW TAB',
+          accessor: row => (row.strain)?(row.strain.name):(<Link to={`/admin/products/${row._id}`}>EDIT</Link>)
         },
         {
         Header: 'Actions',
