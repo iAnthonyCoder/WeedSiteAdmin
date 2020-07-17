@@ -1,5 +1,4 @@
 import React, {useState,useEffect, useRef} from 'react';
-import { Link } from 'react-router-dom';
 import { productService, categoryService, brandService, alertService } from '../../_services';
 import { PageHeader, NoResults, TableCardHeader, SuperTable, LoadingSpinner, MainTable } from '../../_components';
 import { Create } from './create';
@@ -32,7 +31,7 @@ function Table({ match }) {
         },
         {
           Header: 'NEW TAB',
-          accessor: row => (row.strain)?(row.strain.name):(<Link to={`/admin/products/${row._id}`}>EDIT</Link>)
+          accessor: row => (<Link to={`/admin/products/update/${row._id}`}>EDIT</Link>)
         },
         {
         Header: 'Actions',
