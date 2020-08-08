@@ -26,7 +26,8 @@ function getById(id) {
     return fetchWrapper.get(`${baseUrl}/${id}`);
 }
 
-function getProductsByBrandId(id) {return fetchWrapper.get(`${baseUrl}/${id}/products/`);}
+function getProductsByBrandId(id) {
+    return fetchWrapper.get(`${baseUrl}/${id}/products/`);}
 
 function getByUserId(id) {
    

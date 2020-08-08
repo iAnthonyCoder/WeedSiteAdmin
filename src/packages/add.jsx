@@ -25,7 +25,9 @@ function Add(props) {
             .required('Value is required'),
         description: Yup.string()
 			
-    });  
+    }); 
+    
+    
 
     // const validationSchema = Yup.object().shape({
     //     packags: Yup.array()

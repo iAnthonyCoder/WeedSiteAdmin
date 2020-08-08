@@ -211,8 +211,13 @@ function Create({ history }) {
 
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        fields.latitude=latitude;
-        fields.longitude=longitude;
+        fields.location = {
+            type : "Point",
+            coordinates : [
+                longitude,
+                latitude
+            ]
+        }
         if(!enableCustomSchedule){
             days.map( name =>
                 {

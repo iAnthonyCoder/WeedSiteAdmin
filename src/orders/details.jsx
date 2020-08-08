@@ -57,8 +57,6 @@ function Details(props) {
             .catch(error => {
                 // alertService.error(error);
             });
-			
-		
 	}
 
 
