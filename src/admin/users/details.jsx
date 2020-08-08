@@ -217,7 +217,7 @@ function Details(props) {
                 	    		<div class="card-body">
 								{ (userDetails && userDetails.dispensary==null)
 									?	<NoDispensary />
-									:	<img src={enableStaticImageMap(userDetails.dispensary.longitude, userDetails.dispensary.latitude)}></img>
+									:	<img src={enableStaticImageMap(userDetails.dispensary.location.coordinates[0], userDetails.dispensary.location.coordinates[1])}></img>
                 	    		}
                 	    		</div>
                 	  		</div>

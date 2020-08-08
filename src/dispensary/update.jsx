@@ -113,8 +113,9 @@ function Update({ history, match }) {
     const fetchElements = async () => {
         await dispensaryService.getByUserId(user._id).then( dispensary => {
             setDispensary(dispensary)
-            setLatitude(dispensary.latitude)
-            setLongitude(dispensary.longitude)
+            console.log(dispensary);
+            setLatitude(dispensary.location.coordinates[1])
+            setLongitude(dispensary.location.coordinates[0])
             // addMap(dispensary.longitude,dispensary.latitude)
         })
     }
@@ -180,8 +181,13 @@ function Update({ history, match }) {
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
    
-        fields.latitude=latitude;
-        fields.longitude=longitude;
+        fields.location = {
+            type : "Point",
+            coordinates : [
+                longitude,
+                latitude
+            ]
+        }
         fields.city=fields.city._id;
         delete fields.state
         if(!latitude){

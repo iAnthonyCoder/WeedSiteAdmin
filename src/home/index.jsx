@@ -51,13 +51,14 @@ function Home() {
           
         await setDispensary(res);
         await setDispensaryStatus(DispensaryStatus.Valid);
+        console.log(res);
 
         mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
        const initializeMap = async ({ setMap, mapContainer }) => {
          const map = new mapboxgl.Map({
            container: mapContainer.current,
            style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-           center: [ res.longitude,res.latitude],
+           center: [ res.location.coordinates[0],res.location.coordinates[1]],
            zoom: 15,
            interactive:false
          });
@@ -65,7 +66,7 @@ function Home() {
          var marker = new mapboxgl.Marker({
            draggable: false
            })
-           .setLngLat([ res.longitude,res.latitude])
+           .setLngLat([ res.location.coordinates[0],res.location.coordinates[1]])
            .addTo(map);
          
          map.on("load", () => {

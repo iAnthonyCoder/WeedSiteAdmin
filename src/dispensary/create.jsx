@@ -1,42 +1,3 @@
-// import React, { useEffect, useRef, useState } from "react";
-// import mapboxgl from "mapbox-gl";
-// import "mapbox-gl/dist/mapbox-gl.css";
-
-// const styles = {
-//   width: "100vw",
-//   height: "calc(100vh - 80px)",
-//   position: "absolute"
-// };
-
-// function Create() {
-//   const [map, setMap] = useState(null);
-//   const mapContainer = useRef(null);
-
-//   useEffect(() => {
-//     mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
-//     const initializeMap = ({ setMap, mapContainer }) => {
-//       const map = new mapboxgl.Map({
-//         container: mapContainer.current,
-//         style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-//         center: [0, 0],
-//         zoom: 5
-//       });
-
-//       map.on("load", () => {
-//         setMap(map);
-//         map.resize();
-//       });
-//     };
-
-//     if (!map) initializeMap({ setMap, mapContainer });
-//   }, [map]);
-
-//   return <div ref={el => (mapContainer.current = el)} style={styles} />;
-// };
-
-// export { Create };
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -125,48 +86,11 @@ function Create({ history }) {
         announcement: Yup.string(),
         
     });
-
-
     
     const enableStaticImageMap = ( _longitude, _latitude) => {
         setShowMapImg(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s-commercial+285A98(${_longitude},${_latitude})/${_longitude},${_latitude},13,0/600x300@2x?access_token=pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg`);
         setUseInteractiveMap(false)
     }
-
-
-    // useEffect(() => {
-       
-    //     mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
-    //     const initializeMap = ({ setMap, mapContainer }) => {
-    //         const map = new mapboxgl.Map({
-    //             container: mapContainer.current,
-    //             style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-    //             center: [-118.05853227075772, 33.93064846016682],
-    //             zoom: 8
-    //         });
-
-    //         var marker = new mapboxgl.Marker({
-    //             draggable: true
-    //         })
-
-    //         map.on('click', addMarker);
-
-    //         function addMarker(e){
-    //             marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
-    //             var lngLat = marker.getLngLat();
-    //             setLatitude(lngLat.lat);
-    //             setLongitude(lngLat.lng);
-    //         }
-
-    //         map.on("load", () => {
-    //             setMap(map);
-    //             map.resize();
-    //         });
-    //     };
-
-    //     if (!map) initializeMap({ setMap, mapContainer });
-
-    // }, [map]);
 
     const showInteractiveMap = () => {
         mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
@@ -211,12 +135,14 @@ function Create({ history }) {
     }
 
 
-
-
-
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        fields.latitude=latitude;
-        fields.longitude=longitude;
+        fields.location = {
+            type : "Point",
+            coordinates : [
+                longitude,
+                latitude
+            ]
+        }
         if(!enableCustomSchedule){
             days.map( name =>
                 {
@@ -264,15 +190,6 @@ function Create({ history }) {
         }
     }
 
-
-    const [isDeleting, setIsDeleting] = useState(false);
-    function onDelete() {
-        // if (confirm('Are you sure?')) {
-            setIsDeleting(true);
-            accountService.delete(user.id)
-                .then(() => alertService.success('Account deleted successfully'));
-        // }
-    }
 
 
     return (
