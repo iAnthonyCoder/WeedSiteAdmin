@@ -28,7 +28,7 @@ function Table({columns, filterParams, title, data,fetchData,loading,pageCount: 
       columns,
       filterParams,
       data,
-      initialState: { pageIndex: 0, pageSize: 100 }, // Pass our hoisted table state
+      initialState: { pageIndex: 0, pageSize: 15 }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
       // This means we'll also have to provide our own

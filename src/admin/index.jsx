@@ -15,7 +15,9 @@ import { Categories } from './categories';
 import { Subscriptions } from './subscriptions'
 import { Parentcategories } from './parentcategories'
 import { Strains } from './strains'
+import { Fix_images } from './fix_images'
 import Loadable from 'react-loadable';
+import { from } from 'rxjs';
 
 function Admin({ match }) {
     const { path } = match;
@@ -46,6 +48,7 @@ function Admin({ match }) {
                     <Route path={`${path}/products`} component={Products} />
                     <Route path={`${path}/subscriptions`} component={Subscriptions} />
                     <Route path={`${path}/strains`} component={Strains} />
+                    <Route path={`${path}/fix_images`} component={Fix_images} />
                 </Switch>
         
 
