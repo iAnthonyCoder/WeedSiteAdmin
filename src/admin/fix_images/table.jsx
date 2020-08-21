@@ -16,7 +16,7 @@ function Table({ match }) {
     const columns = [
         {
           Header: 'Picture',
-          accessor: row => (row.picture)?(<div style={{}}><img style={{height:"50px", border:"2px solid red", background:"red"}} src={`${row.picture}`} /></div>):(<p style={{color:"red"}}>NO PICTURE</p>)
+          accessor: row => (row.picture)?(<div style={{}}><img style={{height:"50px", border:"2px solid red", background:"red"}} src={`${row.picture[0]}`} /></div>):(<p style={{color:"red"}}>NO PICTURE</p>)
         },
         {
           Header: 'FIX PICTURE',
