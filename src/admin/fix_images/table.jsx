@@ -38,7 +38,7 @@ function Table({ match }) {
             swalWithBootstrapButtons.queue([{
               title: "DELETE PICTURE",
               text: "Confirm please!",
-              imageUrl: image,
+              imageUrl: image[0],
                 imageWidth: 400,
                 imageHeight: 200,
                 imageAlt: 'Custom image',
