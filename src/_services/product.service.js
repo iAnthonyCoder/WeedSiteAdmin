@@ -13,7 +13,8 @@ export const productService = {
     getAddList,
     deleteFromDispensary,
     delete: _delete,
-
+    getAllFixPicture,
+    fixPicture
 };
 
 
@@ -29,6 +30,15 @@ function getAllRequest(query) {
     else{fetchParam=`${baseUrl}/requests/list${query}`}
     return fetchWrapper.get(fetchParam);
 }
+function getAllFixPicture(query) {
+    var fetchParam=""
+    if(!query){fetchParam=`${baseUrl}/fix_picture/list?sortField=createdAt&sortOrder=asc`}
+    else{fetchParam=`${baseUrl}/fix_picture/list${query}&sortField=createdAt&sortOrder=asc`}
+    return fetchWrapper.get(fetchParam);
+}
+
+
+
 function getMyList() {
     return fetchWrapper.get(baseUrl+"/mylist");
 }
@@ -38,6 +48,11 @@ function getAddList() {
 }
 function getById(id) {
     return fetchWrapper.get(`${baseUrl}/${id}`);
+}
+
+function fixPicture(id){
+ 
+    return fetchWrapper.put(`${baseUrl}/fix_picture/${id}`,{"edit":"edit"});
 }
 
 function deleteFromDispensary(id) {

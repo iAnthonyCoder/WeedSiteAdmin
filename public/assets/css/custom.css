@@ -15,6 +15,15 @@
       background-color: red !important;
     }
 
+    .add-picture-button{
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+      display:  flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     .marker {
         background-image: url("svg/marker.svg");
         background-size: cover;

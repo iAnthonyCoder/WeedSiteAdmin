@@ -55,8 +55,10 @@ function Create({ history }) {
     const mapContainer = useRef(null);
     const longitudeInitialValue=0; 
     const latitudeInitialValue=0;
+    const pictureInitialValue=''
     const [latitude, setLatitude] = useState(latitudeInitialValue)
     const [longitude, setLongitude] = useState(longitudeInitialValue)
+    const [picture, setPicture] = useState(pictureInitialValue)
     const [enableCustomSchedule, setEnableCustomSchedule] = useState(false)
     const [cities, setCities] = useState("")
     const [states, setStates] = useState("")
@@ -130,39 +132,6 @@ function Create({ history }) {
     }
 
 
-    // useEffect(() => {
-       
-    //     mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
-    //     const initializeMap = ({ setMap, mapContainer }) => {
-    //         const map = new mapboxgl.Map({
-    //             container: mapContainer.current,
-    //             style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
-    //             center: [-118.05853227075772, 33.93064846016682],
-    //             zoom: 8
-    //         });
-
-    //         var marker = new mapboxgl.Marker({
-    //             draggable: true
-    //         })
-
-    //         map.on('click', addMarker);
-
-    //         function addMarker(e){
-    //             marker.setLngLat([e.lngLat.wrap().lng, e.lngLat.wrap().lat]).addTo(map)
-    //             var lngLat = marker.getLngLat();
-    //             setLatitude(lngLat.lat);
-    //             setLongitude(lngLat.lng);
-    //         }
-
-    //         map.on("load", () => {
-    //             setMap(map);
-    //             map.resize();
-    //         });
-    //     };
-
-    //     if (!map) initializeMap({ setMap, mapContainer });
-
-    // }, [map]);
 
     const showInteractiveMap = () => {
         mapboxgl.accessToken = "pk.eyJ1IjoiYW50aG9ueTk1MiIsImEiOiJjazl2enJuMWswNHJhM21vNHBpZGF3eXp0In0.zIyPl0plESkg395zI-WVsg";
@@ -218,6 +187,7 @@ function Create({ history }) {
                 latitude
             ]
         }
+        fields.picture = picture
         if(!enableCustomSchedule){
             days.map( name =>
                 {
@@ -266,6 +236,24 @@ function Create({ history }) {
         }
     }
 
+    const handleImageUpload = (e) => {
+        const { name, files } = e.target
+        const formData = new FormData();
+
+        formData.append('file', files[0]);
+        formData.append('upload_preset', 'spj28hqq');
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+
+        return fetch('https://api.Cloudinary.com/v1_1/timj111/image/upload', options)
+            .then(res => res.json())
+            .then( res =>{
+                setPicture(res.secure_url)
+            })
+    }
+
 
     const [isDeleting, setIsDeleting] = useState(false);
     function onDelete() {
@@ -307,6 +295,16 @@ function Create({ history }) {
                                                     <label>Name *</label>
                                                     <Field name="name" type="text" placeholder="Input name" className={'form-control' + (errors.name && touched.name ? ' is-invalid' : '')} />
                                                     <ErrorMessage name="name" component="div" className="invalid-feedback" />
+                                                </div>
+                                                <div className="mb-3">
+                                                    
+                                                    <label>Picture</label><br></br>
+                                                    {
+                                                        picture && <img src={picture} style={{maxWidth: "100%", height:"auto"}} /> 
+                                                    }
+                                                    <label for="picture" className="account-info-label-input add-picture-button">{picture ? "Update picture" : "Add picture"}</label>
+                                                    <input style={{width:"0", height:"0", overflow:"hidden"}} name="picture" id="picture" className="inputfile" onChange={(e)=>handleImageUpload(e)} type="file"/>
+                                           
                                                 </div>
                                                 <div className="mb-3">
                                                     <label>Address *</label>

@@ -61,6 +61,7 @@ function Overview({ match }) {
         <div>
             <PageHeader title="Admin/Overview" link="admin/products/create" nameButton="Add product" subtitle="Dashboard" />
             <PageHeader link="admin/dispensaries/create" nameButton="Add dispensary"  />
+            <PageHeader link="admin/fix_images" nameButton="FIX PRODUCT PICTURES"  />
             <div class="row"><div class="col-lg-9">
                 <div class="card">
                     <div className="card-body">

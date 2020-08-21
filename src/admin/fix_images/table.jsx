@@ -20,46 +20,58 @@ function Table({ match }) {
         },
         {
           Header: 'FIX PICTURE',
-          accessor: row => (<button onClick={()=>deletePicture(row._id)} className="btn btn-danger">DELETE PICTURE</button>)
+          accessor: row => (<button onClick={()=>{deletePicture(row._id, row.picture)}} className="btn btn-danger">DELETE PICTURE</button>)
         },
     ]
 
-    const deletePicture = (id) => {
+
+      
+        const deletePicture = async (id, image) => {
+            const swalWithBootstrapButtons = Swal.mixin({
+              customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+              },
+              buttonsStyling: false
+            })
+            
+            swalWithBootstrapButtons.queue([{
+              title: "DELETE PICTURE",
+              text: "Confirm please!",
+              imageUrl: image,
+                imageWidth: 400,
+                imageHeight: 200,
+                imageAlt: 'Custom image',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, change it!',
+              cancelButtonText: 'No, cancel!',
+              showLoaderOnConfirm: true,
+              reverseButtons: true,
+              preConfirm: () => { 
+                return productService.fixPicture(id)
+                  .then((res)=>{
+                    if(res.done){
+
+                        swalWithBootstrapButtons.fire(
+                            'Done!',
+                            'The status was updated',
+                            'success'
+                          )
+                    }
+                    }
+                  )
+                  .catch((err) =>
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: err,
+                    })
+                  )
+              } 
+            }])
+          }
     
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!',
-          showLoaderOnConfirm: true,
-          preConfirm: (del) => {
-            // props.setActionsLoading(true)
-            // dispensaryService.delete(id)
-            //   .then(()=>{
-            //     Swal.fire(
-            //       'Done!',
-            //       'The item has been deleted!',
-            //       'success'
-            //     )
-            //   })
-            //   .catch(error =>{
-            //     Swal.fire({
-            //       icon: 'error',
-            //       title: 'Oops...',
-            //       text: error,
-            //     })
-            //   })
-            //   .finally(()=>{
-            //     updateCurrent()
-            //     props.setActionsLoading(false)
-            //   })
-          },
-          allowOutsideClick: () => !Swal.isLoading()
-        })
-      }
+    
     
     function deleteByID(id){
       if(window.confirm("Are you sure do you want to delete this item?")){
@@ -90,7 +102,7 @@ function Table({ match }) {
         {/* <Update updateOne={updateOne} object={scopedItem}/> */}
         <PageHeader title="Admin/Products"  link="products/create" nameButton="Add product" subtitle="Products list" />
         <div className="box">
-          <MainTable ref={callApiTrigger} details={details} title={"PRODUCTS"} columns={columns} endPoint={productService.getAll} scopeItem={scopeItem} deleteByID={deleteByID}/>
+          <MainTable ref={callApiTrigger} details={details} title={"PRODUCTS"} columns={columns} endPoint={productService.getAllFixPicture} scopeItem={scopeItem} deleteByID={deleteByID}/>
         </div>
       </>
     );

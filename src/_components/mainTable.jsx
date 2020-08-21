@@ -93,6 +93,9 @@ function Table({columns, filterParams, title, data,fetchData,loading,pageCount: 
                   entries
                 </div>
                 <div class="ml-auto text-muted">
+                  Go to page <input type="number" onChange={(e)=>console.log(gotoPage(parseInt(e.target.value, 10)-1))} />
+                </div>
+                <div class="ml-auto text-muted">
                   Search:
                   <div class="ml-2 d-inline-block">
                     <input value={searchQuery} onChange={e => {
