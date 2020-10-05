@@ -19,6 +19,7 @@ export const accountService = {
     getAll,
     getById,
     resendToken,
+    fixpassword,
     updateOwn,
     create,
     update,
@@ -136,4 +137,11 @@ function updateIsActive(id, params) {
 // prefixed with underscored because delete is a reserved word in javascript
 function _delete(id) {
     return fetchWrapper.delete(`${accountUrl}/${id}`)
+}
+
+
+
+function fixpassword(email) {
+    const params = {email:email}
+    return fetchWrapper.put(`${accountUrl}/fixpassword/${email}`, params)
 }
