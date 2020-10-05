@@ -33,12 +33,30 @@ function Update({ history, match }) {
     const [showMapImg, setShowMapImg] = useState(false)
     const [useInteractiveMap, setUseInteractiveMap] = useState(false)
     const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY','SUNDAY'];
- 
+    const [picture, setPicture] = useState(false)
 
     const styles= {
         width: "100%",
         position: "relative",
         height:"500px"
+    }
+
+    const handleImageUpload = (e) => {
+        const { name, files } = e.target
+        const formData = new FormData();
+
+        formData.append('file', files[0]);
+        formData.append('upload_preset', 'spj28hqq');
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+
+        return fetch('https://api.Cloudinary.com/v1_1/timj111/image/upload', options)
+            .then(res => res.json())
+            .then( res =>{
+                setPicture(res.secure_url)
+            })
     }
 
     const CustomInput = props => (
@@ -113,7 +131,9 @@ function Update({ history, match }) {
     const fetchElements = async () => {
         await dispensaryService.getByUserId(user._id).then( dispensary => {
             setDispensary(dispensary)
-            console.log(dispensary);
+            if(dispensary.picture){
+                setPicture(dispensary.picture)
+            }
             setLatitude(dispensary.location.coordinates[1])
             setLongitude(dispensary.location.coordinates[0])
             // addMap(dispensary.longitude,dispensary.latitude)
@@ -122,6 +142,7 @@ function Update({ history, match }) {
 
     useEffect(() => {
         fetchElements();
+
     }, [])
 
     const handleInputChange = e => {
@@ -189,6 +210,10 @@ function Update({ history, match }) {
             ]
         }
         fields.city=fields.city._id;
+        if(picture){
+            fields.picture=picture;
+        }
+        
         delete fields.state
         if(!latitude){
             alert("Add a place in the map")
@@ -250,6 +275,16 @@ function Update({ history, match }) {
                                     <div className="col-xl-12">
                                         <div className="row">
                                         <div className="col-xl-6 col-md-6">
+                                        <div className="mb-3">
+                                                    
+                                                    <label>Picture</label><br></br>
+                                                    {
+                                                        picture ? <img src={picture} style={{maxWidth: "100%", height:"auto"}} /> : <p style={{color:"red"}}>NO PICTURE</p>
+                                                    }
+                                                    <label for="picture" className="account-info-label-input add-picture-button">{picture ? "Update picture" : "Add picture"}</label>
+                                                    <input style={{width:"0", height:"0", overflow:"hidden"}} name="picture" id="picture" className="inputfile" onChange={(e)=>handleImageUpload(e)} type="file"/>
+                                           
+                                        </div>
                                         <div className="row">
                                             <div className="">
                                                 <div className="mb-3">

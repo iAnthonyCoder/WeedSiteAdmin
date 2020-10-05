@@ -32,8 +32,8 @@ function getAllRequest(query) {
 }
 function getAllFixPicture(query) {
     var fetchParam=""
-    if(!query){fetchParam=`${baseUrl}/fix_picture/list?sortField=createdAt&sortOrder=asc`}
-    else{fetchParam=`${baseUrl}/fix_picture/list${query}&sortField=createdAt&sortOrder=asc`}
+    if(!query){fetchParam=`${baseUrl}/fix_picture/list`}
+    else{fetchParam=`${baseUrl}/fix_picture/list${query}`}
     return fetchWrapper.get(fetchParam);
 }
 
