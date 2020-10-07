@@ -59,8 +59,10 @@ function List() {
 
 	const deleteThis = (id) => {
 		dispensaryService.delete(id)
-			.then(response => alert('DELETED'))
-			.catch(alert('ERROR TRYING TO DELETE'))
+			.then(()=>{
+				alert('DELETED')
+			})
+			.catch(x=>{alert('ERROR TRYING TO DELETE')})
 	}
     
     const details = (id) => {
