@@ -44,6 +44,9 @@ function List() {
 				  <button onClick={()=>{details(row.original.user._id)}} class="dropdown-item">
 					Details
 				  </button>
+				  <button onClick={()=>{deleteThis(row.original._id)}} class="dropdown-item">
+					Delete
+				  </button>
 				</div>
 			  </span>
 		  )
@@ -54,7 +57,11 @@ function List() {
 
 
 
-
+	const deleteThis = (id) => {
+		dispensaryService.delete(id)
+			.then(response => alert('DELETED'))
+			.catch(alert('ERROR TRYING TO DELETE'))
+	}
     
     const details = (id) => {
     	history.push(`users/${id}`)
