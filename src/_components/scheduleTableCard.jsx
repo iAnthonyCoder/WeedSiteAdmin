@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { scheduleService, alertService } from '../_services';
+import { scheduleService, alertService, dispensaryService } from '../_services';
 import { LoadingSpinner } from './loadingSpinner'
 const Moment = require('moment');
 
@@ -11,13 +11,14 @@ function ScheduleTableCard(props) {
     const [componentMode, setComponentMode] = useState(0); //0-> table - 1-> edit
     const [scopedItem, setScopedItem] = useState("")
 	const [schedule, setSchedule] = useState("");
-	const [isFetch, setIsFetch] = useState(false)
+	const [isFetch, setIsFetch] = useState(true)
 	const [formMulti, setFormMulti] = useState(false)
 	
     const initialValues = {
 		opens_at: (scopedItem.opens_at)?scopedItem.opens_at:'',
 		closes_at: (scopedItem.closes_at)?scopedItem.closes_at:'',
 		isEnabled:(scopedItem.isEnabled)?scopedItem.isEnabled:false,
+		day:(scopedItem.day)?scopedItem.day:false,
     };
 
     const validationSchema = Yup.object().shape({
@@ -31,13 +32,14 @@ function ScheduleTableCard(props) {
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
 		setStatus();
+		setIsFetch(false)
 		if(formMulti==0){
-			scheduleService.update(scopedItem._id,fields).then(data => {
+			dispensaryService.updateSchedule([fields]).then((res) => {
 				alertService.success('Item saved successfully', { keepAfterRouteChange: true });
 				setComponentMode(0);
 				resetForm({});
-				setIsFetch(false)
-				fetch()
+				setSchedule(res)
+				setIsFetch(true)
 			  })
 			  .catch(error => {
 				  setSubmitting(false);
@@ -55,13 +57,12 @@ function ScheduleTableCard(props) {
 				id=x._id
 				return x
 			})
-			
-			scheduleService.updateMany(id,newObj).then(data => {
+			dispensaryService.updateSchedule(newObj).then(res => {
 				alertService.success('Item saved successfully', { keepAfterRouteChange: true });
 				setComponentMode(0);
 				resetForm({});
-				setIsFetch(false)
-				fetch()
+				setSchedule(res)
+				setIsFetch(true)
 			  })
 			  .catch(error => {
 				  setSubmitting(false);
@@ -102,18 +103,10 @@ function ScheduleTableCard(props) {
 		})
 	}
 
-	const fetch = () => {
-		scheduleService.getAll(props.dispensaryId)
-			.then(res => {
-				setSchedule(sortDays(res));
-				setTodayInfoa(res);
-				setIsFetch(true)
-			})
-	}
 
     useEffect(() => {
-		
-		fetch()
+		setSchedule(sortDays(props.schedule));
+		setTodayInfoa(props.schedule);
     }, [])
 
     function getBody(){
@@ -142,7 +135,6 @@ function ScheduleTableCard(props) {
         		{({ errors, touched, setFieldValue, isSubmitting, handleReset }) => (
           			<Form className="modal-content">
 						 
-						 {console.log(scopedItem)}
            				<div className="modal-header">
             				<h5 className="modal-title">Edit {scopedItem.day}</h5>
              				<button type="button" className="close" onClick={()=>{setComponentMode(0)}} aria-label="Close">
@@ -170,6 +162,9 @@ function ScheduleTableCard(props) {
 															</div>
 							
              				</div>
+							 <Field name={`day`} type="hidden"/>
+									 
+							 
              				<div className="row mb-3 align-items-end">
                					<div className="col">
                						<Field type="checkbox" name="isEnabled" className={'form-check-input ' + (errors.isEnabled && touched.isEnabled ? ' is-invalid' : '')} />

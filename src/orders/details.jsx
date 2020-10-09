@@ -202,7 +202,7 @@ function Details(props) {
                   			</tr> 
                   			<tr>
                   			  	<td colspan="4" class="font-weight-bold text-uppercase text-right">Total</td>
-                  			  	<td class="font-weight-bold text-right">${item.subtotal+(item.subtotal*(item.tax*0.01)-(item.discount||0*(item.discount||0*0.01)))}</td> 
+                  			  	<td class="font-weight-bold text-right">${item.total}</td> 
                   			</tr>
 
 							

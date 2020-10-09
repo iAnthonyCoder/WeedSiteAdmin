@@ -12,6 +12,7 @@ export const dispensaryService = {
     getByUserId,
     createByAdmin,
     delete: _delete,
+    updateSchedule,
     dispensary: dispensarySubject.asObservable(),
     get dispensaryValue () { return dispensarySubject.value }
 };
@@ -61,4 +62,9 @@ function update(id, params) {
 // prefixed with underscored because delete is a reserved word in javascript
 function _delete(id) {
     return fetchWrapper.delete(`${baseUrl}/${id}`)
+}
+
+
+function updateSchedule(fields){
+    return fetchWrapper.put(`${baseUrl}/schedule`, fields)
 }
