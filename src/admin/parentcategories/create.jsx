@@ -30,8 +30,6 @@ function Create(props) {
 
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
         setStatus();
-        fields.slug=getSlug(fields.name);
-      
         parentcategoryService.create(fields)
             .then((data) => {
               resetForm({});

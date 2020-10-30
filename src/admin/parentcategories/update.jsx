@@ -30,22 +30,15 @@ function Update(props) {
             .required('Name is required'),
         description: Yup.string()
             .required('Description is required'),
-    });
-
-    const getSlug = (text) => {
-        var lowerText = text.toLowerCase();
-        var slug = lowerText.replace(/[^a-zA-Z0-9]+/g,'-');
-        return slug;    
-    };
-
+	});
+	
     function onSubmit(fields, { setStatus, setSubmitting, resetForm }) {
-        setStatus();
-        fields.slug=getSlug(fields.name);
+		setStatus();
+		console.log(fields);
         parentcategoryService.update(fields._id,fields)
             .then((data) => {
             	resetForm({});
             	alertService.success('Item updated successfully', { keepAfterRouteChange: true });
-            	$("#modal-update").modal("hide");
             	props.updateOne(fields._id, fields);
             })
             .catch(error => {

@@ -30,7 +30,7 @@ class SingleSelect extends React.Component {
 		var endPointQuery=`?page=0&size=10&search=${inputValue}`
 
 		if(this.props.extraQuery){
-			endPointQuery += `&state=${this.props.extraQuery._id}`;
+			endPointQuery += `&localObjFilter[state]=${this.props.extraQuery._id}`;
 		}
 		
 		console.log(endPointQuery);
